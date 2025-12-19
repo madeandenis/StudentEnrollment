@@ -1,9 +1,9 @@
-using StudentEnrollment.Shared;
+using StudentEnrollment.Shared.Configuration;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.RegisterInfrastructureServices();
-builder.Services.RegisterSecurityServices();
+builder.Services.RegisterSecurityServices(builder.Configuration);
 builder.Services.RegisterPersistenceServices(builder.Configuration);
 builder.Services.RegisterApiServices();
 

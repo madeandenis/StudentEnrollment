@@ -1,6 +1,6 @@
 ﻿using StudentEnrollment.Shared.Persistence;
 
-namespace StudentEnrollment.Shared;
+namespace StudentEnrollment.Shared.Configuration;
 
 public static class WebApplicationExtensions
 {

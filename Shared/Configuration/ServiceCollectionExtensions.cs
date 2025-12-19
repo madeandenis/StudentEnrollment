@@ -4,10 +4,11 @@ using StudentEnrollment.Shared.Domain.Entities.Identity;
 using StudentEnrollment.Shared.ErrorHandling;
 using StudentEnrollment.Shared.Persistence;
 using StudentEnrollment.Shared.Persistence.Interceptors;
-using StudentEnrollment.Shared.Persistence.Seeds;
+using StudentEnrollment.Shared.Persistence.Seeders;
+using StudentEnrollment.Shared.Security.Configuration;
 using StudentEnrollment.Shared.Security.Services;
 
-namespace StudentEnrollment.Shared;
+namespace StudentEnrollment.Shared.Configuration;
 
 public static class ServiceCollectionExtensions
 {
@@ -27,12 +28,15 @@ public static class ServiceCollectionExtensions
     /// Registers security-related services including ASP.NET Core Identity and CurrentUserService.
     /// Sets up user and role management, authentication, and token providers.
     /// </summary>
-    public static IServiceCollection RegisterSecurityServices(this IServiceCollection services)
+    public static IServiceCollection RegisterSecurityServices(this IServiceCollection services, IConfiguration configuration)
     {   
         services.AddIdentity<ApplicationUser, ApplicationRole>()
                 .AddEntityFrameworkStores<ApplicationDbContext>()
                 .AddDefaultTokenProviders();
+        services.ConfigureIdentity();
         services.AddScoped<CurrentUserService>();
+        services.AddJwtAuthentication(configuration);
+        services.AddAuthorizationPolicies();
         return services;
     }
 

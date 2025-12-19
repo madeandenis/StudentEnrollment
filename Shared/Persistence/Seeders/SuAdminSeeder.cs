@@ -1,8 +1,8 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using StudentEnrollment.Shared.Domain.Entities.Identity;
-using StudentEnrollment.Shared.Persistence.Seeds.Contracts;
+using StudentEnrollment.Shared.Persistence.Seeders.Contracts;
 
-namespace StudentEnrollment.Shared.Persistence.Seeds;
+namespace StudentEnrollment.Shared.Persistence.Seeders;
 
 /// <summary>
 /// Seeds a single super admin user into the Identity system.

@@ -1,5 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using StudentEnrollment.Shared.Persistence.Seeds;
+using StudentEnrollment.Shared.Persistence.Seeders;
 
 namespace StudentEnrollment.Shared.Persistence;
 
