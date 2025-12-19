@@ -20,7 +20,6 @@
     <ItemGroup>
       <Folder Include="Features\" />
       <Folder Include="Shared\Persistence\Migrations\" />
-      <Folder Include="Shared\Persistence\Seeds\" />
     </ItemGroup>
 
 </Project>

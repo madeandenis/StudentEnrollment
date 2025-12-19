@@ -4,6 +4,7 @@ using StudentEnrollment.Shared.Domain.Entities.Identity;
 using StudentEnrollment.Shared.ErrorHandling;
 using StudentEnrollment.Shared.Persistence;
 using StudentEnrollment.Shared.Persistence.Interceptors;
+using StudentEnrollment.Shared.Persistence.Seeds;
 using StudentEnrollment.Shared.Security.Services;
 
 namespace StudentEnrollment.Shared;
@@ -51,6 +52,9 @@ public static class ServiceCollectionExtensions
                     serviceProvider.GetRequiredService<SoftDeletableEntityInterceptor>()
                 );
         });
+        services.AddScoped<RoleSeeder>();
+        services.AddScoped<SuAdminSeeder>();
+        services.AddScoped<ApplicationDbContextInitializer>();
 
         return services;
     }

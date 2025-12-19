@@ -11,7 +11,9 @@ var app = builder.Build();
 
 if (app.Environment.IsDevelopment())
 {
-    app.MapOpenApi();
+    app.UseDeveloperExceptionPage();
+    app.MapOpenApi().AllowAnonymous();
+    await app.InitializeDbAsync();
 }
 
 app.UseHttpsRedirection();
