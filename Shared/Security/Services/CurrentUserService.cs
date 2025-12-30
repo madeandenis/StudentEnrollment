@@ -13,8 +13,8 @@ public sealed class CurrentUserService(IHttpContextAccessor httpContextAccessor)
     /// <returns>The user ID if the user is authenticated; otherwise, <c>null</c>.</returns>
     public int? UserId()
     {
-       var nameIdentifier = httpContextAccessor.HttpContext?.User?.FindFirstValue(ClaimTypes.NameIdentifier);
-        return int.TryParse(nameIdentifier, out int userId) ? userId : null;
+       var nameIdentifier = httpContextAccessor.HttpContext?.User.FindFirstValue(ClaimTypes.NameIdentifier);
+        return int.TryParse(nameIdentifier, out var userId) ? userId : null;
     }
     
     /// <summary>

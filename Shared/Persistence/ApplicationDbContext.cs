@@ -12,13 +12,14 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
     public DbSet<Student> Students { get; set; }
     public DbSet<Course> Courses { get; set; }
     public DbSet<Enrollment> Enrollments { get; set; }
-    
+    public DbSet<RefreshToken> RefreshTokens { get; set; }
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
-        
+
         modelBuilder.ApplyConfigurationsFromAssembly(typeof(ApplicationDbContext).Assembly);
-        
+
         modelBuilder.Entity<IdentityUserLogin<int>>().ToTable("UserLogins");
         modelBuilder.Entity<IdentityUserRole<int>>().ToTable("UserRoles");
         modelBuilder.Entity<IdentityUserToken<int>>().ToTable("UserTokens");

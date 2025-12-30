@@ -9,6 +9,9 @@ public class ApplicationDbContextInitializer(
     SuAdminSeeder suAdminSeeder
 )
 {
+    /// <summary>
+    /// Initializes the database asynchronously by applying pending migrations and seeding roles and super admin user.
+    /// </summary>
     public async Task InitializeAsync()
     {
         await context.Database.MigrateAsync();

@@ -13,11 +13,11 @@ public class Course : BaseEntity, IAuditableEntity
 
     [Range(1, 10)]
     public int Credits { get; set; }
-    [Range(1, int.MaxValue)]        
+    [Range(1, int.MaxValue)]
     public int MaxEnrollment { get; set; }
-    
+
     public ICollection<Enrollment> Enrollments { get; set; }
-    
+
     public DateTime CreatedAt { get; set; }
     public DateTime? UpdatedAt { get; set; }
     public int CreatedBy { get; set; }

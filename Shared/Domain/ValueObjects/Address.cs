@@ -5,12 +5,12 @@ namespace StudentEnrollment.Shared.Domain.ValueObjects;
 public class Address : ValueObject
 {
     public string Address1 { get; set; }
-
-    // Optional second line of the address: apartment, block, suite, entrance, etc.
+    // Gets or sets the optional second line of the address (apartment, block, suite, entrance, etc.).
     public string? Address2 { get; set; }
     public string City { get; set; }
     public string? County { get; set; }
     public string Country { get; set; }
+
     public string? PostalCode { get; set; }
 
     protected override IEnumerable<object> GetEqualityComponents()

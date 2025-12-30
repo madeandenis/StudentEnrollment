@@ -1,63 +1,78 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 
 namespace StudentEnrollment.Shared.Security.Configuration;
 
 public static class SecurityExtensions
 {
-    public static IServiceCollection AddJwtAuthentication(this IServiceCollection services, IConfiguration configuration)
+    extension(IServiceCollection services)
     {
-        services.AddAuthentication()
-            .AddJwtBearer("JwtBearer", jwtOptions =>
+        /// <summary>
+        /// Adds and configures JWT authentication using settings from configuration.
+        /// </summary>
+        public IServiceCollection AddJwtAuthentication(IConfiguration configuration)
+        {
+            services.AddOptions<JwtSettings>()
+                .Bind(configuration.GetSection("JwtSettings"))
+                .ValidateDataAnnotations()
+                .ValidateOnStart();
+
+            // Register custom JWT bearer options configuration
+            services.AddSingleton<IConfigureOptions<JwtBearerOptions>, ConfigureJwtBearerOptions>();
+
+            services.AddAuthentication(options =>
             {
-                // jwtOptions.MetadataAddress = configuration["Api:MetadataAddress"];
-                jwtOptions.Authority = configuration["Api:Authority"];
-                jwtOptions.Audience = configuration["Api:Audience"];
-                jwtOptions.TokenValidationParameters = new TokenValidationParameters()
-                {
-                    ValidateIssuer = true,
-                    ValidateAudience = true,
-                    ValidateIssuerSigningKey = true,
-                    // ValidAudiences = configuration.GetSection("Api:ValidAudiences").Get<string[]>(),
-                    // ValidIssuers = configuration.GetSection("Api:ValidIssuers").Get<string[]>()
-                };
+                options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+            }).AddJwtBearer(JwtBearerDefaults.AuthenticationScheme);
 
-                jwtOptions.MapInboundClaims = false;
+            return services;
+        }
+
+        /// <summary>
+        /// Configures authorization policies for the application.
+        /// </summary>
+        public IServiceCollection ConfigureAuthorizationPolicies()
+        {
+            services.Configure<AuthorizationOptions>(options =>
+            {
+                // Define role-based policies
+                options.AddPolicy("SuAdmin", policy => policy.RequireRole("SuAdmin"));
+                options.AddPolicy("Admin", policy => policy.RequireRole("Admin"));
+
+                // Fallback policy: require authentication by default
+                options.FallbackPolicy = new AuthorizationPolicyBuilder()
+                    .RequireAuthenticatedUser()
+                    .Build();
             });
-        
-        return services;
-    }
 
-    public static IServiceCollection AddAuthorizationPolicies(this IServiceCollection services)
-    {
-        services.AddAuthorization(options =>
+            return services;
+        }
+
+        /// <summary>
+        /// Configures ASP.NET Identity options such as password rules, lockout, and user settings.
+        /// </summary>
+        public IServiceCollection ConfigureIdentity()
         {
-            options.AddPolicy("SuAdmin", policy => policy.RequireRole("SuAdmin"));
-            options.AddPolicy("Admin", policy => policy.RequireRole("Admin"));
-            
-            options.FallbackPolicy = new AuthorizationPolicyBuilder().RequireAuthenticatedUser().Build();
-        });
-        
-        return services;
-    }
+            services.Configure<IdentityOptions>(options =>
+            {
+                options.Password.RequireDigit = true;
+                options.Password.RequiredLength = 8;
+                options.Password.RequireNonAlphanumeric = true;
+                options.Password.RequireUppercase = true;
+                options.Password.RequireLowercase = true;
+                options.Password.RequiredUniqueChars = 4;
 
-    public static IServiceCollection ConfigureIdentity(this IServiceCollection services)
-    {
-        services.Configure<IdentityOptions>(options =>
-        {
-            options.Password.RequireDigit = true;
-            options.Password.RequiredLength = 8;
-            options.Password.RequireNonAlphanumeric = true;
-            options.Password.RequireUppercase = true;
-            options.Password.RequireLowercase = true;
+                options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(30);
+                options.Lockout.MaxFailedAccessAttempts = 5;
 
-            options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(30);
-            options.Lockout.MaxFailedAccessAttempts = 5;
-
-            options.SignIn.RequireConfirmedEmail = true;
-            options.User.RequireUniqueEmail = true;
-        });
-        return services;
+                options.SignIn.RequireConfirmedEmail = false;
+                options.User.RequireUniqueEmail = true;
+            });
+            return services;
+        }
     }
 }
