@@ -4,10 +4,18 @@ namespace StudentEnrollment.Shared.Configuration;
 
 public static class WebApplicationExtensions
 {
-    public static async Task InitializeDbAsync(this WebApplication app)
+    extension(WebApplication app)
     {
-        using var scope = app.Services.CreateScope();
-        var initializer = scope.ServiceProvider.GetRequiredService<ApplicationDbContextInitializer>();
-        await initializer.InitializeAsync();
+        /// <summary>
+        /// Initializes the database by running migrations and seeding initial data.
+        /// This method should only be called in development environments.
+        /// </summary>
+        public async Task InitializeDbAsync()
+        {
+            using var scope = app.Services.CreateScope();
+            var initializer =
+                scope.ServiceProvider.GetRequiredService<ApplicationDbContextInitializer>();
+            await initializer.InitializeAsync();
+        }
     }
 }
