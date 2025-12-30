@@ -12,6 +12,7 @@ public class RegisterValidator : AbstractValidator<RegisterRequest>
         RuleFor(r => r.Password)
             .NotEmpty()
             .MinimumLength(8)
+            .MaximumLength(100)
             .MustContainDigit()
             .MustContainNonAlphanumeric()
             .MustContainUppercase()

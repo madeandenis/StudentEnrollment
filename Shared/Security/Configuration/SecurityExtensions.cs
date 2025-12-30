@@ -41,8 +41,11 @@ public static class SecurityExtensions
             {
                 // Define role-based policies
                 options.AddPolicy("SuAdmin", policy => policy.RequireRole("SuAdmin"));
-                options.AddPolicy("Admin", policy => policy.RequireRole("Admin"));
-
+                options.AddPolicy("Admin", policy =>
+                {
+                    policy.RequireRole("Admin", "SuAdmin");
+                });
+                
                 // Fallback policy: require authentication by default
                 options.FallbackPolicy = new AuthorizationPolicyBuilder()
                     .RequireAuthenticatedUser()

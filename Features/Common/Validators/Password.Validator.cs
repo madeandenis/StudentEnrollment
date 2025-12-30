@@ -2,7 +2,7 @@ using FluentValidation;
 
 namespace StudentEnrollment.Features.Common.Validators;
 
-public static class PasswordValidator
+public static class PasswordValidatorExtensions
 {
     extension<T>(IRuleBuilder<T, string> ruleBuilder)
     {

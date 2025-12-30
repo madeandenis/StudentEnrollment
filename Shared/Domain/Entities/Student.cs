@@ -21,7 +21,7 @@ public class Student : BaseEntity, IAuditableEntity, ISoftDeletableEntity
     [PersonalData]
     public Address Address { get; set; }
     [PersonalData]
-    public DateTime DateOfBirth { get; set; }
+    public DateOnly DateOfBirth { get; set; }
 
     [PersonalData]
     [ProtectedPersonalData]
