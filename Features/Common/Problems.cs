@@ -32,27 +32,11 @@ public static class Problems
             Detail = detail,
         };
 
-    public static ProblemDetails Forbidden(string detail = "Access denied") =>
-        new()
-        {
-            Status = StatusCodes.Status403Forbidden,
-            Title = "Forbidden",
-            Detail = detail,
-        };
-
     public static ProblemDetails Conflict(string detail = "A conflict occurred") =>
         new()
         {
             Status = StatusCodes.Status409Conflict,
             Title = "Conflict",
-            Detail = detail,
-        };
-
-    public static ProblemDetails InternalError(string detail = "An internal error occurred") =>
-        new()
-        {
-            Status = StatusCodes.Status500InternalServerError,
-            Title = "Internal Server Error",
             Detail = detail,
         };
 }

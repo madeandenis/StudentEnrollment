@@ -11,9 +11,7 @@ public class Course : BaseEntity, IAuditableEntity
     public string Name { get; set; }
     public string Description { get; set; }
 
-    [Range(1, 10)]
     public int Credits { get; set; }
-    [Range(1, int.MaxValue)]
     public int MaxEnrollment { get; set; }
 
     public ICollection<Enrollment> Enrollments { get; set; }

@@ -7,8 +7,7 @@ public class RegisterValidator : AbstractValidator<RegisterRequest>
 {
     public RegisterValidator()
     {
-        RuleFor(r => r.Email)
-            .EmailAddress();
+        RuleFor(r => r.Email).EmailAddress();
         RuleFor(r => r.Password)
             .NotEmpty()
             .MinimumLength(8)

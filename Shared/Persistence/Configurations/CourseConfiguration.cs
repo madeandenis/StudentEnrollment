@@ -9,7 +9,6 @@ public class CourseConfiguration : IEntityTypeConfiguration<Course>
     public void Configure(EntityTypeBuilder<Course> builder)
     {
         builder.HasKey(c => c.Id);
-        builder.HasAlternateKey(c => c.CourseCode);
 
         builder.HasIndex(c => c.CourseCode).IsUnique();
         
