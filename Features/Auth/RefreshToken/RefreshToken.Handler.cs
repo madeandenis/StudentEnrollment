@@ -51,8 +51,12 @@ public class RefreshTokenHandler(
             return Results.NotFound(Problems.NotFound("The user does not exist."));
 
         var identity = await identityFactory.CreateAsync(user);
-        var tokens = await tokenService.GenerateTokenPairAsync(user, identity);
+        var tokens = await tokenService.GenerateTokenPairAsync(user, identity, request.RefreshToken);
 
-        return Results.Ok(new RefreshTokenResponse(tokens));
+        return Results.Ok(new RefreshTokenResponse(
+            tokens.AccessToken,
+            tokens.RefreshToken,
+            tokens.AccessTokenExpiresAt,
+            tokens.RefreshTokenExpiresAt));
     }
 }

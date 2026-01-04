@@ -61,7 +61,7 @@ public class RegisterHandler(
             return Results.BadRequest(Problems.BadRequest(errorMessages));
         }
 
-        var student = await context.Students.FirstOrDefaultAsync(s => s.Email == user.Email);
+        var student = await context.Students.FirstOrDefaultAsync(s => s.Email == user.NormalizedEmail);
         if (student is not null)
         {
             student.UserId = user.Id;

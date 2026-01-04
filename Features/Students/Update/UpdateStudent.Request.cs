@@ -1,9 +1,9 @@
 using StudentEnrollment.Features.Common.Requests;
 using StudentEnrollment.Features.Students.Common.Interfaces;
 
-namespace StudentEnrollment.Features.Students.Create;
+namespace StudentEnrollment.Features.Students.Update;
 
-public record CreateStudentRequest(
+public record UpdateStudentRequest(
     string Cnp,
     string FirstName,
     string LastName,

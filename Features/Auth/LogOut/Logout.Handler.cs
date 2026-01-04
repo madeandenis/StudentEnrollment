@@ -1,5 +1,4 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using StudentEnrollment.Features.Common;
 using StudentEnrollment.Features.Common.Contracts;
 using StudentEnrollment.Shared.Persistence;
 using StudentEnrollment.Shared.Security.Services;

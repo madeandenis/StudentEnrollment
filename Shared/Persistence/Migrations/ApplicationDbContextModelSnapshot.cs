@@ -22,6 +22,8 @@ namespace StudentEnrollment.Shared.Persistence.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
+            modelBuilder.HasSequence<int>("StudentCodeSequence");
+
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<int>", b =>
                 {
                     b.Property<int>("Id")
@@ -400,8 +402,9 @@ namespace StudentEnrollment.Shared.Persistence.Migrations
 
                     b.Property<string>("StudentCode")
                         .IsRequired()
-                        .HasMaxLength(20)
-                        .HasColumnType("nvarchar(20)");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("nvarchar(450)")
+                        .HasDefaultValueSql("RIGHT('000000' + CAST(NEXT VALUE FOR StudentCodeSequence AS VARCHAR), 6)");
 
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("datetime2");
@@ -414,12 +417,13 @@ namespace StudentEnrollment.Shared.Persistence.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasAlternateKey("StudentCode");
-
                     b.HasIndex("CNP")
                         .IsUnique();
 
                     b.HasIndex("Email")
+                        .IsUnique();
+
+                    b.HasIndex("StudentCode")
                         .IsUnique();
 
                     b.HasIndex("UserId")

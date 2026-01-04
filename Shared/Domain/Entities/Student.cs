@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using System.ComponentModel.DataAnnotations.Schema;
+using Microsoft.AspNetCore.Identity;
 using StudentEnrollment.Shared.Domain.Entities.Common.Abstractions;
 using StudentEnrollment.Shared.Domain.Entities.Common.Interfaces;
 using StudentEnrollment.Shared.Domain.ValueObjects;
@@ -7,6 +8,7 @@ namespace StudentEnrollment.Shared.Domain.Entities;
 
 public class Student : BaseEntity, IAuditableEntity, ISoftDeletableEntity
 {
+    [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
     public string StudentCode { get; set; }
 
     [PersonalData]

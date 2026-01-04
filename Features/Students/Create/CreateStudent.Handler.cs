@@ -1,60 +1,41 @@
 using Microsoft.EntityFrameworkCore;
 using StudentEnrollment.Features.Common;
 using StudentEnrollment.Features.Common.Contracts;
-using StudentEnrollment.Shared.Domain.Entities;
-using StudentEnrollment.Shared.Domain.ValueObjects;
+using StudentEnrollment.Features.Students.Common.Mappers;
 using StudentEnrollment.Shared.Persistence;
+using static StudentEnrollment.Shared.Utilities.StringNormalizationService;
 
 namespace StudentEnrollment.Features.Students.Create;
 
+/// <summary>
+/// Handles the creation of a new student record.
+/// Performs validation, checks for existing CNP/Email duplicates, and maps the request to a persisted entity.
+/// </summary>
 public class CreateStudentHandler(
-    ApplicationDbContext context
+    ApplicationDbContext context,
+    CreateStudentValidator validator
 ) : IHandler
 {
     public async Task<IResult> HandleAsync(CreateStudentRequest request)
     {
+        var validationResult = await validator.ValidateAsync(request);
+        if (!validationResult.IsValid)
+            return Results.ValidationProblem(validationResult.ToDictionary());
+        
         bool studentExists = await context.Students
             .AsNoTracking()
-            .AnyAsync(s => s.Email == request.Email || s.CNP == request.Cnp);
+            .AnyAsync(s => s.Email == NormalizeEmail(request.Email) || s.CNP == request.Cnp);
 
         if (studentExists)
         {
             return Results.Conflict(Problems.Conflict("A student with the same email or CNP already exists."));
         }
 
-        var student = new Student()
-        {
-            FirstName = request.FirstName,
-            LastName = request.LastName,
-            Email = request.Email,
-            PhoneNumber = request.PhoneNumber,
-            Address = Address.FromRequest(request.Address),
-            DateOfBirth = request.DateOfBirth,
-            CNP = request.Cnp
-        };
+        var student = StudentMapper.ToEntity(request);
             
-        if (request.UserId is not null)
-        {
-            var user = await context.Users
-                .AsNoTracking()
-                .FirstOrDefaultAsync(u => u.Id == request.UserId);
-
-            if (user is null)
-            {
-                return Results.NotFound(Problems.NotFound("The user does not exist."));
-            }
-
-            if (user.Email != request.Email)
-            {
-                return Results.BadRequest(Problems.BadRequest("The user's email does not match the student's email."));
-            }
-            
-            student.UserId = request.UserId;
-        }
-        
         await context.Students.AddAsync(student);
         await context.SaveChangesAsync();
         
-        return Results.Created($"students/{student.Id}", student);
+        return Results.Created($"students/{student.Id}", StudentMapper.ToCreateResponse(student));
     }
 }

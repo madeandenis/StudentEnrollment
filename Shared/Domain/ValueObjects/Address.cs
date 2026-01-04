@@ -38,12 +38,12 @@ public class Address : ValueObject
     {
         return new Address()
         {
-            Address1 = request.Address1,
-            Address2 = request.Address2,
-            City = request.City,
-            Country = request.Country,
-            County = request.County,
-            PostalCode = request.PostalCode
+            Address1 = request.Address1.Trim(),
+            Address2 = request.Address2?.Trim(),
+            City = request.City.Trim(),
+            Country = request.Country.Trim(),
+            County = request.County?.Trim(),
+            PostalCode = request.PostalCode?.Trim()
         };
     }
 }
