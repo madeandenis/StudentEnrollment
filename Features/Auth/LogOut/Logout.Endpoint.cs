@@ -12,6 +12,7 @@ public class LogoutEndpoint : IEndpoint
                 [FromServices] LogoutHandler handler
             ) => await handler.HandleAsync(request))
             .WithName("Logout")
+            .RequireAuthorization()
             .Produces(StatusCodes.Status200OK)
             .Produces(StatusCodes.Status404NotFound)
             .Produces(StatusCodes.Status401Unauthorized);
