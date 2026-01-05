@@ -1,5 +1,5 @@
-using StudentEnrollment.Features.Common.Requests;
 using StudentEnrollment.Features.Students.Common.Interfaces;
+using StudentEnrollment.Shared.Domain.ValueObjects;
 
 namespace StudentEnrollment.Features.Students.Create;
 
@@ -10,5 +10,5 @@ public record CreateStudentRequest(
     DateOnly DateOfBirth,
     string Email,
     string PhoneNumber,
-    AddressRequest Address
+    Address Address
 ) : IStudentRequest;

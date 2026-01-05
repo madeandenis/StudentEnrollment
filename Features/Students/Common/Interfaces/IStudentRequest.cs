@@ -1,4 +1,4 @@
-using StudentEnrollment.Features.Common.Requests;
+using StudentEnrollment.Shared.Domain.ValueObjects;
 
 namespace StudentEnrollment.Features.Students.Common.Interfaces;
 
@@ -15,5 +15,5 @@ public interface IStudentRequest
     DateOnly DateOfBirth { get; }
     string Email { get; }
     string PhoneNumber { get; }
-    AddressRequest Address { get; }
+    Address Address { get; }
 }

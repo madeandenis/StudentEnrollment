@@ -1,9 +1,9 @@
 using FluentValidation;
-using StudentEnrollment.Features.Common.Requests;
+using StudentEnrollment.Shared.Domain.ValueObjects;
 
 namespace StudentEnrollment.Features.Common.Validators;
 
-public class AddressValidator : AbstractValidator<AddressRequest>
+public class AddressValidator : AbstractValidator<Address>
 {
     public AddressValidator()
     {
@@ -21,7 +21,7 @@ public class AddressValidator : AbstractValidator<AddressRequest>
             .MaximumLength(100)
             .WithMessage("City is too long.");
 
-        RuleFor(x => x.County).MaximumLength(100).WithMessage("County  is too long.");
+        RuleFor(x => x.County).MaximumLength(100).WithMessage("County is too long.");
 
         RuleFor(x => x.Country)
             .NotEmpty()
@@ -39,9 +39,9 @@ public class AddressValidator : AbstractValidator<AddressRequest>
 
 public static class AddressValidatorExtension
 {
-    extension<T>(IRuleBuilder<T, AddressRequest> ruleBuilder)
+    extension<T>(IRuleBuilder<T, Address> ruleBuilder)
     {
-        public IRuleBuilderOptions<T, AddressRequest> Address() =>
+        public IRuleBuilderOptions<T, Address> Address() =>
             ruleBuilder.SetValidator(new AddressValidator());
     }
 }

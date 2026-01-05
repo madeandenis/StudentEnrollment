@@ -1,5 +1,4 @@
-﻿using StudentEnrollment.Features.Common.Requests;
-using StudentEnrollment.Shared.Domain.ValueObjects.Common.Abstractions;
+﻿using StudentEnrollment.Shared.Domain.ValueObjects.Common.Abstractions;
 
 namespace StudentEnrollment.Shared.Domain.ValueObjects;
 
@@ -32,18 +31,5 @@ public class Address : ValueObject
     public static bool operator !=(Address? left, Address? right)
     {
         return NotEqualOperator(left!, right!);
-    }
-
-    public static Address FromRequest(AddressRequest request)
-    {
-        return new Address()
-        {
-            Address1 = request.Address1.Trim(),
-            Address2 = request.Address2?.Trim(),
-            City = request.City.Trim(),
-            Country = request.Country.Trim(),
-            County = request.County?.Trim(),
-            PostalCode = request.PostalCode?.Trim()
-        };
     }
 }

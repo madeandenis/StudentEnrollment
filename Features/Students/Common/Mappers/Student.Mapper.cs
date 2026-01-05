@@ -1,5 +1,6 @@
 using StudentEnrollment.Features.Students.Common.Interfaces;
 using StudentEnrollment.Features.Students.Create;
+using StudentEnrollment.Features.Students.GetDetails;
 using StudentEnrollment.Shared.Domain.Entities;
 using StudentEnrollment.Shared.Domain.ValueObjects;
 using static StudentEnrollment.Shared.Utilities.StringNormalizationService;
@@ -12,13 +13,13 @@ namespace StudentEnrollment.Features.Students.Common.Mappers;
 
 public static class StudentMapper
 {
-    
     /// <summary>
-    /// Maps a <see cref="Student"/> entity to a <see cref="CreateStudentResponse"/>.
+    /// Maps a <see cref="Student"/> entity to a specific response type that implements <see cref="IStudentResponse"/>.
     /// </summary>
-    public static CreateStudentResponse ToCreateResponse(Student student)
+    public static TResponse ToStudentResponse<TResponse>(Student student) 
+        where TResponse : IStudentResponse, new()
     {
-        return new CreateStudentResponse
+        return new TResponse
         {
             Id = student.Id,
             StudentCode = student.StudentCode,
@@ -45,7 +46,7 @@ public static class StudentMapper
             DateOfBirth = request.DateOfBirth,
             Email = NormalizeEmail(request.Email),
             PhoneNumber = request.PhoneNumber,
-            Address = Address.FromRequest(request.Address),
+            Address = request.Address,
         };
     }
     
