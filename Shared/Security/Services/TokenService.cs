@@ -81,7 +81,7 @@ public class TokenService(IOptions<JwtSettings> jwtSettings, ApplicationDbContex
             ExpiresAt = DateTime.UtcNow.AddDays(_jwtSettings.RefreshTokenExpirationInDays),
         };
 
-        await dbContext.RefreshTokens.AddAsync(refreshToken);
+        dbContext.RefreshTokens.Add(refreshToken);
         await dbContext.SaveChangesAsync();
 
         return refreshToken;

@@ -35,7 +35,7 @@ public class CreateCourseHandler(
 
         var course = CourseMapper.ToEntity(request);
         
-        await context.Courses.AddAsync(course);
+        context.Courses.Add(course);
         await context.SaveChangesAsync();
         
         return Results.NoContent();

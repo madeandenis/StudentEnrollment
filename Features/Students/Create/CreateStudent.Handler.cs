@@ -33,9 +33,9 @@ public class CreateStudentHandler(
 
         var student = StudentMapper.ToEntity(request);
             
-        await context.Students.AddAsync(student);
+        context.Students.Add(student);
         await context.SaveChangesAsync();
         
-        return Results.Created($"students/{student.Id}", StudentMapper.ToCreateResponse(student));
+        return Results.Created($"students/{student.Id}", StudentMapper.ToStudentResponse<CreateStudentResponse>(student));
     }
 }
