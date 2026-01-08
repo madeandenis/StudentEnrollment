@@ -1,5 +1,7 @@
+using System.Linq.Expressions;
 using StudentEnrollment.Features.Courses.Common.Interfaces;
 using StudentEnrollment.Features.Courses.Create;
+using StudentEnrollment.Features.Courses.GetDetails;
 using StudentEnrollment.Shared.Domain.Entities;
 using static StudentEnrollment.Shared.Utilities.StringNormalizationService;
 
@@ -10,6 +12,20 @@ namespace StudentEnrollment.Features.Courses.Common.Mappers;
 /// </summary>
 public class CourseMapper
 {
+    /// <summary>
+    /// Provides a projection expression for converting a <see cref="Course"/> entity 
+    /// directly into a <see cref="CourseDetailsResponse"/> at the database level.
+    /// </summary>
+    public static Expression<Func<Course, CourseDetailsResponse>> ProjectToDetails() 
+        => course => new CourseDetailsResponse(
+            course.Id,
+            course.CourseCode,
+            course.Name,
+            course.Credits,
+            course.MaxEnrollment,
+            course.Enrollments.Count()
+        );
+
     /// <summary>
     /// Creates a new <see cref="Course"/> entity from a <see cref="CreateCourseRequest"/>,
     /// applying normalization to identifiers and text fields.
@@ -27,7 +43,7 @@ public class CourseMapper
             MaxEnrollment = request.MaxEnrollment,
         };
     }
-    
+
     /// <summary>
     /// Updates an existing <see cref="Course"/> entity with values from an <see cref="ICourseRequest"/>.
     /// </summary>
