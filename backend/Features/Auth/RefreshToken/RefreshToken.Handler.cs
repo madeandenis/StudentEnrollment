@@ -47,6 +47,7 @@ public class RefreshTokenHandler(
             tokens.AccessToken,
             tokens.RefreshToken,
             tokens.AccessTokenExpiresAt,
-            tokens.RefreshTokenExpiresAt));
+            tokens.RefreshTokenExpiresAt
+        ));
     }
 }

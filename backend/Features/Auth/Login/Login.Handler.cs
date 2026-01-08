@@ -58,7 +58,13 @@ public class LoginHandler(
         var identity = await identityFactory.CreateAsync(user);
         var tokens = await tokenService.GenerateTokenPairAsync(user, identity);
 
-        return Results.Ok(new LoginResponse(tokens, identity));
+        return Results.Ok(new LoginResponse(
+            tokens.AccessToken,
+            tokens.RefreshToken,
+            tokens.AccessTokenExpiresAt,
+            tokens.RefreshTokenExpiresAt,
+            User: ClaimsUser.FromClaimsIdentity(identity)
+        ));
     }
 
     private IResult InvalidCredentials() =>
