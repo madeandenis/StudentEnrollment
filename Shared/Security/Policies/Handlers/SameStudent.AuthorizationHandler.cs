@@ -9,11 +9,11 @@ namespace StudentEnrollment.Shared.Security.Policies.Handlers;
 /// matches the student ID claim of the current authenticated user.
 /// Note: Users with Admin or SuAdmin roles are automatically authorized.
 /// </summary>
-public class SameStudentHandler(IHttpContextAccessor httpContextAccessor) : AuthorizationHandler<SameStudentRequirement>
+public class SameStudentAuthorizationHandler(IHttpContextAccessor httpContextAccessor) : AuthorizationHandler<SameStudentAuthorizationRequirement>
 {
     private readonly CurrentUserService _currentUserService = new(httpContextAccessor);
 
-    protected override Task HandleRequirementAsync(AuthorizationHandlerContext context, SameStudentRequirement requirement)
+    protected override Task HandleRequirementAsync(AuthorizationHandlerContext context, SameStudentAuthorizationRequirement requirement)
     {
         if (context.User.IsInRole("Admin") || context.User.IsInRole("SuAdmin"))
         {

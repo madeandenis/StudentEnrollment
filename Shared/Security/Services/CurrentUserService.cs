@@ -1,4 +1,5 @@
 ﻿using System.Security.Claims;
+using StudentEnrollment.Shared.Security.Common;
 
 namespace StudentEnrollment.Shared.Security.Services;
 
@@ -30,7 +31,7 @@ public sealed class CurrentUserService(IHttpContextAccessor httpContextAccessor)
     /// <returns>The student ID if the claim exists and is valid; otherwise, <c>null</c>.</returns>
     public int? StudentId()
     {
-        var studentIdClaim = httpContextAccessor.HttpContext?.User.FindFirstValue("studentId");
+        var studentIdClaim = httpContextAccessor.HttpContext?.User.FindFirstValue(ApplicationUserClaims.StudentCode);
         return int.TryParse(studentIdClaim, out var studentId) ? studentId : null;
     }
 }

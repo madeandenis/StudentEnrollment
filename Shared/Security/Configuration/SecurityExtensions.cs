@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Options;
+using StudentEnrollment.Shared.Security.Common;
 using StudentEnrollment.Shared.Security.Policies.Handlers;
 using StudentEnrollment.Shared.Security.Policies.Requirements;
 
@@ -39,7 +40,7 @@ public static class SecurityExtensions
         public IServiceCollection ConfigureAuthorizationPolicies()
         {
             // Register custom authorization handlers
-            services.AddScoped<IAuthorizationHandler, SameStudentHandler>();
+            services.AddScoped<IAuthorizationHandler, SameStudentAuthorizationHandler>();
             
             services.Configure<AuthorizationOptions>(options =>
             {
@@ -49,7 +50,9 @@ public static class SecurityExtensions
 
                 // Define context-based policies
                 options.AddPolicy("SameStudent", policy =>
-                    policy.AddRequirements(new SameStudentRequirement()));
+                    policy.AddRequirements(new SameStudentAuthorizationRequirement()));
+                
+                options.AddPolicy("IsStudent", policy => policy.RequireClaim(ApplicationUserClaims.StudentCode));
 
                 // Fallback policy: require authentication by default
                 options.FallbackPolicy = new AuthorizationPolicyBuilder()
