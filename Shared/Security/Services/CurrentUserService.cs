@@ -23,4 +23,14 @@ public sealed class CurrentUserService(IHttpContextAccessor httpContextAccessor)
     /// <returns>The user ID.</returns>
     /// <exception cref="UnauthorizedAccessException">Thrown when there is no authenticated user in the current HTTP context.</exception>
     public int RequiredUserId() => UserId() ?? throw new UnauthorizedAccessException();
+    
+    /// <summary>
+    /// Gets the current authenticated user's student ID, if any. This is typically used to determine whether the user is a student.
+    /// </summary>
+    /// <returns>The student ID if the claim exists and is valid; otherwise, <c>null</c>.</returns>
+    public int? StudentId()
+    {
+        var studentIdClaim = httpContextAccessor.HttpContext?.User.FindFirstValue("studentId");
+        return int.TryParse(studentIdClaim, out var studentId) ? studentId : null;
+    }
 }

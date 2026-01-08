@@ -12,7 +12,7 @@ public class GetStudentDetailsEndpoint : IEndpoint
                 [FromServices] GetStudentDetailsHandler handler
             ) => await handler.HandleAsync(studentId))
             .WithName("GetStudentDetails")
-            .RequireAuthorization("Admin")
+            .RequireAuthorization("SameStudent")
             .Produces<StudentDetailsResponse>(StatusCodes.Status200OK)
             .Produces(StatusCodes.Status404NotFound);
     }

@@ -2,7 +2,8 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Options;
-using Microsoft.IdentityModel.Tokens;
+using StudentEnrollment.Shared.Security.Policies.Handlers;
+using StudentEnrollment.Shared.Security.Policies.Requirements;
 
 namespace StudentEnrollment.Shared.Security.Configuration;
 
@@ -37,15 +38,19 @@ public static class SecurityExtensions
         /// </summary>
         public IServiceCollection ConfigureAuthorizationPolicies()
         {
+            // Register custom authorization handlers
+            services.AddScoped<IAuthorizationHandler, SameStudentHandler>();
+            
             services.Configure<AuthorizationOptions>(options =>
             {
                 // Define role-based policies
                 options.AddPolicy("SuAdmin", policy => policy.RequireRole("SuAdmin"));
-                options.AddPolicy("Admin", policy =>
-                {
-                    policy.RequireRole("Admin", "SuAdmin");
-                });
-                
+                options.AddPolicy("Admin", policy => { policy.RequireRole("Admin", "SuAdmin"); });
+
+                // Define context-based policies
+                options.AddPolicy("SameStudent", policy =>
+                    policy.AddRequirements(new SameStudentRequirement()));
+
                 // Fallback policy: require authentication by default
                 options.FallbackPolicy = new AuthorizationPolicyBuilder()
                     .RequireAuthenticatedUser()

@@ -12,7 +12,7 @@ public class GetStudentEnrolledCoursesEndpoint : IEndpoint
                 [FromServices] EnrolledCoursesHandler handler
             ) => await handler.HandleAsync(studentId))
             .WithName("GetStudentEnrolledCourses")
-            .RequireAuthorization("Admin")
+            .RequireAuthorization("SameStudent")
             .Produces<AcademicSituationResponse>(StatusCodes.Status200OK)
             .Produces(StatusCodes.Status404NotFound);
     }
