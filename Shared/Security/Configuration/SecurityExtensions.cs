@@ -40,6 +40,7 @@ public static class SecurityExtensions
         public IServiceCollection ConfigureAuthorizationPolicies()
         {
             // Register custom authorization handlers
+            services.AddScoped<IAuthorizationHandler, AdminBypassAuthorizationHandler>();
             services.AddScoped<IAuthorizationHandler, SameStudentAuthorizationHandler>();
             
             services.Configure<AuthorizationOptions>(options =>
