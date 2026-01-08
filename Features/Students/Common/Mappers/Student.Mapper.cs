@@ -1,8 +1,8 @@
+using System.Linq.Expressions;
 using StudentEnrollment.Features.Students.Common.Interfaces;
 using StudentEnrollment.Features.Students.Create;
 using StudentEnrollment.Features.Students.GetDetails;
 using StudentEnrollment.Shared.Domain.Entities;
-using StudentEnrollment.Shared.Domain.ValueObjects;
 using static StudentEnrollment.Shared.Utilities.StringNormalizationService;
 
 namespace StudentEnrollment.Features.Students.Common.Mappers;
@@ -10,35 +10,46 @@ namespace StudentEnrollment.Features.Students.Common.Mappers;
 /// <summary>
 /// Provides mapping logic to transform between Student entities, requests, and response DTOs.
 /// </summary>
-
 public static class StudentMapper
 {
     /// <summary>
-    /// Maps a <see cref="Student"/> entity to a specific response type that implements <see cref="IStudentResponse"/>.
+    /// Provides a projection expression for converting a <see cref="Student"/> entity 
+    /// directly into a <see cref="StudentDetailsResponse"/> at the database level.
     /// </summary>
-    public static TResponse ToStudentResponse<TResponse>(Student student) 
-        where TResponse : IStudentResponse, new()
-    {
-        return new TResponse
-        {
-            Id = student.Id,
-            StudentCode = student.StudentCode,
-            FirstName = student.FirstName,
-            LastName = student.LastName,
-            Email = student.Email,
-            PhoneNumber = student.PhoneNumber,
-            DateOfBirth = student.DateOfBirth,
-            Address = student.Address
-        };
-    }
+    public static Expression<Func<Student, StudentDetailsResponse>> ProjectToDetails()
+        => student => new StudentDetailsResponse(
+            student.Id,
+            student.StudentCode,
+            student.CNP,
+            student.FirstName,
+            student.LastName,
+            student.DateOfBirth,
+            student.Email,
+            student.PhoneNumber,
+            student.Address
+        );
     
+    /// <summary>
+    /// Projects a <see cref="Student"/> domain entity into a <see cref="CreateStudentResponse"/> DTO.
+    /// </summary>
+    public static CreateStudentResponse ToCreateResponse(Student student)
+        => new CreateStudentResponse(
+            student.Id,
+            student.StudentCode,
+            student.FirstName,
+            student.LastName,
+            student.DateOfBirth,
+            student.Email,
+            student.PhoneNumber,
+            student.Address
+        );
+
     /// <summary>
     /// Creates a new <see cref="Student"/> entity from an <see cref="IStudentRequest"/>, 
     /// applying string normalization to personal data.
     /// </summary>
     public static Student ToEntity(IStudentRequest request)
-    {
-        return new Student()
+        => new Student()
         {
             CNP = request.Cnp,
             FirstName = Normalize(request.FirstName),
@@ -48,8 +59,7 @@ public static class StudentMapper
             PhoneNumber = request.PhoneNumber,
             Address = request.Address,
         };
-    }
-    
+
     /// <summary>
     /// Updates an existing <see cref="Student"/> entity with values from an <see cref="IStudentRequest"/>.
     /// </summary>

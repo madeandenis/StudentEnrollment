@@ -11,16 +11,15 @@ public class GetStudentDetailsHandler(ApplicationDbContext context) : IHandler
     public async Task<IResult> HandleAsync(int studentId)
     {
         var student = await context.Students
-            .AsNoTracking().
-            FirstOrDefaultAsync(s => s.Id == studentId);
+            .AsNoTracking()
+            .Select(StudentMapper.ProjectToDetails())
+            .FirstOrDefaultAsync(s => s.Id == studentId);
 
         if (student is null)
         {
             return Results.NotFound(Problems.NotFound("Student not found."));
         }
 
-        var response = StudentMapper.ToStudentResponse<StudentDetailsResponse>(student);
-        
-        return Results.Ok(response);
+        return Results.Ok(student);
     }   
 }

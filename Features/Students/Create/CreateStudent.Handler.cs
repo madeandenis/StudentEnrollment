@@ -35,7 +35,9 @@ public class CreateStudentHandler(
             
         context.Students.Add(student);
         await context.SaveChangesAsync();
+
+        var response = StudentMapper.ToCreateResponse(student);
         
-        return Results.Created($"students/{student.Id}", StudentMapper.ToStudentResponse<CreateStudentResponse>(student));
+        return Results.Created($"students/{student.Id}", response);
     }
 }
