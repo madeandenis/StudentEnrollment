@@ -13,7 +13,7 @@ public class GetCourseListEndpoint : IEndpoint
                 [FromServices] GetCourseListHandler handler
             ) => await handler.HandleAsync(pagination))
             .WithName("GetCourseList")
-            .RequireAuthorization("Admin") 
+            .RequireAuthorization("IsStudent") 
             .Produces(StatusCodes.Status200OK);
     }
 }

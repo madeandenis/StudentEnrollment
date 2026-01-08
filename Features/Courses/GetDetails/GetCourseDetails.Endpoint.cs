@@ -12,7 +12,7 @@ public class GetCourseDetailsEndpoint : IEndpoint
                 [FromServices] GetCourseDetailsHandler handler
             ) => await handler.HandleAsync(courseId))
             .WithName("GetCourseDetails")
-            .RequireAuthorization("Admin") 
+            .RequireAuthorization("IsStudent") 
             .Produces<CourseDetailsResponse>(StatusCodes.Status200OK)
             .Produces(StatusCodes.Status404NotFound);
     }
