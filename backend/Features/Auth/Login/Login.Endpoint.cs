@@ -1,5 +1,7 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Http.HttpResults;
+using Microsoft.AspNetCore.Mvc;
 using StudentEnrollment.Features.Common.Contracts;
+using StudentEnrollment.Shared.Security.Services;
 
 namespace StudentEnrollment.Features.Auth.Login;
 
@@ -8,9 +10,26 @@ public class LoginEndpoint : IEndpoint
     public void MapEndpoint(IEndpointRouteBuilder app)
     {
         app.MapPost("/login", async (
-                [FromBody] LoginRequest loginRequest,
+                HttpContext httpContext,
+                [FromBody] LoginRequest request,
                 [FromServices] LoginHandler handler
-            ) => await handler.HandleAsync(loginRequest))
+            ) =>
+            {
+                var result = await handler.HandleAsync(request);
+
+                if (result is Ok<LoginResponse> okResult)
+                {
+                    LoginResponse loginResponse = okResult.Value!;
+                    
+                    httpContext.Response.Cookies.Append(
+                        "RefreshToken",
+                        loginResponse.RefreshToken,
+                        AuthCookieFactory.CreateRefreshTokenOptions(loginResponse.RefreshTokenExpiresAt)
+                    );
+                }     
+                
+                return result;
+            })
             .WithName("Login")
             .AllowAnonymous()
             .Produces(StatusCodes.Status200OK, typeof(LoginResponse))

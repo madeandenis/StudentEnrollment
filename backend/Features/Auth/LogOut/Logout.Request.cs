@@ -1,3 +1,3 @@
 namespace StudentEnrollment.Features.Auth.LogOut;
 
-public record LogoutRequest(string RefreshToken, bool AllDevices = false);
+public record LogoutRequest(bool AllDevices = false);

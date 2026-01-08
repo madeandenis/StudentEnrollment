@@ -10,32 +10,30 @@ namespace StudentEnrollment.Features.Auth.LogOut;
 /// Supports logging out from the current device or all devices.
 /// </summary>
 public class LogoutHandler(
-    LogoutValidator validator,
     CurrentUserService currentUserService,
     ApplicationDbContext context
 )
     : IHandler
 {
     /// <summary>
-    /// Handles the logout request asynchronously.
-    /// Deletes refresh tokens for the current user, either for the current device only or all devices.
+    /// Handles user logout by invalidating refresh tokens.
     /// </summary>
-    /// <param name="request">The logout request specifying whether to log out from all devices.</param>
-    /// <returns>An <see cref="IResult"/> with 200 OK status upon successful logout.</returns>
-    public async Task<IResult> HandleAsync(LogoutRequest request)
+    /// <param name="providedToken">The refresh token string from the secure cookie.</param>
+    /// <param name="request">Specifies if logout applies to the current session or all devices.</param>
+    /// <returns>
+    /// <list type="bullet">
+    /// <item><description>200 OK: Session successfully terminated.</description></item>
+    /// <item><description>401 Unauthorized: Invalid user context.</description></item>
+    /// </list>
+    /// </returns>
+    public async Task<IResult> HandleAsync(string providedToken, LogoutRequest request)
     {
-        var validationResult = await validator.ValidateAsync(request);
-        if (!validationResult.IsValid)
-        {
-            return Results.ValidationProblem(validationResult.ToDictionary());
-        }
-        
         var userId = currentUserService.RequiredUserId();
 
         var query = context.RefreshTokens.Where(rt => rt.UserId == userId);
 
-        if (request.AllDevices is false)
-            query = query.Where(rt => rt.Token == request.RefreshToken);
+        if (!request.AllDevices)
+            query = query.Where(rt => rt.Token == providedToken);
 
         await query.ExecuteDeleteAsync();
 

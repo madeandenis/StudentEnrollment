@@ -7,10 +7,28 @@ public class LogoutEndpoint : IEndpoint
 {
     public void MapEndpoint(IEndpointRouteBuilder app)
     {
-        app.MapPost("/logout", async (
-                [FromBody] LogoutRequest request,
-                [FromServices] LogoutHandler handler
-            ) => await handler.HandleAsync(request))
+        app.MapPost(
+                "/logout",
+                async (
+                    HttpContext httpContext,
+                    [FromBody] LogoutRequest request,
+                    [FromServices] LogoutHandler handler
+                ) =>
+                {
+                    var providedToken = httpContext.Request.Cookies["RefreshToken"];
+                    
+                    if (string.IsNullOrWhiteSpace(providedToken))
+                    {
+                        return Results.Unauthorized();
+                    }
+                    
+                    var result = await handler.HandleAsync(providedToken, request);
+
+                    httpContext.Response.Cookies.Delete("RefreshToken");
+
+                    return result;
+                }
+            )
             .WithName("Logout")
             .RequireAuthorization()
             .Produces(StatusCodes.Status200OK)
