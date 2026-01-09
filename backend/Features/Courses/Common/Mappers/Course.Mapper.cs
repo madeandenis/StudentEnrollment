@@ -1,5 +1,6 @@
 using System.Linq.Expressions;
 using StudentEnrollment.Features.Courses.Common.Interfaces;
+using StudentEnrollment.Features.Courses.Common.Responses;
 using StudentEnrollment.Features.Courses.Create;
 using StudentEnrollment.Features.Courses.GetDetails;
 using StudentEnrollment.Shared.Domain.Entities;
@@ -14,17 +15,20 @@ public class CourseMapper
 {
     /// <summary>
     /// Provides a projection expression for converting a <see cref="Course"/> entity 
-    /// directly into a <see cref="CourseDetailsResponse"/> at the database level.
+    /// directly into a <see cref="CourseResponse"/> at the database level.
     /// </summary>
-    public static Expression<Func<Course, CourseDetailsResponse>> ProjectToDetails() 
-        => course => new CourseDetailsResponse(
-            course.Id,
-            course.CourseCode,
-            course.Name,
-            course.Credits,
-            course.MaxEnrollment,
-            course.Enrollments.Count()
-        );
+    public static Expression<Func<Course, CourseResponse>> ProjectToResponse() 
+        => course => new CourseResponse{
+            Id = course.Id,
+            CourseCode = course.CourseCode,
+            Name = course.Name,
+            Credits = course.Credits,
+            MaxEnrollment = course.MaxEnrollment,
+            EnrolledStudents = course.Enrollments.Count,
+            AvailableSeats = course.MaxEnrollment - course.Enrollments.Count,
+            HasAvailableSeats = course.MaxEnrollment > course.Enrollments.Count,
+            CreatedAt = course.CreatedAt
+        };
 
     /// <summary>
     /// Creates a new <see cref="Course"/> entity from a <see cref="CreateCourseRequest"/>,

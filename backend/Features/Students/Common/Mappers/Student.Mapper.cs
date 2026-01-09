@@ -1,5 +1,6 @@
 using System.Linq.Expressions;
 using StudentEnrollment.Features.Students.Common.Interfaces;
+using StudentEnrollment.Features.Students.Common.Responses;
 using StudentEnrollment.Features.Students.Create;
 using StudentEnrollment.Features.Students.GetDetails;
 using StudentEnrollment.Shared.Domain.Entities;
@@ -14,21 +15,22 @@ public static class StudentMapper
 {
     /// <summary>
     /// Provides a projection expression for converting a <see cref="Student"/> entity 
-    /// directly into a <see cref="StudentDetailsResponse"/> at the database level.
+    /// directly into a <see cref="StudentResponse"/> at the database level.
     /// </summary>
-    public static Expression<Func<Student, StudentDetailsResponse>> ProjectToDetails()
-        => student => new StudentDetailsResponse(
-            student.Id,
-            student.StudentCode,
-            student.CNP,
-            student.FirstName,
-            student.LastName,
-            student.DateOfBirth,
-            student.Email,
-            student.PhoneNumber,
-            student.Address
-        );
-    
+    public static Expression<Func<Student, StudentResponse>> ProjectToResponse()
+        => student => new StudentResponse
+        {
+            Id = student.Id,
+            StudentCode = student.StudentCode,
+            Cnp = student.CNP,
+            FullName = $"{student.FirstName} {student.LastName}",
+            DateOfBirth = student.DateOfBirth,
+            Email = student.Email,
+            PhoneNumber = student.PhoneNumber,
+            Address = student.Address,
+            CreatedAt = student.CreatedAt
+        };
+
     /// <summary>
     /// Projects a <see cref="Student"/> domain entity into a <see cref="CreateStudentResponse"/> DTO.
     /// </summary>
