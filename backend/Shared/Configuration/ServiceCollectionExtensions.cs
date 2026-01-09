@@ -20,24 +20,26 @@ public static class ServiceCollectionExtensions
         /// <summary>
         /// Registers infrastructure services like HttpContextAccessor, ProblemDetails, exception handling, and validation.
         /// </summary>
-        public IServiceCollection RegisterInfrastructureServices()
+        public IServiceCollection RegisterInfrastructureServices(IConfiguration configuration)
         {
             services.AddHttpContextAccessor();
             services.AddProblemDetails();
             services.AddExceptionHandler<GlobalExceptionHandler>();
+            services.RegisterCors(configuration);
             services.AddValidation();
             services.AddValidatorsFromAssembly(Assembly.GetExecutingAssembly());
             services.AddHandlers();
             return services;
         }
-        
+
         /// <summary>
         /// Registers security-related services including ASP.NET Core Identity and CurrentUserService.
         /// Sets up user and role management, authentication, and token providers.
         /// </summary>
         public IServiceCollection RegisterSecurityServices(IConfiguration configuration)
-        {   
-            services.AddIdentity<ApplicationUser, ApplicationRole>()
+        {
+            services
+                .AddIdentity<ApplicationUser, ApplicationRole>()
                 .AddEntityFrameworkStores<ApplicationDbContext>()
                 .AddDefaultTokenProviders();
             services.ConfigureIdentity();
@@ -49,7 +51,7 @@ public static class ServiceCollectionExtensions
             services.AddScoped<TokenService>();
             return services;
         }
-        
+
         /// <summary>
         /// Registers persistence services including DbContext and EF Core interceptors.
         /// </summary>
@@ -57,21 +59,24 @@ public static class ServiceCollectionExtensions
         {
             services.AddScoped<AuditableEntityInterceptor>();
             services.AddScoped<SoftDeletableEntityInterceptor>();
-            services.AddDbContext<ApplicationDbContext>((serviceProvider, options) =>
-            {
-                options.UseSqlServer(configuration.GetConnectionString("DefaultConnection"))
-                    .AddInterceptors(
-                        serviceProvider.GetRequiredService<AuditableEntityInterceptor>(),
-                        serviceProvider.GetRequiredService<SoftDeletableEntityInterceptor>()
-                    );
-            });
+            services.AddDbContext<ApplicationDbContext>(
+                (serviceProvider, options) =>
+                {
+                    options
+                        .UseSqlServer(configuration.GetConnectionString("DefaultConnection"))
+                        .AddInterceptors(
+                            serviceProvider.GetRequiredService<AuditableEntityInterceptor>(),
+                            serviceProvider.GetRequiredService<SoftDeletableEntityInterceptor>()
+                        );
+                }
+            );
             services.AddScoped<RoleSeeder>();
             services.AddScoped<SuAdminSeeder>();
             services.AddScoped<ApplicationDbContextInitializer>();
 
             return services;
         }
-        
+
         /// <summary>
         /// Registers API services like OpenAPI
         /// </summary>
@@ -79,6 +84,26 @@ public static class ServiceCollectionExtensions
         {
             services.AddOpenApi();
             return services;
+        }
+        
+        /// <summary>
+        /// Configures and adds Cross-Origin Resource Sharing (CORS) based on 
+        /// the "AllowedOrigins" section in appsettings.
+        /// </summary>
+        private IServiceCollection RegisterCors(IConfiguration configuration)
+        {
+            var allowedOrigins = configuration.GetSection("AllowedOrigins").Get<string[]>() ?? [];
+
+            return services.AddCors(options =>
+            {
+                options.AddPolicy("CorsPolicy", policy =>
+                {
+                    policy.WithOrigins(allowedOrigins)
+                        .AllowAnyMethod()
+                        .AllowAnyHeader()
+                        .AllowCredentials();
+                });
+            });
         }
     }
 }

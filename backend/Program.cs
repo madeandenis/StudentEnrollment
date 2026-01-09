@@ -3,9 +3,11 @@ using StudentEnrollment.Shared.Configuration;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.RegisterInfrastructureServices();
-builder.Services.RegisterSecurityServices(builder.Configuration);
-builder.Services.RegisterPersistenceServices(builder.Configuration);
+var configuration = builder.Configuration;
+
+builder.Services.RegisterInfrastructureServices(configuration);
+builder.Services.RegisterSecurityServices(configuration);
+builder.Services.RegisterPersistenceServices(configuration);
 builder.Services.RegisterApiServices();
 
 builder.Services.AddEndpointsApiExplorer();
@@ -23,13 +25,15 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI(c =>
     {
         c.SwaggerEndpoint("/swagger/v1/swagger.json", "v1Api");
-        c.RoutePrefix = ""; 
+        c.RoutePrefix = "";
     });
     app.MapGet("/swagger/v1/swagger.json", () => Results.Redirect("/swagger/v1/swagger.json"))
         .AllowAnonymous();
 }
 
-app.UseAuthentication(); 
+app.UseCors("CorsPolicy");
+
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.UseHttpsRedirection();
