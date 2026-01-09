@@ -12,7 +12,7 @@ public class GetCourseDetailsHandler(ApplicationDbContext context) : IHandler
     {
         var course = await context.Courses
             .AsNoTracking()
-            .Select(CourseMapper.ProjectToDetails())
+            .Select(CourseMapper.ProjectToResponse())
             .FirstOrDefaultAsync(c => c.Id == courseId);
 
         if (course is null)

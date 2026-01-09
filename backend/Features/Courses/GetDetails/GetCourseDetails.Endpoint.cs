@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using StudentEnrollment.Features.Common.Contracts;
+using StudentEnrollment.Features.Courses.Common.Responses;
 
 namespace StudentEnrollment.Features.Courses.GetDetails;
 
@@ -13,7 +14,7 @@ public class GetCourseDetailsEndpoint : IEndpoint
             ) => await handler.HandleAsync(courseId))
             .WithName("GetCourseDetails")
             .RequireAuthorization("IsStudent") 
-            .Produces<CourseDetailsResponse>(StatusCodes.Status200OK)
+            .Produces<CourseResponse>()
             .Produces(StatusCodes.Status404NotFound);
     }
 }

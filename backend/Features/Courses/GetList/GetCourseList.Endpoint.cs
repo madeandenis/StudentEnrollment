@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using StudentEnrollment.Features.Common.Contracts;
 using StudentEnrollment.Features.Common.Pagination;
+using StudentEnrollment.Features.Courses.Common.Responses;
 
 namespace StudentEnrollment.Features.Courses.GetList;
 
@@ -10,10 +11,11 @@ public class GetCourseListEndpoint : IEndpoint
     {
         app.MapGet("/", async (
                 [AsParameters] PaginationRequest pagination,
+                [AsParameters] GetCourseListRequest request,
                 [FromServices] GetCourseListHandler handler
-            ) => await handler.HandleAsync(pagination))
+            ) => await handler.HandleAsync(request, pagination))
             .WithName("GetCourseList")
             .RequireAuthorization("IsStudent") 
-            .Produces(StatusCodes.Status200OK);
+            .Produces<PaginatedList<CourseResponse>>();
     }
 }
