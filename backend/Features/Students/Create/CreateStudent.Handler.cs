@@ -33,6 +33,8 @@ public class CreateStudentHandler(
 
         var student = StudentMapper.ToEntity(request);
             
+        // TODO: Associate the student with the user
+        
         context.Students.Add(student);
         await context.SaveChangesAsync();
 

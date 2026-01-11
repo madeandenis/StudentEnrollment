@@ -45,11 +45,20 @@ public class LoginHandler(
         );
 
         if (signinResult.IsLockedOut)
-            return Results.Problem(Problems.Unauthorized("Account is temporarily locked."));
+        {
+            var lockoutEnd = await userManager.GetLockoutEndDateAsync(user);
+            var timeLeft = lockoutEnd.HasValue
+                ? (lockoutEnd.Value - DateTimeOffset.UtcNow).TotalMinutes
+                : 0;
+
+            return Results.Problem(
+                Problems.Forbidden($"Account is temporarily locked. Try again in {Math.Round(timeLeft)} minutes.")
+            );
+        }
 
         if (signinResult.IsNotAllowed)
             return Results.Problem(
-                Problems.Unauthorized("User cannot sign in (not confirmed or restricted).")
+                Problems.Forbidden("User cannot sign in (not confirmed or restricted).")
             );
 
         if (!signinResult.Succeeded)
