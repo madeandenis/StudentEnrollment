@@ -3,14 +3,17 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
-namespace StudentEnrollment.Shared.Persistence.Migrations
+namespace StudentEnrollment.Migrations
 {
     /// <inheritdoc />
-    public partial class Base : Migration
+    public partial class Initial : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.CreateSequence<int>(
+                name: "StudentCodeSequence");
+
             migrationBuilder.CreateTable(
                 name: "Courses",
                 columns: table => new
@@ -30,7 +33,6 @@ namespace StudentEnrollment.Shared.Persistence.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Courses", x => x.Id);
-                    table.UniqueConstraint("AK_Courses_CourseCode", x => x.CourseCode);
                 });
 
             migrationBuilder.CreateTable(
@@ -54,7 +56,7 @@ namespace StudentEnrollment.Shared.Persistence.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    StudentCode = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: false),
+                    StudentCode = table.Column<string>(type: "nvarchar(450)", nullable: false, defaultValueSql: "RIGHT('000000' + CAST(NEXT VALUE FOR StudentCodeSequence AS VARCHAR), 6)"),
                     FirstName = table.Column<string>(type: "nvarchar(35)", maxLength: 35, nullable: false),
                     LastName = table.Column<string>(type: "nvarchar(35)", maxLength: 35, nullable: false),
                     Email = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: false),
@@ -65,7 +67,7 @@ namespace StudentEnrollment.Shared.Persistence.Migrations
                     Address_County = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: true),
                     Address_Country = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
                     Address_PostalCode = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: true),
-                    DateOfBirth = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    DateOfBirth = table.Column<DateOnly>(type: "date", nullable: false),
                     CNP = table.Column<string>(type: "nchar(13)", fixedLength: true, maxLength: 13, nullable: false),
                     UserId = table.Column<int>(type: "int", nullable: true),
                     CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
@@ -79,7 +81,6 @@ namespace StudentEnrollment.Shared.Persistence.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Students", x => x.Id);
-                    table.UniqueConstraint("AK_Students_StudentCode", x => x.StudentCode);
                 });
 
             migrationBuilder.CreateTable(
@@ -155,6 +156,27 @@ namespace StudentEnrollment.Shared.Persistence.Migrations
                         principalTable: "Students",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "RefreshTokens",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Token = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    UserId = table.Column<int>(type: "int", nullable: false),
+                    ExpiresAt = table.Column<DateTime>(type: "datetime2", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_RefreshTokens", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_RefreshTokens_Users_UserId",
+                        column: x => x.UserId,
+                        principalTable: "Users",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -261,6 +283,11 @@ namespace StudentEnrollment.Shared.Persistence.Migrations
                 column: "StudentId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_RefreshTokens_UserId",
+                table: "RefreshTokens",
+                column: "UserId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_RoleClaims_RoleId",
                 table: "RoleClaims",
                 column: "RoleId");
@@ -282,6 +309,12 @@ namespace StudentEnrollment.Shared.Persistence.Migrations
                 name: "IX_Students_Email",
                 table: "Students",
                 column: "Email",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Students_StudentCode",
+                table: "Students",
+                column: "StudentCode",
                 unique: true);
 
             migrationBuilder.CreateIndex(
@@ -326,6 +359,9 @@ namespace StudentEnrollment.Shared.Persistence.Migrations
                 name: "Enrollments");
 
             migrationBuilder.DropTable(
+                name: "RefreshTokens");
+
+            migrationBuilder.DropTable(
                 name: "RoleClaims");
 
             migrationBuilder.DropTable(
@@ -351,6 +387,9 @@ namespace StudentEnrollment.Shared.Persistence.Migrations
 
             migrationBuilder.DropTable(
                 name: "Users");
+
+            migrationBuilder.DropSequence(
+                name: "StudentCodeSequence");
         }
     }
 }

@@ -9,11 +9,11 @@ using StudentEnrollment.Shared.Persistence;
 
 #nullable disable
 
-namespace StudentEnrollment.Shared.Persistence.Migrations
+namespace StudentEnrollment.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20251218104614_Base")]
-    partial class Base
+    [Migration("20260111162205_Initial")]
+    partial class Initial
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -24,6 +24,8 @@ namespace StudentEnrollment.Shared.Persistence.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
+
+            modelBuilder.HasSequence<int>("StudentCodeSequence");
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<int>", b =>
                 {
@@ -187,8 +189,6 @@ namespace StudentEnrollment.Shared.Persistence.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasAlternateKey("CourseCode");
-
                     b.HasIndex("CourseCode")
                         .IsUnique();
 
@@ -322,6 +322,31 @@ namespace StudentEnrollment.Shared.Persistence.Migrations
                     b.ToTable("Users", (string)null);
                 });
 
+            modelBuilder.Entity("StudentEnrollment.Shared.Domain.Entities.RefreshToken", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("ExpiresAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Token")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("RefreshTokens");
+                });
+
             modelBuilder.Entity("StudentEnrollment.Shared.Domain.Entities.Student", b =>
                 {
                     b.Property<int>("Id")
@@ -342,8 +367,8 @@ namespace StudentEnrollment.Shared.Persistence.Migrations
                     b.Property<int>("CreatedBy")
                         .HasColumnType("int");
 
-                    b.Property<DateTime>("DateOfBirth")
-                        .HasColumnType("datetime2");
+                    b.Property<DateOnly>("DateOfBirth")
+                        .HasColumnType("date");
 
                     b.Property<DateTime?>("DeletedAt")
                         .HasColumnType("datetime2");
@@ -378,8 +403,9 @@ namespace StudentEnrollment.Shared.Persistence.Migrations
 
                     b.Property<string>("StudentCode")
                         .IsRequired()
-                        .HasMaxLength(20)
-                        .HasColumnType("nvarchar(20)");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("nvarchar(450)")
+                        .HasDefaultValueSql("RIGHT('000000' + CAST(NEXT VALUE FOR StudentCodeSequence AS VARCHAR), 6)");
 
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("datetime2");
@@ -392,12 +418,13 @@ namespace StudentEnrollment.Shared.Persistence.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasAlternateKey("StudentCode");
-
                     b.HasIndex("CNP")
                         .IsUnique();
 
                     b.HasIndex("Email")
+                        .IsUnique();
+
+                    b.HasIndex("StudentCode")
                         .IsUnique();
 
                     b.HasIndex("UserId")
@@ -467,6 +494,17 @@ namespace StudentEnrollment.Shared.Persistence.Migrations
                     b.Navigation("Course");
 
                     b.Navigation("Student");
+                });
+
+            modelBuilder.Entity("StudentEnrollment.Shared.Domain.Entities.RefreshToken", b =>
+                {
+                    b.HasOne("StudentEnrollment.Shared.Domain.Entities.Identity.ApplicationUser", "User")
+                        .WithMany("RefreshTokens")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("StudentEnrollment.Shared.Domain.Entities.Student", b =>
@@ -557,6 +595,8 @@ namespace StudentEnrollment.Shared.Persistence.Migrations
 
             modelBuilder.Entity("StudentEnrollment.Shared.Domain.Entities.Identity.ApplicationUser", b =>
                 {
+                    b.Navigation("RefreshTokens");
+
                     b.Navigation("Tokens");
 
                     b.Navigation("UserRoles");
