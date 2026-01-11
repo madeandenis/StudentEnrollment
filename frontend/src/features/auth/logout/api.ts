@@ -1,6 +1,8 @@
 import { api } from '@/lib/api';
 import type { LogoutRequest } from '@/features/auth/logout/types';
+import { TokenStore } from '@/lib/token-store';
 
-export const logout = async (data: LogoutRequest): Promise<void> => {
+export const logout = async (data?: LogoutRequest): Promise<void> => {
     await api.post('/auth/logout', data);
+    TokenStore.clear();
 };
