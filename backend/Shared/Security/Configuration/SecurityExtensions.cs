@@ -66,25 +66,25 @@ public static class SecurityExtensions
 
         /// <summary>
         /// Configures ASP.NET Identity options such as password rules, lockout, and user settings.
-        /// </summary>
-        public IServiceCollection ConfigureIdentity()
-        {
-            services.Configure<IdentityOptions>(options =>
+            /// </summary>
+            public IServiceCollection ConfigureIdentity()
             {
-                options.Password.RequireDigit = true;
-                options.Password.RequiredLength = 8;
-                options.Password.RequireNonAlphanumeric = true;
-                options.Password.RequireUppercase = true;
-                options.Password.RequireLowercase = true;
-                options.Password.RequiredUniqueChars = 4;
+                services.Configure<IdentityOptions>(options =>
+                {
+                    options.Password.RequireDigit = true;
+                    options.Password.RequiredLength = 8;
+                    options.Password.RequireNonAlphanumeric = true;
+                    options.Password.RequireUppercase = true;
+                    options.Password.RequireLowercase = true;
+                    options.Password.RequiredUniqueChars = 4;
 
-                options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(30);
-                options.Lockout.MaxFailedAccessAttempts = 5;
+                    options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(15);
+                    options.Lockout.MaxFailedAccessAttempts = 10;
 
-                options.SignIn.RequireConfirmedEmail = false;
-                options.User.RequireUniqueEmail = true;
-            });
-            return services;
-        }
+                    options.SignIn.RequireConfirmedEmail = false;
+                    options.User.RequireUniqueEmail = true;
+                });
+                return services;
+            }
     }
 }
