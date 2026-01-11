@@ -37,6 +37,7 @@ public static class Problems
         {
             Status = StatusCodes.Status403Forbidden,
             Title = "Forbidden",
+            Detail = detail
         };
 
     public static ProblemDetails Conflict(string detail = "A conflict occurred") =>
