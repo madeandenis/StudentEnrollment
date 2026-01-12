@@ -14,7 +14,7 @@ public partial class PhoneValidator : AbstractValidator<string>
             .Matches(PhoneRegex()).WithMessage("Phone number is not valid.");
     }
 
-    [GeneratedRegex(@"((\(\d{3}\) ?)|(\d{3}-))?\d{3}-\d{4}")]
+    [GeneratedRegex(@"^\+?[0-9\s\-()]{8,20}$")]
     private static partial Regex PhoneRegex();
 }
 

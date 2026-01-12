@@ -9,7 +9,7 @@ public static class StudentQueryExtensions
     extension(IQueryable<Student> query)
     {
         /// <summary>
-        /// Filters students based on search terms (name/email), specific email matches, 
+        /// Filters students based on search terms (name/email), specific email matches,
         /// and registration date ranges.
         /// </summary>
         /// <param name="request">The filtering criteria for the student list.</param>
@@ -18,9 +18,9 @@ public static class StudentQueryExtensions
         {
             if (!string.IsNullOrWhiteSpace(request.Search))
                 query = query.Where(s =>
-                    EF.Functions.Like(s.FirstName, $"%{request.Search}%") ||
-                    EF.Functions.Like(s.LastName, $"%{request.Search}%") ||
-                    EF.Functions.Like(s.Email, $"%{request.Search}%")
+                    EF.Functions.Like(s.FirstName, $"%{request.Search}%")
+                    || EF.Functions.Like(s.LastName, $"%{request.Search}%")
+                    || EF.Functions.Like(s.Email, $"%{request.Search}%")
                 );
 
             if (!string.IsNullOrWhiteSpace(request.Email))
@@ -42,19 +42,23 @@ public static class StudentQueryExtensions
         /// <returns>An <see cref="IQueryable{Student}"/> ordered accordingly.</returns>
         public IQueryable<Student> ApplySorting(GetStudentListRequest request)
         {
-            var isDesc = request.SortOrder?.Equals("desc", StringComparison.OrdinalIgnoreCase) ?? false;
+            var isDesc =
+                request.SortOrder?.Equals("desc", StringComparison.OrdinalIgnoreCase) ?? false;
             var sortBy = request.SortBy?.ToLowerInvariant();
 
             return sortBy switch
             {
-                "firstname" => isDesc 
-                    ? query.OrderByDescending(s => s.FirstName) 
+                "fullname" => isDesc
+                    ? query.OrderByDescending(s => s.FirstName).ThenByDescending(s => s.LastName)
+                    : query.OrderBy(s => s.FirstName).ThenBy(s => s.LastName),
+                "firstname" => isDesc
+                    ? query.OrderByDescending(s => s.FirstName)
                     : query.OrderBy(s => s.FirstName),
-                "lastname" => isDesc 
-                    ? query.OrderByDescending(s => s.LastName) 
+                "lastname" => isDesc
+                    ? query.OrderByDescending(s => s.LastName)
                     : query.OrderBy(s => s.LastName),
-                "email" => isDesc 
-                    ? query.OrderByDescending(s => s.Email) 
+                "email" => isDesc
+                    ? query.OrderByDescending(s => s.Email)
                     : query.OrderBy(s => s.Email),
                 "phonenumber" => isDesc
                     ? query.OrderByDescending(s => s.PhoneNumber)
@@ -65,7 +69,7 @@ public static class StudentQueryExtensions
                 "studentcode" => isDesc
                     ? query.OrderByDescending(s => s.StudentCode)
                     : query.OrderBy(s => s.StudentCode),
-                _ => query.OrderByDescending(s => s.CreatedAt)
+                _ => query.OrderByDescending(s => s.CreatedAt),
             };
         }
     }
