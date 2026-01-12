@@ -26,6 +26,21 @@ public sealed class CurrentUserService(
     }
 
     /// <summary>
+    /// Gets the current authenticated user's ID, throwing an exception if not authenticated.
+    /// </summary>
+    /// <returns>The authenticated user's ID.</returns>
+    /// <exception cref="UnauthorizedAccessException">Thrown when the user is not authenticated.</exception>
+    public int RequiredUserId()
+    {
+        var userId = UserId();
+        if (userId is null)
+        {
+            throw new UnauthorizedAccessException("User is not authenticated.");
+        }
+        return userId.Value;
+    }
+
+    /// <summary>
     /// Gets the current authenticated user's student ID (database primary key) by querying the database.
     /// This method finds the student record associated with the current user's ID.
     /// </summary>
