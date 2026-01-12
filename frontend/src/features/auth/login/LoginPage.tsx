@@ -6,8 +6,8 @@ import {
     Paper,
     Title,
     Text,
-    Container,
     Stack,
+    Box,
 } from '@mantine/core';
 import { useForm } from '@mantine/form';
 import { useLogin } from '@/features/auth/login/useLogin';
@@ -56,8 +56,16 @@ export function LoginPage() {
     };
 
     return (
-        <Container size={420} my={40}>
-            <Paper withBorder shadow="md" p={30} mt={30} radius="md">
+        <Box
+            style={{
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                minHeight: '100vh',
+                padding: '0 16px',
+            }}
+        >
+            <Paper withBorder shadow="md" p={30} radius="md" style={{ width: '420px', maxWidth: '100%' }}>
                 <Title ta="center" style={{ fontWeight: 900 }} mb={20} size="h2">
                     Bine ai revenit!
                 </Title>
@@ -114,6 +122,7 @@ export function LoginPage() {
                     </Stack>
                 </form>
             </Paper>
-        </Container>
+        </Box>
     );
+
 }

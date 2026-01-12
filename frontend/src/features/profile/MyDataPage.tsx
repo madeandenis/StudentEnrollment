@@ -26,14 +26,17 @@ export function MyDataPage() {
     };
 
     const getDataRows = () => [
-        { key: 'ID Utilizator', value: user.userId },
         { key: 'Nume Utilizator', value: user.userName },
         { key: 'Prenume', value: user.firstName },
         { key: 'Nume', value: user.lastName },
         { key: 'Email', value: user.email },
         { key: 'Telefon', value: user.phoneNumber },
-        { key: 'Cod Student', value: user.studentCode },
-        { key: 'Roluri', value: user.roles },
+        ...(user.studentCode != null
+            ? [{ key: 'Cod Student', value: user.studentCode }]
+            : []),
+        ...(user.roles != null && user.roles.length > 0
+            ? [{ key: 'Roluri', value: user.roles.join(', ') }]
+            : []),
     ];
 
     const handleDownloadCsv = () => {

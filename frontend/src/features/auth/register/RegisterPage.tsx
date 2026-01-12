@@ -6,9 +6,9 @@ import {
     Paper,
     Title,
     Text,
-    Container,
     Stack,
     Blockquote,
+    Box,
 } from '@mantine/core';
 import { useForm } from '@mantine/form';
 import { InfoIcon } from 'lucide-react';
@@ -62,8 +62,16 @@ export function RegisterPage() {
     };
 
     return (
-        <Container size={420} my={40}>
-            <Paper withBorder shadow="md" p={30} mt={30} radius="md">
+        <Box
+            style={{
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                minHeight: '100vh',
+                padding: '0 16px',
+            }}
+        >
+            <Paper withBorder shadow="md" p={30} radius="md" style={{ width: '420px', maxWidth: '100%' }}>
                 <Title ta="center" style={{ fontWeight: 900 }} size="h2">
                     Înregistrare în sistem
                 </Title>
@@ -76,7 +84,7 @@ export function RegisterPage() {
                         my={20}
                         p="md"
                         fz="sm"
-                        ta="center"
+                        ta="left"
                     >
                         Asocierea automată și drepturile de student se activează doar dacă facultatea te-a înscris deja în sistem înainte de a-ți crea contul.
                     </Blockquote>
@@ -142,6 +150,6 @@ export function RegisterPage() {
                     </Stack>
                 </form>
             </Paper>
-        </Container>
+        </Box>
     );
 }

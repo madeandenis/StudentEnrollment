@@ -6,6 +6,7 @@ interface AuthContextType {
     setUser: (user: ClaimsUser | null) => void;
     clearUser: () => void;
     isAuthenticated: boolean;
+    isAdmin: boolean;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -24,6 +25,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         setUser,
         clearUser,
         isAuthenticated: !!user,
+        isAdmin: user?.roles?.some(r => r.toLowerCase().includes('admin')) ?? false,
     };
 
     return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
