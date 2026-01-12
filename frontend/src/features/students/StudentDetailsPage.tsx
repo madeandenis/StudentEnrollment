@@ -13,6 +13,7 @@ import {
     Divider,
     ActionIcon,
     Tooltip,
+    Box,
 } from '@mantine/core';
 import { ArrowLeft, Edit, Trash2, Mail, Phone, MapPin, Calendar, Hash } from 'lucide-react';
 import { useStudentDetails } from '@/features/students/get-details/useStudentDetails';
@@ -22,6 +23,7 @@ import { useErrorHandler } from '@/features/_common/hooks/useErrorHandler';
 import { useModalState } from '@/features/_common/hooks/useModalState';
 import { ConfirmModal } from '../_common/components/ConfirmModal';
 import { StudentFormModal } from '@/features/students/components/StudentFormModal';
+import { StudentEnrolledCoursesSection } from '@/features/students/components/StudentEnrolledCoursesSection';
 
 export function StudentDetailsPage() {
     const { id } = useParams({ from: '/protected/students/$id' });
@@ -264,6 +266,15 @@ export function StudentDetailsPage() {
                     </div>
                 </Stack>
             </Paper>
+
+
+            <Box mt="md">
+                {/* Enrolled Courses Section */}
+                <StudentEnrolledCoursesSection
+                    studentId={studentId}
+                    studentName={student.fullName}
+                />
+            </Box>
 
             {/* Edit Modal */}
             <StudentFormModal

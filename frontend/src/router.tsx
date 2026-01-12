@@ -4,7 +4,7 @@ import { LoginPage } from '@/features/auth/login/LoginPage';
 import { AppLayout } from './features/_common/components/Layout/AppLayout';
 import { StudentsPage } from '@/features/students/StudentsPage';
 import { StudentDetailsPage } from '@/features/students/StudentDetailsPage';
-import { CoursesPage } from '@/features/courses/CoursesPage';
+import { CoursesPageWrapper } from '@/features/courses/CoursesPageWrapper';
 import { CourseDetailsPage } from '@/features/courses/CourseDetailsPage';
 import { TokenStore } from './lib/token-store';
 import { ProfilePage } from '@/features/profile/ProfilePage';
@@ -43,7 +43,7 @@ const protectedLayoutRoute = createRoute({
             throw redirect({
                 to: '/login',
                 search: {
-                    redirect: location.href,
+                    redirect: location.pathname,
                 },
             });
         }
@@ -72,7 +72,7 @@ const studentDetailsRoute = createRoute({
 const coursesListRoute = createRoute({
     getParentRoute: () => protectedLayoutRoute,
     path: '/courses',
-    component: CoursesPage,
+    component: CoursesPageWrapper,
 });
 
 const courseDetailsRoute = createRoute({
