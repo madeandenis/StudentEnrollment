@@ -11,17 +11,17 @@ public class LogoutEndpoint : IEndpoint
                 "/logout",
                 async (
                     HttpContext httpContext,
-                    [FromBody] LogoutRequest request,
-                    [FromServices] LogoutHandler handler
+                    [FromServices] LogoutHandler handler,
+                    LogoutRequest? request
                 ) =>
                 {
                     var providedToken = httpContext.Request.Cookies["RefreshToken"];
-                    
+
                     if (string.IsNullOrWhiteSpace(providedToken))
                     {
                         return Results.Unauthorized();
                     }
-                    
+
                     var result = await handler.HandleAsync(providedToken, request);
 
                     httpContext.Response.Cookies.Delete("RefreshToken");

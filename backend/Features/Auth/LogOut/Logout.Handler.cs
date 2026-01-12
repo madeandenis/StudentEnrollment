@@ -9,10 +9,7 @@ namespace StudentEnrollment.Features.Auth.LogOut;
 /// Handles user logout requests by invalidating refresh tokens.
 /// Supports logging out from the current device or all devices.
 /// </summary>
-public class LogoutHandler(
-    CurrentUserService currentUserService,
-    ApplicationDbContext context
-)
+public class LogoutHandler(CurrentUserService currentUserService, ApplicationDbContext context)
     : IHandler
 {
     /// <summary>
@@ -26,13 +23,13 @@ public class LogoutHandler(
     /// <item><description>401 Unauthorized: Invalid user context.</description></item>
     /// </list>
     /// </returns>
-    public async Task<IResult> HandleAsync(string providedToken, LogoutRequest request)
+    public async Task<IResult> HandleAsync(string providedToken, LogoutRequest? request)
     {
         var userId = currentUserService.RequiredUserId();
 
         var query = context.RefreshTokens.Where(rt => rt.UserId == userId);
 
-        if (!request.AllDevices)
+        if (request?.AllDevices == false)
             query = query.Where(rt => rt.Token == providedToken);
 
         await query.ExecuteDeleteAsync();
