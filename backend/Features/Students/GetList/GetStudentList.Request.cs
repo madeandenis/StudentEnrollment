@@ -1,5 +1,3 @@
-using StudentEnrollment.Features.Common.Pagination;
-
 namespace StudentEnrollment.Features.Students.GetList;
 
 public record GetStudentListRequest

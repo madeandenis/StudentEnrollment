@@ -36,7 +36,7 @@ public static class StudentQueryExtensions
         }
 
         /// <summary>
-        /// Sorts the student query by properties like Name, Email, or Student Code.
+        /// Sorts the student query by properties like Name, Email, Phone Number, Date of Birth, Student Code or Registration Date.
         /// </summary>
         /// <param name="request">The sorting parameters.</param>
         /// <returns>An <see cref="IQueryable{Student}"/> ordered accordingly.</returns>

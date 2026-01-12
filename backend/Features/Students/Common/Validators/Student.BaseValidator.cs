@@ -12,23 +12,12 @@ public class StudentBaseValidator : AbstractValidator<IStudentRequest>
 {
     public StudentBaseValidator()
     {
-        RuleFor(s => s.Cnp)
-            .Cnp()
-            .DependentRules(() =>
-            {
-                RuleFor(s => s.DateOfBirth)
-                    .BirthDate()
-                    .DependentRules(() =>
-                    {
-                        RuleFor(s => s)
-                            .Must(request =>
-                                CnpService.GetBirthDate(request.Cnp) == request.DateOfBirth
-                            )
-                            .WithMessage(
-                                "Date of birth does not match the information provided in the CNP."
-                            );
-                    });
-            });
+        RuleFor(s => s.Cnp).Cnp();
+
+        RuleFor(s => s.DateOfBirth)
+            .BirthDate()
+            .Must((request, dob) => CnpService.GetBirthDate(request.Cnp) == dob)
+            .WithMessage("Birth date does not match the CNP.");
 
         RuleFor(s => s.FirstName)
             .NotEmpty()
