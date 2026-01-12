@@ -9,10 +9,11 @@ namespace StudentEnrollment.Shared.Security.Configuration;
 /// <summary>
 /// Configures <see cref="JwtBearerOptions"/> for JWT authentication using settings from <see cref="JwtSettings"/>.
 /// </summary>
-public class ConfigureJwtBearerOptions(IOptions<JwtSettings> jwtSettings) : IConfigureNamedOptions<JwtBearerOptions>
+public class ConfigureJwtBearerOptions(IOptions<JwtSettings> jwtSettings)
+    : IConfigureNamedOptions<JwtBearerOptions>
 {
     private readonly JwtSettings _jwtSettings = jwtSettings.Value;
-    
+
     /// <summary>
     /// Configures default (unnamed) <see cref="JwtBearerOptions"/>.
     /// </summary>
@@ -30,9 +31,7 @@ public class ConfigureJwtBearerOptions(IOptions<JwtSettings> jwtSettings) : ICon
     public void Configure(string? name, JwtBearerOptions options)
     {
         var secretKey = Encoding.UTF8.GetBytes(_jwtSettings.SecretKey);
-        
-        options.Authority = _jwtSettings.Authority;
-        options.Audience = _jwtSettings.Audience;
+
         options.TokenValidationParameters = new TokenValidationParameters()
         {
             ValidateLifetime = true,
@@ -40,7 +39,9 @@ public class ConfigureJwtBearerOptions(IOptions<JwtSettings> jwtSettings) : ICon
             ValidateAudience = true,
             ValidateIssuerSigningKey = true,
             IssuerSigningKey = new SymmetricSecurityKey(secretKey),
-            ClockSkew = TimeSpan.Zero
+            ValidIssuer = _jwtSettings.Authority,
+            ValidAudience = _jwtSettings.Audience,
+            ClockSkew = TimeSpan.Zero,
         };
         options.MapInboundClaims = false;
     }
