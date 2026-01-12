@@ -1,4 +1,5 @@
 export interface EnrolledCourseResponse {
+    courseId: number;
     code: string;
     name: string;
     credits: number;

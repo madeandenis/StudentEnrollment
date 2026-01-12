@@ -9,13 +9,16 @@ public class GetCourseListEndpoint : IEndpoint
 {
     public void MapEndpoint(IEndpointRouteBuilder app)
     {
-        app.MapGet("/", async (
-                [AsParameters] PaginationRequest pagination,
-                [AsParameters] GetCourseListRequest request,
-                [FromServices] GetCourseListHandler handler
-            ) => await handler.HandleAsync(request, pagination))
+        app.MapGet(
+                "/",
+                async (
+                    [AsParameters] PaginationRequest pagination,
+                    [AsParameters] GetCourseListRequest request,
+                    [FromServices] GetCourseListHandler handler
+                ) => await handler.HandleAsync(request, pagination)
+            )
             .WithName("GetCourseList")
-            .RequireAuthorization("IsStudent") 
+            .RequireAuthorization("Admin")
             .Produces<PaginatedList<CourseResponse>>();
     }
 }
