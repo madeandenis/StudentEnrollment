@@ -4,11 +4,11 @@ import { LoginPage } from '@/features/auth/login/LoginPage';
 import { AppLayout } from './features/_common/components/Layout/AppLayout';
 import { StudentsPage } from '@/features/students/StudentsPage';
 import { StudentDetailsPage } from '@/features/students/StudentDetailsPage';
+import { CoursesPage } from '@/features/courses/CoursesPage';
 import { TokenStore } from './lib/token-store';
 
 // Placeholder pages - will be created next
 const DashboardPage = () => <div>Dashboard Page - Coming Soon</div>;
-const CoursesListPage = () => <div>Courses List Page - Coming Soon</div>;
 const CourseDetailsPage = () => <div>Course Details Page - Coming Soon</div>;
 const ProfilePage = () => <div>Profile Page - Coming Soon</div>;
 
@@ -64,7 +64,7 @@ const studentDetailsRoute = createRoute({
 const coursesListRoute = createRoute({
     getParentRoute: () => protectedLayoutRoute,
     path: '/courses',
-    component: CoursesListPage,
+    component: CoursesPage,
 });
 
 const courseDetailsRoute = createRoute({

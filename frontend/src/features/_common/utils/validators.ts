@@ -205,4 +205,73 @@ export const validators = {
 
         return null;
     },
+
+    // Course Code Validator
+    courseCode: (value: string) => {
+        if (!value) return 'Codul cursului este obligatoriu';
+
+        const trimmed = value.trim();
+
+        if (trimmed.length < 2) {
+            return 'Codul cursului trebuie să aibă cel puțin 2 caractere';
+        }
+        if (trimmed.length > 20) {
+            return 'Codul cursului nu poate depăși 20 de caractere';
+        }
+
+        return null;
+    },
+
+    // Course Name Validator
+    courseName: (value: string) => {
+        if (!value) return 'Numele cursului este obligatoriu';
+
+        const trimmed = value.trim();
+
+        if (trimmed.length < 3) {
+            return 'Numele cursului trebuie să aibă cel puțin 3 caractere';
+        }
+        if (trimmed.length > 150) {
+            return 'Numele cursului nu poate depăși 150 de caractere';
+        }
+
+        return null;
+    },
+
+    // Course Description Validator
+    courseDescription: (value: string) => {
+        if (!value) return 'Descrierea este obligatorie';
+
+        const trimmed = value.trim();
+
+        if (trimmed.length > 500) {
+            return 'Descrierea nu poate depăși 500 de caractere';
+        }
+
+        return null;
+    },
+
+    // Credits Validator
+    credits: (value: number | null | undefined) => {
+        if (!value || value < 1) {
+            return 'Credite trebuie să fie între 1 și 10';
+        }
+        if (value > 10) {
+            return 'Credite trebuie să fie între 1 și 10';
+        }
+
+        return null;
+    },
+
+    // Max Enrollment Validator
+    maxEnrollment: (value: number | null | undefined) => {
+        if (!value || value <= 0) {
+            return 'Numărul maxim de studenți trebuie să fie cel puțin 1';
+        }
+        if (value > 1000) {
+            return 'Numărul maxim de studenți nu poate depăși 1000';
+        }
+
+        return null;
+    },
 };
