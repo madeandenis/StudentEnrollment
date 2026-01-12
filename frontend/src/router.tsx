@@ -3,11 +3,11 @@ import { RegisterPage } from '@/features/auth/register/RegisterPage';
 import { LoginPage } from '@/features/auth/login/LoginPage';
 import { AppLayout } from './features/_common/components/Layout/AppLayout';
 import { StudentsPage } from '@/features/students/StudentsPage';
+import { StudentDetailsPage } from '@/features/students/StudentDetailsPage';
 import { TokenStore } from './lib/token-store';
 
 // Placeholder pages - will be created next
 const DashboardPage = () => <div>Dashboard Page - Coming Soon</div>;
-const StudentDetailsPage = () => <div>Student Details Page - Coming Soon</div>;
 const CoursesListPage = () => <div>Courses List Page - Coming Soon</div>;
 const CourseDetailsPage = () => <div>Course Details Page - Coming Soon</div>;
 const ProfilePage = () => <div>Profile Page - Coming Soon</div>;

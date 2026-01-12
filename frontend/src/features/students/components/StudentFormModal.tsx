@@ -13,6 +13,7 @@ import {
 import { useForm } from '@mantine/form';
 import { DateInput } from '@mantine/dates';
 import '@mantine/dates/styles.css';
+import { useNavigate } from '@tanstack/react-router';
 import { useEffect } from 'react';
 import { useCreateStudent } from '@/features/students/create/useCreateStudent';
 import { useUpdateStudent } from '@/features/students/update/useUpdateStudent';
@@ -30,6 +31,7 @@ interface StudentFormModalProps {
 }
 
 export function StudentFormModal({ opened, studentId, onClose }: StudentFormModalProps) {
+    const navigate = useNavigate();
     const isEditMode = !!studentId;
 
     // Mutations
@@ -130,6 +132,10 @@ export function StudentFormModal({ opened, studentId, onClose }: StudentFormModa
             form.reset();
             clearErrors();
             onClose();
+
+            if (isEditMode) {
+                navigate({ to: `/students/${studentId}` });
+            }
         } catch (error: any) {
             handleError(error);
         }
