@@ -1,12 +1,22 @@
 import { createRouter, createRoute, createRootRoute, Outlet } from '@tanstack/react-router';
 import { RegisterPage } from '@/features/auth/register/RegisterPage';
 import { LoginPage } from '@/features/auth/login/LoginPage';
+import { AppLayout } from './features/_common/components/Layout/AppLayout';
+import { StudentsPage } from '@/features/students/StudentsPage';
+import { TokenStore } from './lib/token-store';
+
+// Placeholder pages - will be created next
+const DashboardPage = () => <div>Dashboard Page - Coming Soon</div>;
+const StudentDetailsPage = () => <div>Student Details Page - Coming Soon</div>;
+const CoursesListPage = () => <div>Courses List Page - Coming Soon</div>;
+const CourseDetailsPage = () => <div>Course Details Page - Coming Soon</div>;
+const ProfilePage = () => <div>Profile Page - Coming Soon</div>;
 
 const rootRoute = createRootRoute({
     component: () => <Outlet />,
 });
 
-// Auth routes
+// Public routes (no layout)
 const registerRoute = createRoute({
     getParentRoute: () => rootRoute,
     path: '/register',
@@ -19,18 +29,68 @@ const loginRoute = createRoute({
     component: LoginPage,
 });
 
-// Index route
-const indexRoute = createRoute({
+// Protected layout route
+const protectedLayoutRoute = createRoute({
     getParentRoute: () => rootRoute,
+    id: 'protected',
+    component: AppLayout,
+    beforeLoad: () => {
+        if (TokenStore.isAccessTokenValid()) {
+            return loginRoute;
+        }
+        return null;
+    }
+});
+
+// Protected routes (with layout)
+const dashboardRoute = createRoute({
+    getParentRoute: () => protectedLayoutRoute,
     path: '/',
-    component: () => <div>Home Page</div>,
+    component: DashboardPage,
+});
+
+const studentsListRoute = createRoute({
+    getParentRoute: () => protectedLayoutRoute,
+    path: '/students',
+    component: StudentsPage,
+});
+
+const studentDetailsRoute = createRoute({
+    getParentRoute: () => protectedLayoutRoute,
+    path: '/students/$id',
+    component: StudentDetailsPage,
+});
+
+const coursesListRoute = createRoute({
+    getParentRoute: () => protectedLayoutRoute,
+    path: '/courses',
+    component: CoursesListPage,
+});
+
+const courseDetailsRoute = createRoute({
+    getParentRoute: () => protectedLayoutRoute,
+    path: '/courses/$id',
+    component: CourseDetailsPage,
+});
+
+const profileRoute = createRoute({
+    getParentRoute: () => protectedLayoutRoute,
+    path: '/profile',
+    component: ProfilePage,
 });
 
 // Create route tree
 const routeTree = rootRoute.addChildren([
-    indexRoute,
     registerRoute,
     loginRoute,
+    protectedLayoutRoute.addChildren([
+        dashboardRoute,
+        studentsListRoute,
+        studentDetailsRoute,
+        coursesListRoute,
+        courseDetailsRoute,
+        profileRoute,
+    ]),
 ]);
 
 // Create router
