@@ -1,4 +1,4 @@
-import { createRouter, createRoute, createRootRoute, Outlet } from '@tanstack/react-router';
+import { createRouter, createRoute, createRootRoute, Outlet, redirect } from '@tanstack/react-router';
 import { RegisterPage } from '@/features/auth/register/RegisterPage';
 import { LoginPage } from '@/features/auth/login/LoginPage';
 import { AppLayout } from './features/_common/components/Layout/AppLayout';
@@ -7,11 +7,10 @@ import { StudentDetailsPage } from '@/features/students/StudentDetailsPage';
 import { CoursesPage } from '@/features/courses/CoursesPage';
 import { CourseDetailsPage } from '@/features/courses/CourseDetailsPage';
 import { TokenStore } from './lib/token-store';
+import { ProfilePage } from '@/features/profile/ProfilePage';
 
 // Placeholder pages - will be created next
 const DashboardPage = () => <div>Dashboard Page - Coming Soon</div>;
-const ProfilePage = () => <div>Profile Page - Coming Soon</div>;
-
 const rootRoute = createRootRoute({
     component: () => <Outlet />,
 });
@@ -26,6 +25,11 @@ const registerRoute = createRoute({
 const loginRoute = createRoute({
     getParentRoute: () => rootRoute,
     path: '/login',
+    validateSearch: (search: Record<string, unknown>): { redirect?: string } => {
+        return {
+            redirect: (search.redirect as string) || undefined,
+        };
+    },
     component: LoginPage,
 });
 
@@ -35,10 +39,14 @@ const protectedLayoutRoute = createRoute({
     id: 'protected',
     component: AppLayout,
     beforeLoad: () => {
-        if (TokenStore.isAccessTokenValid()) {
-            return loginRoute;
+        if (!TokenStore.isAccessTokenValid()) {
+            throw redirect({
+                to: '/login',
+                search: {
+                    redirect: location.href,
+                },
+            });
         }
-        return null;
     }
 });
 
@@ -79,6 +87,14 @@ const profileRoute = createRoute({
     component: ProfilePage,
 });
 
+import { MyDataPage } from '@/features/profile/MyDataPage';
+
+const myDataRoute = createRoute({
+    getParentRoute: () => protectedLayoutRoute,
+    path: '/my-data',
+    component: MyDataPage,
+});
+
 // Create route tree
 const routeTree = rootRoute.addChildren([
     registerRoute,
@@ -90,6 +106,7 @@ const routeTree = rootRoute.addChildren([
         coursesListRoute,
         courseDetailsRoute,
         profileRoute,
+        myDataRoute,
     ]),
 ]);
 

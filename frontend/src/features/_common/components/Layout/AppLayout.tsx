@@ -1,7 +1,7 @@
 import { AppShell } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
 import { Outlet } from '@tanstack/react-router';
-import { Users, BookOpen, User } from 'lucide-react';
+import { Users, BookOpen, User, FileText } from 'lucide-react';
 import { Sidebar } from '@/features/_common/components/Layout/Sidebar';
 import { HeaderContent } from '@/features/_common/components/Layout/HeaderContent';
 
@@ -50,6 +50,11 @@ export function AppLayout() {
                             label: 'Profil',
                             icon: <User size={20} />,
                             path: '/profile',
+                        },
+                        {
+                            label: 'Datele Mele',
+                            icon: <FileText size={20} />,
+                            path: '/my-data',
                         },
                     ]}
                 />

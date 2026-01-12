@@ -1,4 +1,4 @@
-import { useNavigate } from '@tanstack/react-router';
+import { useNavigate, useSearch } from '@tanstack/react-router';
 import {
     TextInput,
     PasswordInput,
@@ -18,6 +18,7 @@ import type { LoginRequest } from './types';
 
 export function LoginPage() {
     const navigate = useNavigate();
+    const search = useSearch({ from: '/login' });
     const loginMutation = useLogin();
 
     const { errors, handleError, clearErrors } = useErrorHandler({
@@ -46,7 +47,9 @@ export function LoginPage() {
                 password: values.password,
             });
 
-            navigate({ to: '/' });
+            const redirectTo = search.redirect || '/';
+
+            navigate({ to: redirectTo });
         } catch (error: any) {
             handleError(error);
         }

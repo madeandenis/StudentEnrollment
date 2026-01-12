@@ -41,7 +41,7 @@ export function UserMenu() {
 
                 <Menu.Item
                     leftSection={<FileText style={{ width: rem(14), height: rem(14) }} />}
-                    onClick={() => navigate({ to: '/profile/data' } as any)}
+                    onClick={() => navigate({ to: '/my-data' } as any)}
                 >
                     Datele mele
                 </Menu.Item>
