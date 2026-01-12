@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using StudentEnrollment.Features.Common;
+using StudentEnrollment.Features.Common.Contracts;
 using StudentEnrollment.Features.Students.Common.Mappers;
 using StudentEnrollment.Shared.Persistence;
 using static StudentEnrollment.Shared.Utilities.StringNormalizationService;
@@ -13,7 +14,7 @@ namespace StudentEnrollment.Features.Students.Update;
 public class UpdateStudentHandler(
     UpdateStudentValidator validator,
     ApplicationDbContext context
-)
+) : IHandler
 {
     public async Task<IResult> HandleAsync(int studentId, UpdateStudentRequest request)
     {
