@@ -14,20 +14,22 @@ namespace StudentEnrollment.Features.Courses.Common.Mappers;
 public class CourseMapper
 {
     /// <summary>
-    /// Provides a projection expression for converting a <see cref="Course"/> entity 
+    /// Provides a projection expression for converting a <see cref="Course"/> entity
     /// directly into a <see cref="CourseResponse"/> at the database level.
     /// </summary>
-    public static Expression<Func<Course, CourseResponse>> ProjectToResponse() 
-        => course => new CourseResponse{
+    public static Expression<Func<Course, CourseResponse>> ProjectToResponse() =>
+        course => new CourseResponse
+        {
             Id = course.Id,
             CourseCode = course.CourseCode,
             Name = course.Name,
+            Description = course.Description,
             Credits = course.Credits,
             MaxEnrollment = course.MaxEnrollment,
             EnrolledStudents = course.Enrollments.Count,
             AvailableSeats = course.MaxEnrollment - course.Enrollments.Count,
             HasAvailableSeats = course.MaxEnrollment > course.Enrollments.Count,
-            CreatedAt = course.CreatedAt
+            CreatedAt = course.CreatedAt,
         };
 
     /// <summary>
