@@ -5,32 +5,42 @@ using StudentEnrollment.Shared.Security.Services;
 namespace StudentEnrollment.Shared.Security.Policies.Handlers;
 
 /// <summary>
-/// Authorization handler that ensures the student ID present in the request route 
-/// matches the student ID claim of the current authenticated user.
+/// Authorization handler that ensures the student identifier (ID or code) present in the request route
+/// matches either the student code or student ID of the current authenticated user.
+/// Checks student code first and only queries the database for student ID if needed.
+/// Supports both numeric student IDs and alphanumeric student codes.
 /// </summary>
-public class SameStudentAuthorizationHandler(IHttpContextAccessor httpContextAccessor) : AuthorizationHandler<SameStudentAuthorizationRequirement>
+public class SameStudentAuthorizationHandler(
+    IHttpContextAccessor httpContextAccessor,
+    CurrentUserService currentUserService
+) : AuthorizationHandler<SameStudentAuthorizationRequirement>
 {
-    private readonly CurrentUserService _currentUserService = new(httpContextAccessor);
-
-    protected override Task HandleRequirementAsync(AuthorizationHandlerContext context, SameStudentAuthorizationRequirement requirement)
+    protected override async Task HandleRequirementAsync(
+        AuthorizationHandlerContext context,
+        SameStudentAuthorizationRequirement requirement
+    )
     {
         HttpContext? httpContext = httpContextAccessor.HttpContext;
-        
-        var claimId = _currentUserService.StudentId()?.ToString();
 
-        if (claimId is null)
-            return Task.CompletedTask;
+        // Get the student identifier from the route (can be ID or student code)
+        var routeIdentifier = httpContext?.GetRouteValue("studentIdentifier")?.ToString();
 
-        var routeId = httpContext?.GetRouteValue("studentId")?.ToString();
+        if (routeIdentifier is null)
+            return;
 
-        if (routeId is null)
-            return Task.CompletedTask;
+        // First, check student code from claims
+        var userStudentCode = currentUserService.StudentCode();
+        if (userStudentCode != null && routeIdentifier == userStudentCode)
+        {
+            context.Succeed(requirement);
+            return;
+        }
 
-        if (claimId == routeId)
+        // As a fallback, check student ID from database
+        var userStudentId = await currentUserService.StudentIdAsync();
+        if (userStudentId != null && routeIdentifier == userStudentId.ToString())
         {
             context.Succeed(requirement);
         }
-        
-        return Task.CompletedTask;
     }
 }

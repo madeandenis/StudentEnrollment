@@ -1,12 +1,17 @@
 ﻿using System.Security.Claims;
+using Microsoft.EntityFrameworkCore;
+using StudentEnrollment.Shared.Persistence;
 using StudentEnrollment.Shared.Security.Common;
 
 namespace StudentEnrollment.Shared.Security.Services;
 
 /// <summary>
-/// Provides access to the current authenticated user's ID from the HTTP context.
+/// Provides access to the current authenticated user's information from the HTTP context and database.
 /// </summary>
-public sealed class CurrentUserService(IHttpContextAccessor httpContextAccessor)
+public sealed class CurrentUserService(
+    IHttpContextAccessor httpContextAccessor,
+    ApplicationDbContext context
+)
 {
     /// <summary>
     /// Gets the current authenticated user's ID.
@@ -14,24 +19,52 @@ public sealed class CurrentUserService(IHttpContextAccessor httpContextAccessor)
     /// <returns>The user ID if the user is authenticated; otherwise, <c>null</c>.</returns>
     public int? UserId()
     {
-       var nameIdentifier = httpContextAccessor.HttpContext?.User.FindFirstValue(ClaimTypes.NameIdentifier);
+        var nameIdentifier = httpContextAccessor.HttpContext?.User.FindFirstValue(
+            ClaimTypes.NameIdentifier
+        );
         return int.TryParse(nameIdentifier, out var userId) ? userId : null;
     }
-    
+
     /// <summary>
-    /// Gets the current authenticated user's ID, throwing an exception if the user is not authenticated.
+    /// Gets the current authenticated user's student ID (database primary key) by querying the database.
+    /// This method finds the student record associated with the current user's ID.
     /// </summary>
-    /// <returns>The user ID.</returns>
-    /// <exception cref="UnauthorizedAccessException">Thrown when there is no authenticated user in the current HTTP context.</exception>
-    public int RequiredUserId() => UserId() ?? throw new UnauthorizedAccessException();
-    
-    /// <summary>
-    /// Gets the current authenticated user's student ID, if any. This is typically used to determine whether the user is a student.
-    /// </summary>
-    /// <returns>The student ID if the claim exists and is valid; otherwise, <c>null</c>.</returns>
-    public int? StudentId()
+    /// <returns>
+    /// A task that represents the asynchronous operation.
+    /// The task result contains the student ID if found; otherwise, <c>null</c>.
+    /// </returns>
+    /// <remarks>
+    /// This method requires a database query and should be used sparingly.
+    /// For most authorization checks, prefer using <see cref="StudentCode"/> from claims.
+    /// </remarks>
+    public async Task<int?> StudentIdAsync()
     {
-        var studentIdClaim = httpContextAccessor.HttpContext?.User.FindFirstValue(ApplicationUserClaims.StudentCode);
-        return int.TryParse(studentIdClaim, out var studentId) ? studentId : null;
+        var userId = UserId();
+        if (userId is null)
+            return null;
+
+        var studentId = await context
+            .Students.AsNoTracking()
+            .Where(s => s.UserId == userId)
+            .Select(s => s.Id)
+            .FirstOrDefaultAsync();
+
+        return studentId == 0 ? null : studentId;
+    }
+
+    /// <summary>
+    /// Gets the current authenticated user's student code from JWT claims.
+    /// This is the student's unique alphanumeric identifier
+    /// </summary>
+    /// <returns>The student code if the claim exists; otherwise, <c>null</c>.</returns>
+    /// <remarks>
+    /// This method reads from claims and does not require a database query.
+    /// Prefer this over <see cref="StudentIdAsync"/> for performance-critical authorization checks.
+    /// </remarks>
+    public string? StudentCode()
+    {
+        return httpContextAccessor.HttpContext?.User.FindFirstValue(
+            ApplicationUserClaims.StudentCode
+        );
     }
 }

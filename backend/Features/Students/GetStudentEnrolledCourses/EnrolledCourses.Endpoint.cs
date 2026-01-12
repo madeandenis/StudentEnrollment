@@ -7,10 +7,13 @@ public class GetStudentEnrolledCoursesEndpoint : IEndpoint
 {
     public void MapEndpoint(IEndpointRouteBuilder app)
     {
-        app.MapGet("/{studentId:int}/courses", async (
-                [FromRoute] int studentId,
-                [FromServices] EnrolledCoursesHandler handler
-            ) => await handler.HandleAsync(studentId))
+        app.MapGet(
+                "/{studentIdentifier}/courses",
+                async (
+                    [FromRoute] string studentIdentifier,
+                    [FromServices] EnrolledCoursesHandler handler
+                ) => await handler.HandleAsync(studentIdentifier)
+            )
             .WithName("GetStudentEnrolledCourses")
             .RequireAuthorization("SameStudent")
             .Produces<AcademicSituationResponse>(StatusCodes.Status200OK)
