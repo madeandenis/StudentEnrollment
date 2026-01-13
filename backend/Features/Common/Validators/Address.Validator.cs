@@ -32,7 +32,7 @@ public class AddressValidator : AbstractValidator<Address>
         RuleFor(x => x.PostalCode)
             .MaximumLength(20)
             .WithMessage("Postal code is too long.")
-            .Must(x => x.All(char.IsLetterOrDigit))
+            .Must(x => x == null || x.All(char.IsLetterOrDigit))
             .WithMessage("Postal code must be alphanumeric.");
     }
 }
