@@ -6,7 +6,6 @@ import { RouterProvider } from '@tanstack/react-router';
 import '@mantine/core/styles.css';
 import '@mantine/notifications/styles.css';
 import { router } from '@/router';
-import { AuthProvider } from '@/features/auth/_contexts/AuthContext';
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -21,12 +20,10 @@ const queryClient = new QueryClient({
 function App() {
   return (
     <QueryClientProvider client={queryClient}>
-      <AuthProvider>
-        <MantineProvider>
-          <Notifications position="top-right" />
-          <RouterProvider router={router} />
-        </MantineProvider>
-      </AuthProvider>
+      <MantineProvider>
+        <Notifications position="top-right" />
+        <RouterProvider router={router} />
+      </MantineProvider>
     </QueryClientProvider>
   );
 }

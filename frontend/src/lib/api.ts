@@ -1,7 +1,7 @@
 import axios from 'axios';
 import createAuthRefreshInterceptor from '@/lib/auto-refresh';
 import { refreshToken } from '@/features/auth/refresh/api';
-import { TokenStore } from '@/lib/token-store';
+import { TokenStore } from '@/lib/stores/tokenStore';
 
 const API_BASE_URL = import.meta.env.API_BASE_URL || 'https://localhost:7266';
 

@@ -1,18 +1,19 @@
 import { Menu, UnstyledButton, rem } from '@mantine/core';
 import { FileText, LogOut, User } from 'lucide-react';
 import { useNavigate } from '@tanstack/react-router';
-import { useAuth } from '@/features/auth/_contexts/AuthContext';
 import { useLogout } from '@/features/auth/logout/useLogout';
 import { UserAvatar } from '@/features/_common/components/User/UserAvatar';
+import { useAuth } from '@/features/auth/_contexts/AuthContext';
 
 export function UserMenu() {
-    const { user } = useAuth();
     const navigate = useNavigate();
     const logoutMutation = useLogout();
+    const { user } = useAuth();
 
     const handleLogout = async () => {
         try {
             await logoutMutation.mutateAsync(undefined);
+
             navigate({ to: '/login' } as any);
         } catch (error) {
             console.error('Logout failed:', error);

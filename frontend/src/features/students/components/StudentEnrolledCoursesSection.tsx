@@ -17,10 +17,11 @@ export function StudentEnrolledCoursesSection({
     studentId,
     studentName,
 }: StudentEnrolledCoursesSectionProps) {
+    const { isAdmin } = useAuth();
+
     const { data, isLoading, isError, error } = useStudentEnrolledCourses(studentId);
     const enrollModal = useModalState();
     const withdrawModal = useModalState<EnrolledCourseResponse>();
-    const { isAdmin } = useAuth();
 
     const formatDate = (dateString: string) => {
         return new Date(dateString).toLocaleDateString('ro-RO', {

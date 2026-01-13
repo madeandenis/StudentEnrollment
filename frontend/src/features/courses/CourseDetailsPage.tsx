@@ -22,8 +22,10 @@ import { useErrorHandler } from '@/features/_common/hooks/useErrorHandler';
 import { useModalState } from '@/features/_common/hooks/useModalState';
 import { ConfirmModal } from '../_common/components/ConfirmModal';
 import { CourseFormModal } from '@/features/courses/components/CourseFormModal';
+import { useAuth } from '@/features/auth/_contexts/AuthContext';
 
 export function CourseDetailsPage() {
+    const { isAdmin } = useAuth();
     const { id } = useParams({ from: '/protected/courses/$id' });
     const navigate = useNavigate();
     const courseId = parseInt(id);
@@ -130,7 +132,7 @@ export function CourseDetailsPage() {
                             </div>
                         </Group>
 
-                        <Group>
+                        {isAdmin && <Group>
                             <Tooltip label="Editează">
                                 <ActionIcon
                                     variant="light"
@@ -153,7 +155,7 @@ export function CourseDetailsPage() {
                                     <Trash2 size={18} />
                                 </ActionIcon>
                             </Tooltip>
-                        </Group>
+                        </Group>}
                     </Group>
 
                     <Divider />

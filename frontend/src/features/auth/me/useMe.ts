@@ -6,7 +6,6 @@ export const useMe = (options?: Omit<UseQueryOptions<MeResponse>, 'queryKey' | '
     return useQuery({
         queryKey: ['auth', 'me'],
         queryFn: getMe,
-        retry: false,
         ...options,
     });
 };

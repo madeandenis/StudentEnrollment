@@ -48,9 +48,7 @@ export function LoginPage() {
                 password: values.password,
             });
 
-            const redirectTo = search.redirect || '/';
-
-            navigate({ to: redirectTo });
+            navigate({ to: search.redirect || '/' });
         } catch (error: any) {
             handleError(error);
         }

@@ -1,7 +1,7 @@
 import { Stack, NavLink, Divider } from '@mantine/core';
 import { useNavigate, useRouterState } from '@tanstack/react-router';
-import { useAuth } from '@/features/auth/_contexts/AuthContext';
 import type { ClaimsUser } from '@/features/auth/_common/types';
+import { useAuth } from '@/features/auth/_contexts/AuthContext';
 
 interface NavItem {
     label: string;
@@ -14,6 +14,8 @@ interface NavItem {
 interface SidebarProps {
     navItems: NavItem[];
     userNavItems: NavItem[];
+    toggleMobile: () => void;
+    toggleDesktop: () => void;
 }
 
 function hasRole(user: ClaimsUser | null, role: string): boolean {
@@ -43,7 +45,7 @@ function isSectionActive(currentPath: string, itemPath: string) {
     return currentPath.startsWith(itemPath);
 }
 
-export function Sidebar({ navItems, userNavItems }: SidebarProps) {
+export function Sidebar({ navItems, userNavItems, toggleMobile, toggleDesktop }: SidebarProps) {
     const navigate = useNavigate();
     const routerState = useRouterState();
     const { user } = useAuth();
@@ -54,6 +56,8 @@ export function Sidebar({ navItems, userNavItems }: SidebarProps) {
     const filteredUserNavItems = userNavItems.filter(item => canSee(item, user));
 
     const handleNavigation = (path: string) => {
+        toggleMobile();
+        toggleDesktop();
         navigate({ to: path } as any);
     };
 

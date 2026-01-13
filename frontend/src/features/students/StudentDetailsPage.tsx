@@ -24,8 +24,10 @@ import { useModalState } from '@/features/_common/hooks/useModalState';
 import { ConfirmModal } from '../_common/components/ConfirmModal';
 import { StudentFormModal } from '@/features/students/components/StudentFormModal';
 import { StudentEnrolledCoursesSection } from '@/features/students/components/StudentEnrolledCoursesSection';
+import { useAuth } from '@/features/auth/_contexts/AuthContext';
 
 export function StudentDetailsPage() {
+    const { isAdmin } = useAuth();
     const { id } = useParams({ from: '/protected/students/$id' });
     const navigate = useNavigate();
     const studentId = parseInt(id);
@@ -132,7 +134,7 @@ export function StudentDetailsPage() {
                             </div>
                         </Group>
 
-                        <Group>
+                        {isAdmin && <Group>
                             <Tooltip label="Editează">
                                 <ActionIcon
                                     variant="light"
@@ -155,7 +157,7 @@ export function StudentDetailsPage() {
                                     <Trash2 size={18} />
                                 </ActionIcon>
                             </Tooltip>
-                        </Group>
+                        </Group>}
                     </Group>
 
                     <Divider />

@@ -1,4 +1,4 @@
-import { createRouter, createRoute, createRootRoute, Outlet, redirect } from '@tanstack/react-router';
+import { createRouter, createRoute, Outlet, redirect, createRootRouteWithContext } from '@tanstack/react-router';
 import { RegisterPage } from '@/features/auth/register/RegisterPage';
 import { LoginPage } from '@/features/auth/login/LoginPage';
 import { AppLayout } from './features/_common/components/Layout/AppLayout';
@@ -6,25 +6,21 @@ import { StudentsPage } from '@/features/students/StudentsPage';
 import { StudentDetailsPage } from '@/features/students/StudentDetailsPage';
 import { CoursesPageWrapper } from '@/features/courses/CoursesPageWrapper';
 import { CourseDetailsPage } from '@/features/courses/CourseDetailsPage';
-import { TokenStore } from './lib/token-store';
 import { ProfilePage } from '@/features/profile/ProfilePage';
+import { MyDataPage } from '@/features/profile/MyDataPage';
+import WelcomePage from '@/features/_common/components/Layout/WelcomePage';
+import { refreshToken } from './features/auth/refresh/api';
+import { getMe } from './features/auth/me';
+import { UserStore } from './lib/stores/userStore';
+import { TokenStore } from './lib/stores/tokenStore';
+import type { ClaimsUser } from './features/auth/_common/types';
 
-import logo from '@/assets/logo.png';
+export interface RouterContext {
+    user: ClaimsUser;
+    isAdmin: boolean;
+}
 
-const WelcomePage = () => (
-    <div style={{
-        display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'center',
-        justifyContent: 'center',
-        minHeight: '60vh',
-        gap: '1.5rem'
-    }}>
-        <img src={logo} alt="Student Enrollment Logo" style={{ width: '200px', height: 'auto' }} />
-        <p>Folosește meniul pentru a naviga prin aplicație</p>
-    </div>
-);
-const rootRoute = createRootRoute({
+const rootRoute = createRootRouteWithContext<RouterContext>()({
     component: () => <Outlet />,
 });
 
@@ -43,30 +39,68 @@ const loginRoute = createRoute({
             redirect: (search.redirect as string) || undefined,
         };
     },
+    beforeLoad: async ({ search }) => {
+        const isAuthenticated = TokenStore.isAccessTokenValid();
+
+        if (isAuthenticated) {
+            return redirect({
+                to: search.redirect || '/',
+            });
+        }
+    },
     component: LoginPage,
 });
 
-import { refreshToken } from '@/features/auth/refresh/api';
+async function hydrateUser(): Promise<ClaimsUser | null> {
+    if (UserStore.isHydrated()) {
+        return UserStore.getUser();
+    }
+
+    try {
+        if (!TokenStore.isAccessTokenValid()) {
+            const tokenData = await refreshToken();
+            TokenStore.setTokens(
+                tokenData.accessToken,
+                tokenData.accessTokenExpiresAt,
+                tokenData.refreshTokenExpiresAt,
+                tokenData.tokenType
+            );
+        }
+
+        const me = await getMe();
+        UserStore.setUser(me.user)
+
+        return me.user;
+    }
+    catch {
+        TokenStore.clear();
+        UserStore.markHydrated();
+        return null;
+    }
+}
 
 // Protected layout route
-const protectedLayoutRoute = createRoute({
+const protectedLayoutRoute = createRoute<RouterContext>({
     getParentRoute: () => rootRoute,
     id: 'protected',
     component: AppLayout,
     beforeLoad: async ({ location }) => {
-        if (!TokenStore.isAccessTokenValid()) {
-            try {
-                await refreshToken();
-            } catch (error) {
-                throw redirect({
-                    to: '/login',
-                    search: {
-                        redirect: location.pathname,
-                    },
-                });
-            }
+        const user = await hydrateUser();
+
+        if (!user) {
+            throw redirect({
+                to: '/login',
+                search: {
+                    redirect: location.pathname,
+                },
+            });
         }
-    }
+
+        return {
+            user,
+            isAdmin: UserStore.isAdmin(),
+        };
+    },
 });
 
 // Protected routes (with layout)
@@ -79,6 +113,13 @@ const dashboardRoute = createRoute({
 const studentsListRoute = createRoute({
     getParentRoute: () => protectedLayoutRoute,
     path: '/students',
+    beforeLoad() {
+        if (!UserStore.isAdmin()) {
+            throw redirect({
+                to: '/'
+            })
+        }
+    },
     component: StudentsPage,
 });
 
@@ -106,8 +147,6 @@ const profileRoute = createRoute({
     component: ProfilePage,
 });
 
-import { MyDataPage } from '@/features/profile/MyDataPage';
-
 const myDataRoute = createRoute({
     getParentRoute: () => protectedLayoutRoute,
     path: '/my-data',
@@ -130,7 +169,7 @@ const routeTree = rootRoute.addChildren([
 ]);
 
 // Create router
-export const router = createRouter({ routeTree });
+export const router = createRouter({ routeTree, context: undefined! });
 
 // Register router for type safety
 declare module '@tanstack/react-router' {
