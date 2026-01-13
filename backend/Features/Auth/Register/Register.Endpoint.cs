@@ -18,7 +18,7 @@ public class RegisterEndpoint : IEndpoint
             .WithName("Register")
             .RequireRateLimiting("Auth")
             .AllowAnonymous()
-            .Produces(StatusCodes.Status200OK, typeof(ClaimsUser))
+            .Produces<ClaimsUser>(StatusCodes.Status201Created)
             .Produces(StatusCodes.Status409Conflict, typeof(ProblemDetails))
             .Produces(StatusCodes.Status400BadRequest, typeof(ProblemDetails));
     }

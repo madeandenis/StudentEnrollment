@@ -63,4 +63,19 @@ public class CourseMapper
         course.Credits = request.Credits;
         course.MaxEnrollment = request.MaxEnrollment;
     }
+
+    public static CourseResponse ToResponse(Course course) =>
+        new CourseResponse
+        {
+            Id = course.Id,
+            CourseCode = course.CourseCode,
+            Name = course.Name,
+            Description = course.Description,
+            Credits = course.Credits,
+            MaxEnrollment = course.MaxEnrollment,
+            EnrolledStudents = course.Enrollments?.Count ?? 0,
+            AvailableSeats = course.MaxEnrollment - (course.Enrollments?.Count ?? 0),
+            HasAvailableSeats = course.MaxEnrollment > (course.Enrollments?.Count ?? 0),
+            CreatedAt = course.CreatedAt,
+        };
 }

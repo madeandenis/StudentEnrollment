@@ -61,7 +61,9 @@ public class RegisterHandler(
             return Results.BadRequest(Problems.BadRequest(errorMessages));
         }
 
-        var student = await context.Students.FirstOrDefaultAsync(s => s.Email == user.NormalizedEmail);
+        var student = await context.Students.FirstOrDefaultAsync(s =>
+            s.Email == user.NormalizedEmail
+        );
         if (student is not null)
         {
             student.UserId = user.Id;
@@ -70,6 +72,6 @@ public class RegisterHandler(
 
         var identity = await identityFactory.CreateAsync(user, student);
 
-        return Results.Created($"users/{user.Id}", ClaimsUser.FromClaimsIdentity(identity));
+        return Results.Created($"/auth/me", ClaimsUser.FromClaimsIdentity(identity));
     }
 }

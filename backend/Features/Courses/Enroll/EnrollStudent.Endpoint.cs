@@ -7,14 +7,17 @@ public class EnrollStudentEndpoint : IEndpoint
 {
     public void MapEndpoint(IEndpointRouteBuilder app)
     {
-        app.MapPost("/{courseId:int}/enroll/{studentId:int}", async (
-                [FromRoute] int courseId,
-                [FromRoute] int studentId,
-                [FromServices] EnrollStudentHandler handler
-            ) => await handler.HandleAsync(courseId, studentId))
+        app.MapPost(
+                "/{courseId:int}/enroll/{studentId:int}",
+                async (
+                    [FromRoute] int courseId,
+                    [FromRoute] int studentId,
+                    [FromServices] EnrollStudentHandler handler
+                ) => await handler.HandleAsync(courseId, studentId)
+            )
             .WithName("EnrollStudent")
             .RequireAuthorization("Admin")
-            .Produces(StatusCodes.Status201Created)
+            .Produces(StatusCodes.Status200OK)
             .Produces(StatusCodes.Status404NotFound)
             .Produces(StatusCodes.Status409Conflict);
     }

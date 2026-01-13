@@ -51,6 +51,6 @@ public class CreateStudentHandler(ApplicationDbContext context, CreateStudentVal
 
         var response = StudentMapper.ToCreateResponse(student);
 
-        return Results.Created($"students/{student.Id}", response);
+        return Results.Created($"/students/{student.Id}", response);
     }
 }
