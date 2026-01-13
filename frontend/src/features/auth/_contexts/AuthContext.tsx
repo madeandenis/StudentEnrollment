@@ -1,5 +1,6 @@
-import { createContext, useContext, useState, type ReactNode } from 'react';
+import { createContext, useContext, useState, useEffect, type ReactNode } from 'react';
 import type { ClaimsUser } from '@/features/auth/_common/types';
+import { useMe } from '../me';
 
 interface AuthContextType {
     user: ClaimsUser | null;
@@ -7,6 +8,7 @@ interface AuthContextType {
     clearUser: () => void;
     isAuthenticated: boolean;
     isAdmin: boolean;
+    isLoading: boolean;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -14,18 +16,24 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 export function AuthProvider({ children }: { children: ReactNode }) {
     const [user, setUserState] = useState<ClaimsUser | null>(null);
 
-    const setUser = (user: ClaimsUser | null) => {
-        setUserState(user);
-    };
+    const { data, isLoading, isError } = useMe();
 
-    const clearUser = () => setUserState(null);
+    useEffect(() => {
+        if (data) {
+            setUserState(data.user);
+        }
+        if (isError) {
+            setUserState(null);
+        }
+    }, [data, isError]);
 
     const value: AuthContextType = {
         user,
-        setUser,
-        clearUser,
+        setUser: setUserState,
+        clearUser: () => setUserState(null),
         isAuthenticated: !!user,
         isAdmin: user?.roles?.some(r => r.toLowerCase().includes('admin')) ?? false,
+        isLoading
     };
 
     return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

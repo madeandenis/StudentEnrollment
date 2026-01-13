@@ -1,13 +1,24 @@
-import { AppShell } from '@mantine/core';
+import { AppShell, Center, Loader } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
 import { Outlet } from '@tanstack/react-router';
 import { Users, BookOpen, User, FileText } from 'lucide-react';
 import { Sidebar } from '@/features/_common/components/Layout/Sidebar';
 import { HeaderContent } from '@/features/_common/components/Layout/HeaderContent';
+import { useAuth } from '@/features/auth/_contexts/AuthContext';
 
 export function AppLayout() {
     const [mobileOpened, { toggle: toggleMobile }] = useDisclosure();
     const [desktopOpened, { toggle: toggleDesktop }] = useDisclosure(true);
+    const { isLoading } = useAuth();
+
+    // Show loader while user data is being fetched
+    if (isLoading) {
+        return (
+            <Center h="100vh">
+                <Loader size="lg" />
+            </Center>
+        );
+    }
 
     return (
         <AppShell

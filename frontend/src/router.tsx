@@ -46,19 +46,25 @@ const loginRoute = createRoute({
     component: LoginPage,
 });
 
+import { refreshToken } from '@/features/auth/refresh/api';
+
 // Protected layout route
 const protectedLayoutRoute = createRoute({
     getParentRoute: () => rootRoute,
     id: 'protected',
     component: AppLayout,
-    beforeLoad: () => {
+    beforeLoad: async ({ location }) => {
         if (!TokenStore.isAccessTokenValid()) {
-            throw redirect({
-                to: '/login',
-                search: {
-                    redirect: location.pathname,
-                },
-            });
+            try {
+                await refreshToken();
+            } catch (error) {
+                throw redirect({
+                    to: '/login',
+                    search: {
+                        redirect: location.pathname,
+                    },
+                });
+            }
         }
     }
 });
