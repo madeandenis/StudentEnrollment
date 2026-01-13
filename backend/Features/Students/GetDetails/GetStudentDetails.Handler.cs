@@ -6,14 +6,19 @@ using StudentEnrollment.Shared.Persistence;
 
 namespace StudentEnrollment.Features.Students.GetDetails;
 
-public class GetStudentDetailsHandler(ApplicationDbContext context) : IHandler 
+public class GetStudentDetailsHandler(ApplicationDbContext context) : IHandler
 {
-    public async Task<IResult> HandleAsync(int studentId)
+    public async Task<IResult> HandleAsync(string studentIdentifier)
     {
-        var student = await context.Students
-            .AsNoTracking()
-            .Select(StudentMapper.ProjectToResponse())
-            .FirstOrDefaultAsync(s => s.Id == studentId);
+        var isNumeric = int.TryParse(studentIdentifier, out var studentId);
+
+        var query = context.Students.AsNoTracking();
+
+        query = isNumeric
+            ? query.Where(s => s.Id == studentId)
+            : query.Where(s => s.StudentCode == studentIdentifier);
+
+        var student = await query.Select(StudentMapper.ProjectToResponse()).FirstOrDefaultAsync();
 
         if (student is null)
         {
@@ -21,5 +26,5 @@ public class GetStudentDetailsHandler(ApplicationDbContext context) : IHandler
         }
 
         return Results.Ok(student);
-    }   
+    }
 }

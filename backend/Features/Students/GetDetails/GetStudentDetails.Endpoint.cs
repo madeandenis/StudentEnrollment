@@ -8,10 +8,13 @@ public class GetStudentDetailsEndpoint : IEndpoint
 {
     public void MapEndpoint(IEndpointRouteBuilder app)
     {
-        app.MapGet("/{studentId:int}", async (
-                [FromRoute] int studentId,
-                [FromServices] GetStudentDetailsHandler handler
-            ) => await handler.HandleAsync(studentId))
+        app.MapGet(
+                "/{studentIdentifier}",
+                async (
+                    [FromRoute] string studentIdentifier,
+                    [FromServices] GetStudentDetailsHandler handler
+                ) => await handler.HandleAsync(studentIdentifier)
+            )
             .WithName("GetStudentDetails")
             .RequireAuthorization("SameStudent")
             .Produces<StudentResponse>()
