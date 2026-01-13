@@ -209,6 +209,8 @@ Această comandă ar trebui să afișeze toate valorile secretelor configurate.
 
 Aplicația este configurată să aplice automat migrările Entity Framework Core și să creeze contul de administrator la primul startup în modul Development.
 
+**Notă:** Pentru ca baza de date și tabelele să fie create corect, migrările trebuie aplicate **manual** înainte de primul run al aplicației.
+
 Pentru aplicarea manuală a migrărilor:
 
 ```bash
