@@ -158,7 +158,16 @@ cd backend
 dotnet restore
 ```
 
-#### 3.3. Configurarea User Secrets
+#### 3.3. Configurarea Certificatelor HTTPS
+
+Pentru a rula aplicația securizat (HTTPS) local, este nevoie să acceptați certificatul de dezvoltare .NET.
+
+```bash
+dotnet dev-certs https --clean
+dotnet dev-certs https --trust
+```
+
+#### 3.4. Configurarea User Secrets
 
 ASP.NET Core User Secrets oferă un mecanism securizat pentru stocarea datelor de configurare sensibile în timpul dezvoltării.
 
@@ -198,7 +207,7 @@ dotnet user-secrets set "ConnectionStrings:DefaultConnection" "Data Source=local
 - `JwtSettings:Audience` - destinatarii token-urilor; aplicația care le va consuma.
 - `ConnectionStrings:DefaultConnection` - connection string-ul folosit pentru conexiunea la baza de date.
 
-#### 3.4. Verificarea Configurării User Secrets
+#### 3.5. Verificarea Configurării User Secrets
 
 ```bash
 dotnet user-secrets list
@@ -206,7 +215,7 @@ dotnet user-secrets list
 
 Această comandă ar trebui să afișeze toate valorile secretelor configurate.
 
-#### 3.5. Migrarea Bazei de Date
+#### 3.6. Migrarea Bazei de Date
 
 Aplicația este configurată să aplice automat migrările Entity Framework Core și să creeze contul de administrator la primul startup în modul Development.
 
@@ -222,7 +231,7 @@ dotnet ef migrations list
 dotnet ef database update
 ```
 
-#### 3.6. Verificarea Fișierelor de Configurare
+#### 3.7. Verificarea Fișierelor de Configurare
 
 Asigurați-vă că `appsettings.Development.json` conține următoarea configurație:
 
@@ -289,15 +298,13 @@ export default defineConfig({
 
 #### 4.4. Configurarea Endpoint-ului API
 
-Dacă backend-ul rulează pe un port diferit, actualizați URL-ul de bază al API în `src/lib/api.ts`:
+Dacă URL-ul API-ului diferă de cel implicit din codul sursă (https://localhost:7266), creați un fișier .env în directorul frontend cu următorul conținut:
 
-```typescript
-const api = axios.create({
-  baseURL: 'https://localhost:7266/api',
-  // Configurație suplimentară...
-});
+```bash
+API_BASE_URL=https://localhost:7266/api
 ```
 
+Aplicația frontend este configurată să citească automat această variabilă de mediu. Astfel, nu este nevoie să modificați codul sursă pentru a folosi un alt URL al API-ului.
 ---
 
 ## Executarea Aplicației
@@ -310,7 +317,7 @@ Această metodă necesită două sesiuni de terminal separate.
 
 ```bash
 cd backend
-dotnet run
+dotnet run --launch-profile https
 ```
 
 Serverul backend va porni pe următoarele URL-uri:
@@ -337,96 +344,79 @@ Accesați aplicația navigând la `http://localhost:5173` într-un browser web.
 
 ### Arhitectura Backend: Vertical Slice
 
-Backend-ul implementează arhitectura Vertical Slice, organizând codul pe funcționalități în loc de straturi tehnice. Fiecare funcționalitate încapsulează toate componentele necesare pentru o capabilitate de business specifică.
+Backend-ul implementează arhitectura Vertical Slice, unde codul este organizat pe funcționalități (Features). Structura actuală a directoarelor este:
 
 ```
 backend/
 ├── Features/
-│   ├── Auth/                    # Funcționalități autentificare
+│   ├── Auth/                    # Autentificare
 │   │   ├── Login/
-│   │   ├── Register/
 │   │   ├── Logout/
-│   │   └── RefreshToken/
-│   ├── Students/                # Gestionare studenți
-│   │   ├── CreateStudent/
-│   │   ├── GetStudentList/
-│   │   ├── GetStudentDetails/
-│   │   ├── UpdateStudent/
-│   │   └── DeleteStudent/
-│   ├── Courses/                 # Gestionare cursuri
-│   │   ├── CreateCourse/
-│   │   ├── GetCourseList/
-│   │   ├── GetCourseDetails/
-│   │   ├── UpdateCourse/
-│   │   └── DeleteCourse/
-│   ├── Enrollments/             # Gestionare înscrieri cursuri
-│   │   ├── EnrollStudent/
-│   │   ├── GetStudentEnrollments/
-│   │   └── UnenrollStudent/
-│   └── Common/                  # Configurări comune funcționalități
-├── Shared/                      # Componente partajate între features
-│   ├── Configuration/           # Extensii configurare servicii
-│   │   ├── ServiceCollectionExtensions.cs
-│   │   └── WebApplicationExtensions.cs
-│   ├── Domain/                  # Entități și obiecte de domeniu
-│   │   ├── Entities/            # Entități bază de date (Student, Course, Enrollment, etc.)
-│   │   └── ValueObjects/        # Obiecte valoare (Address, etc.)
-│   ├── ErrorHandling/           # Gestionare excepții globale
-│   │   └── GlobalExceptionHandler.cs
-│   ├── Persistence/             # Infrastructură bază de date
-│   │   ├── ApplicationDbContext.cs
-│   │   ├── ApplicationDbContextInitializer.cs
-│   │   ├── Configurations/      # Configurări EF Core pentru entități
-│   │   ├── Interceptors/        # Interceptori EF Core (audit, soft delete)
-│   │   ├── Migrations/          # Migrări Entity Framework
-│   │   └── Seeders/             # Date inițiale (admin, date test)
-│   ├── Security/                # Securitate și autentificare
-│   │   ├── Common/              # Clase comune securitate
-│   │   ├── Configuration/       # Configurare Identity și JWT
-│   │   ├── Policies/            # Politici autorizare personalizate
-│   │   └── Services/            # Servicii securitate (CurrentUserService, etc.)
-│   └── Utilities/               # Utilități generale
-└── Program.cs                   # Punct de intrare aplicație
+│   │   ├── Me/                  # Date utilizator curent
+│   │   ├── RefreshToken/
+│   │   └── Register/
+│   ├── Courses/                 # Gestionare Cursuri și Înscrieri
+│   │   ├── Common/
+│   │   ├── Create/
+│   │   ├── Delete/
+│   │   ├── Enroll/              # Înscriere student la curs
+│   │   ├── GetDetails/
+│   │   ├── GetList/
+│   │   ├── Update/
+│   │   └── Withdraw/            # Retragere student de la curs
+│   ├── Students/                # Gestionare Studenți
+│   │   ├── Common/
+│   │   ├── Create/
+│   │   ├── Delete/
+│   │   ├── GetDetails/
+│   │   ├── GetList/
+│   │   ├── GetStudentEnrolledCourses/ # Cursurile unui student
+│   │   └── Update/
+│   └── Common/                  # Functionalități comune globale
+├── Shared/                      # Componente transversale
+│   ├── Configuration/           # Extensii DI
+│   ├── Domain/                  # Entități (Student, Course, Enrollment)
+│   ├── ErrorHandling/           # Global Exception Handler
+│   ├── Persistence/             # DbContext, Migrări, Interceptori
+│   ├── Security/                # Jwt, CurrentUser, Politici
+│   └── Utilities/
+└── Program.cs
 ```
 
-Fiecare slice de funcționalitate conține:
-- `Endpoint.cs`: Definiție endpoint Minimal API
-- `Handler.cs`: Implementare logică de business
-- `Validator.cs`: Reguli FluentValidation
-- `Models.cs`: DTO-uri request și response
+### Arhitectura Frontend: Feature-Based
 
-### Arhitectura Frontend: Bazată pe Funcționalități
-
-Frontend-ul urmează un pattern de organizare bazat pe funcționalități:
+Frontend-ul este organizat modular, oglindind structura funcțională a backend-ului:
 
 ```
 frontend/src/
-├── features/                    # Funcționalități aplicație
-│   ├── _common/                 # Componente și utilități partajate
-│   │   ├── components/          # Componente UI reutilizabile
-│   │   ├── hooks/               # Custom hooks comune
-│   │   ├── types/               # Tipuri TypeScript partajate
-│   │   └── utils/               # Funcții utilitate
-│   ├── auth/                    # Autentificare și autorizare
-│   ├── students/                # Gestionare studenți
-│   ├── courses/                 # Gestionare cursuri
-│   └── profile/                 # Profil utilizator
-├── lib/                         # Biblioteci și configurări
-│   ├── api.ts                   # Instanță Axios configurată
-│   ├── auth-header.ts           # Gestionare header autentificare
-│   ├── auto-refresh.ts          # Mecanism refresh automat token
-│   └── token-store.ts           # Stocare în memorie token-uri
-├── router.tsx                   # Configurare TanStack Router
-├── App.tsx                      # Componentă rădăcină
-└── main.tsx                     # Punct de intrare aplicație
+├── features/
+│   ├── _common/                 # Componente și hook-uri refolosibile global
+│   ├── auth/                    # Pagini și logică de autentificare
+│   ├── courses/                 # Modul Cursuri
+│   │   ├── _common/
+│   │   ├── components/          # Componente specifice (ex: CoursesTable)
+│   │   ├── create/              # Logică creare curs
+│   │   ├── delete/
+│   │   ├── enroll/              # Logică înscriere
+│   │   ├── get-details/
+│   │   ├── get-list/
+│   │   ├── update/
+│   │   └── withdraw/
+│   ├── profile/                 # Profil Utilizator
+│   ├── students/                # Modul Studenți
+│   │   ├── _common/
+│   │   ├── components/          # Componente specifice (ex: StudentFormModal)
+│   │   ├── create/
+│   │   ├── delete/
+│   │   ├── get-details/
+│   │   ├── get-enrolled-courses/
+│   │   ├── get-list/
+│   │   └── update/
+│   └── welcome/                 # Landing page
+├── lib/                         # Configurări infrastructură (axios, query-client)
+├── router.tsx                   # Configurare rute (TanStack Router)
+└── App.tsx                      # Root component
 ```
-
-Fiecare feature urmează pattern-ul:
-- **Pagini** (`.tsx`): Componente pagină principale
-- **Componente** (`components/`): Componente UI reutilizabile specifice feature-ului
-- **API** (`api.ts`): Funcții pentru apeluri HTTP
-- **Types** (`types.ts`): Interfețe și tipuri TypeScript
-- **Hooks** (`use*.ts`): Custom hooks pentru logică și state management cu TanStack Query
 
 ---
 
