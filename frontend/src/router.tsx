@@ -8,12 +8,12 @@ import { CoursesPageWrapper } from '@/features/courses/CoursesPageWrapper';
 import { CourseDetailsPage } from '@/features/courses/CourseDetailsPage';
 import { ProfilePage } from '@/features/profile/ProfilePage';
 import { MyDataPage } from '@/features/profile/MyDataPage';
-import WelcomePage from '@/features/_common/components/Layout/WelcomePage';
-import { refreshToken } from './features/auth/refresh/api';
-import { getMe } from './features/auth/me';
-import { UserStore } from './lib/stores/userStore';
-import { TokenStore } from './lib/stores/tokenStore';
-import type { ClaimsUser } from './features/auth/_common/types';
+import { refreshToken } from '@/features/auth/refresh/api';
+import { getMe } from '@/features/auth/me';
+import { UserStore } from '@/lib/stores/userStore';
+import { TokenStore } from '@/lib/stores/tokenStore';
+import type { ClaimsUser } from '@/features/auth/_common/types';
+import WelcomePage from './features/welcome/WelcomePage';
 
 export interface RouterContext {
     user: ClaimsUser;
