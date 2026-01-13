@@ -61,7 +61,16 @@ export function CourseFormModal({ opened, courseId, onClose }: CourseFormModalPr
             name: validators.courseName,
             description: validators.courseDescription,
             credits: validators.credits,
-            maxEnrollment: validators.maxEnrollment,
+            maxEnrollment: (value) => {
+                const baseError = validators.maxEnrollment(value);
+                if (baseError) return baseError;
+
+                if (isEditMode && course && value < course.enrolledStudents) {
+                    return `Capacitatea nu poate fi mai mică decât numărul de studenți înscriși (${course.enrolledStudents}).`;
+                }
+
+                return null;
+            },
         },
     });
 

@@ -9,6 +9,7 @@ import {
 } from '@mantine/core';
 import { Download, FileText } from 'lucide-react';
 import { useAuth } from '@/features/auth/_contexts/AuthContext';
+import { useStudentDetails } from '@/features/students/get-details/useStudentDetails';
 
 export function MyDataPage() {
     const { user } = useAuth();
@@ -39,8 +40,22 @@ export function MyDataPage() {
             : []),
     ];
 
+    const { data: student } = useStudentDetails(user.studentCode || null);
+
+    const getEnhancedDataRows = () => {
+        const basicRows = getDataRows();
+        if (!student) return basicRows;
+
+        return [
+            ...basicRows,
+            { key: 'CNP', value: student.cnp },
+            { key: 'Dată Naștere', value: student.dateOfBirth },
+            { key: 'Adresă', value: [student.address.street, student.address.city, student.address.country, student.address.postalCode].filter(Boolean).join(', ') },
+        ];
+    };
+
     const handleDownloadCsv = () => {
-        const rows = getDataRows();
+        const rows = getEnhancedDataRows();
         const headers = ['Atribut', 'Valoare'];
 
         const csvContent = [
@@ -88,13 +103,13 @@ export function MyDataPage() {
                     </Table.Tr>
                 </Table.Thead>
                 <Table.Tbody>
-                    {getDataRows().map((row) => (
+                    {getEnhancedDataRows().map((row) => (
                         <Table.Tr key={row.key}>
                             <Table.Td fw={500}>{row.key}</Table.Td>
                             <Table.Td>
                                 {row.key === 'Roluri' && Array.isArray(row.value) ? (
                                     <Group gap="xs">
-                                        {row.value.map(role => (
+                                        {row.value.map((role: string) => (
                                             <Badge key={role} variant="dot" size="sm">
                                                 {role}
                                             </Badge>

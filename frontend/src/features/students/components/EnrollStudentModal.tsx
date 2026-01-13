@@ -86,6 +86,14 @@ export function EnrollStudentModal({ opened, studentId, studentName, onClose }: 
         onClose();
     };
 
+    const selectedCourse = useMemo(
+        () => availableCourses.find((c: any) => c.id.toString() === selectedCourseId),
+        [availableCourses, selectedCourseId]
+    );
+
+    const noCoursesExist = coursesData?.items?.length === 0;
+    const studentAlreadyEnrolledAll = availableCourses.length === 0 && !noCoursesExist;
+
     return (
         <Modal
             opened={opened}
@@ -112,11 +120,19 @@ export function EnrollStudentModal({ opened, studentId, studentName, onClose }: 
                     required
                 />
 
-                {availableCourses.length === 0 && !isLoadingCourses && (
-                    <Text size="sm" c="dimmed" fs="italic">
-                        Nu există cursuri disponibile pentru înscriere. Studentul este deja înscris
-                        la toate cursurile sau nu există cursuri cu locuri disponibile.
-                    </Text>
+                {!isLoadingCourses && (
+                    <>
+                        {noCoursesExist && (
+                            <Text size="sm" c="dimmed" fs="italic">
+                                Nu există cursuri înregistrate în sistem.
+                            </Text>
+                        )}
+                        {studentAlreadyEnrolledAll && (
+                            <Text size="sm" c="dimmed" fs="italic">
+                                Studentul este deja înscris la toate cursurile disponibile.
+                            </Text>
+                        )}
+                    </>
                 )}
 
                 <Group justify="flex-end" mt="md">
@@ -126,7 +142,11 @@ export function EnrollStudentModal({ opened, studentId, studentName, onClose }: 
                     <Button
                         onClick={handleEnroll}
                         loading={enrollMutation.isPending}
-                        disabled={!selectedCourseId || isLoadingCourses}
+                        disabled={
+                            !selectedCourseId ||
+                            isLoadingCourses ||
+                            (selectedCourse?.availableSeats ?? 0) <= 0
+                        }
                     >
                         Înscrie Student
                     </Button>
