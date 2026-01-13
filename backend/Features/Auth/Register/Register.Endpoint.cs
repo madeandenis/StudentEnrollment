@@ -8,11 +8,15 @@ public class RegisterEndpoint : IEndpoint
 {
     public void MapEndpoint(IEndpointRouteBuilder app)
     {
-        app.MapPost("/register", async (
-                [FromBody] RegisterRequest request,
-                [FromServices] RegisterHandler handler
-            ) => await handler.HandleAsync(request))
+        app.MapPost(
+                "/register",
+                async (
+                    [FromBody] RegisterRequest request,
+                    [FromServices] RegisterHandler handler
+                ) => await handler.HandleAsync(request)
+            )
             .WithName("Register")
+            .RequireRateLimiting("Auth")
             .AllowAnonymous()
             .Produces(StatusCodes.Status200OK, typeof(ClaimsUser))
             .Produces(StatusCodes.Status409Conflict, typeof(ProblemDetails))

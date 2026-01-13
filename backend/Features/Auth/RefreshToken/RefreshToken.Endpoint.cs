@@ -40,6 +40,7 @@ public class RefreshTokenEndpoint : IEndpoint
             )
             .WithName("RefreshToken")
             .AllowAnonymous()
+            .RequireRateLimiting("RefreshToken")
             .Produces(StatusCodes.Status200OK, typeof(RefreshTokenResponse))
             .Produces(StatusCodes.Status400BadRequest, typeof(ProblemDetails))
             .Produces(StatusCodes.Status401Unauthorized);

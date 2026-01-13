@@ -9,28 +9,34 @@ public class LoginEndpoint : IEndpoint
 {
     public void MapEndpoint(IEndpointRouteBuilder app)
     {
-        app.MapPost("/login", async (
-                HttpContext httpContext,
-                [FromBody] LoginRequest request,
-                [FromServices] LoginHandler handler
-            ) =>
-            {
-                var result = await handler.HandleAsync(request);
-
-                if (result is Ok<LoginResponse> okResult)
+        app.MapPost(
+                "/login",
+                async (
+                    HttpContext httpContext,
+                    [FromBody] LoginRequest request,
+                    [FromServices] LoginHandler handler
+                ) =>
                 {
-                    LoginResponse loginResponse = okResult.Value!;
-                    
-                    httpContext.Response.Cookies.Append(
-                        "RefreshToken",
-                        loginResponse.RefreshToken,
-                        AuthCookieFactory.CreateRefreshTokenOptions(loginResponse.RefreshTokenExpiresAt)
-                    );
-                }     
-                
-                return result;
-            })
+                    var result = await handler.HandleAsync(request);
+
+                    if (result is Ok<LoginResponse> okResult)
+                    {
+                        LoginResponse loginResponse = okResult.Value!;
+
+                        httpContext.Response.Cookies.Append(
+                            "RefreshToken",
+                            loginResponse.RefreshToken,
+                            AuthCookieFactory.CreateRefreshTokenOptions(
+                                loginResponse.RefreshTokenExpiresAt
+                            )
+                        );
+                    }
+
+                    return result;
+                }
+            )
             .WithName("Login")
+            .RequireRateLimiting("Auth")
             .AllowAnonymous()
             .Produces(StatusCodes.Status200OK, typeof(LoginResponse))
             .Produces(StatusCodes.Status401Unauthorized, typeof(ProblemDetails));
