@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using StudentEnrollment.Features.Common.Contracts;
+using StudentEnrollment.Shared.Security.Services;
 
 namespace StudentEnrollment.Features.Auth.LogOut;
 
@@ -11,8 +12,9 @@ public class LogoutEndpoint : IEndpoint
                 "/logout",
                 async (
                     HttpContext httpContext,
+                    LogoutRequest? request,
                     [FromServices] LogoutHandler handler,
-                    LogoutRequest? request
+                    [FromServices] AuthCookieFactory cookieFactory
                 ) =>
                 {
                     var providedToken = httpContext.Request.Cookies["RefreshToken"];
@@ -24,8 +26,11 @@ public class LogoutEndpoint : IEndpoint
 
                     var result = await handler.HandleAsync(providedToken, request);
 
-                    httpContext.Response.Cookies.Delete("RefreshToken");
-
+                    httpContext.Response.Cookies.Delete(
+                        "RefreshToken",
+                        cookieFactory.CreateDeleteRefreshTokenOptions()
+                    );
+                    
                     return result;
                 }
             )
