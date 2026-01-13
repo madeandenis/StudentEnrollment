@@ -2,7 +2,6 @@
 using System.Threading.RateLimiting;
 using FluentValidation;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.RateLimiting;
 using Microsoft.EntityFrameworkCore;
 using StudentEnrollment.Features.Common.Configuration;
 using StudentEnrollment.Shared.Domain.Entities.Identity;
@@ -10,7 +9,6 @@ using StudentEnrollment.Shared.ErrorHandling;
 using StudentEnrollment.Shared.Persistence;
 using StudentEnrollment.Shared.Persistence.Interceptors;
 using StudentEnrollment.Shared.Persistence.Seeders;
-using StudentEnrollment.Shared.Security.Configuration;
 using StudentEnrollment.Shared.Security.Configuration;
 using StudentEnrollment.Shared.Security.Services;
 

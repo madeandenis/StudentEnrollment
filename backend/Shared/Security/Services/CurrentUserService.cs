@@ -1,5 +1,6 @@
 ﻿using System.Security.Claims;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
 using StudentEnrollment.Shared.Persistence;
 using StudentEnrollment.Shared.Security.Common;
 
@@ -10,7 +11,7 @@ namespace StudentEnrollment.Shared.Security.Services;
 /// </summary>
 public sealed class CurrentUserService(
     IHttpContextAccessor httpContextAccessor,
-    ApplicationDbContext context
+    IServiceProvider serviceProvider
 )
 {
     /// <summary>
@@ -57,6 +58,8 @@ public sealed class CurrentUserService(
         var userId = UserId();
         if (userId is null)
             return null;
+
+        var context = serviceProvider.GetRequiredService<ApplicationDbContext>();
 
         var studentId = await context
             .Students.AsNoTracking()
