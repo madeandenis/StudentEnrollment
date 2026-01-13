@@ -11,6 +11,7 @@
 - [Executarea Aplicației](#executarea-aplicației)
 - [Arhitectură](#arhitectură)
 - [Depanare](#depanare)
+- [Deployment în producție](#deployment-în-producție)
 
 ---
 
@@ -486,6 +487,63 @@ Fiecare feature urmează pattern-ul:
 1. Verificați că aplicația rulează în modul Development
 2. Aplicați migrările manual: `dotnet ef database update`
 3. Validați configurarea connection string-ului
+
+---
+
+## Deployment în Producție
+
+### 1. Backend (ASP.NET Core)
+
+Pentru a pregăti backend-ul pentru producție:
+
+1. **Publicare**:
+   Generați fișierele necesare pentru deployment:
+   ```bash
+   cd backend
+   dotnet publish -c Release -o ./publish
+   ```
+
+2. **Configurare Mediu**:
+   În producție, **NU** folosiți User Secrets. Configurați setările folosind variabile de mediu sau fișierul `appsettings.Production.json`.
+
+   Exemple variabile de mediu esențiale:
+   - `ASPNETCORE_ENVIRONMENT`: `Production`
+   - `ConnectionStrings__DefaultConnection`: String-ul de conexiune la baza de date reală.
+   - `JwtSettings__SecretKey`: O cheie foarte lungă și complexă (minim 64 caractere).
+   - `JwtSettings__Authority`: URL-ul public al backend-ului (ex: `https://api.domeniu.com`).
+   - `JwtSettings__Audience`: URL-ul public al frontend-ului (ex: `https://app.domeniu.com`).
+   - `AllowedHosts`: **Important!** Modificați valoarea implicită `*` cu domeniul specific (ex: `api.domeniu.com`) pentru a preveni atacurile de tip Host Header Injection.
+
+3. **Rulare**:
+   Porniți aplicația din folderul publicat:
+   ```bash
+   cd publish
+   dotnet StudentEnrollment.Web.dll
+   ```
+   *Notă: În producție, se recomandă rularea în spatele unui reverse proxy precum Nginx sau IIS.*
+
+### 2. Frontend (React + Vite)
+
+Pentru a pregăti frontend-ul pentru producție:
+
+1. **Build**:
+   Generați fișierele statice optimizate:
+   ```bash
+   cd frontend
+   npm run build
+   ```
+   Acesta va crea un director `dist` care conține aplicația compilată.
+
+2. **Servire**:
+   Fișierele din `dist` sunt statice și pot fi servite de orice server web (Nginx, Apache, IIS, Azure Static Web Apps).
+
+   **Exemplu configurare Nginx (snippet):**
+   ```nginx
+   location / {
+       root /path/to/frontend/dist;
+       try_files $uri $uri/ /index.html;
+   }
+   ```
 
 ---
 

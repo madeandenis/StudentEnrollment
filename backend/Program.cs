@@ -30,6 +30,11 @@ if (app.Environment.IsDevelopment())
     app.MapGet("/swagger/v1/swagger.json", () => Results.Redirect("/swagger/v1/swagger.json"))
         .AllowAnonymous();
 }
+else
+{
+    app.UseHsts();
+    app.UseHttpsRedirection();
+}
 
 app.UseCors("CorsPolicy");
 
