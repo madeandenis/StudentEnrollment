@@ -171,6 +171,9 @@ Aplicația creează automat un cont de SuperAdmin la primul startup:
 Executați următoarele comenzi pentru a configura toate secretele necesare:
 
 ```bash
+# Initializeaza user secrets
+dotnet user-secrets init
+
 # Credențiale SuperAdmin
 dotnet user-secrets set "SuAdmin:Email" "admin@local.test"
 dotnet user-secrets set "SuAdmin:Password" "ParolaPuternica123!"
