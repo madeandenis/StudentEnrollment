@@ -11,10 +11,8 @@ namespace StudentEnrollment.Features.Courses.Update;
 /// Handles the update of an existing course record.
 /// Validates the request, ensures the new CourseCode is unique (excluding the current record), and applies changes.
 /// </summary>
-public class UpdateCourseHandler(
-    UpdateCourseValidator validator,
-    ApplicationDbContext context
-) : IHandler
+public class UpdateCourseHandler(UpdateCourseValidator validator, ApplicationDbContext context)
+    : IHandler
 {
     public async Task<IResult> HandleAsync(int courseId, UpdateCourseRequest request)
     {
@@ -24,27 +22,45 @@ public class UpdateCourseHandler(
             return Results.ValidationProblem(validationResult.ToDictionary());
         }
 
-        var course = await context.Courses.FindAsync(courseId);
-        if (course is null)
+        var normalizedCode = NormalizeToUpper(request.CourseCode);
+
+        var courseData = await context
+            .Courses.Where(c => c.Id == courseId)
+            .Select(c => new
+            {
+                Course = c,
+                CodeTaken = context.Courses.Any(x =>
+                    x.Id != courseId && x.CourseCode == normalizedCode
+                ),
+                CurrentEnrollment = context.Enrollments.Count(e => e.CourseId == courseId),
+            })
+            .FirstOrDefaultAsync();
+
+        if (courseData is null || courseData.Course is null)
         {
             return Results.NotFound(Problems.NotFound("Course not found."));
         }
 
-        var normalizedCode = NormalizeToUpper(request.CourseCode);
-
-        var isCodeTaken = await context.Courses.AnyAsync(c => 
-            c.Id != courseId && c.CourseCode == normalizedCode
-        );
-
-        if (isCodeTaken)
+        if (courseData.CodeTaken)
         {
-            return Results.Conflict(Problems.Conflict("Another course with the same code already exists."));
+            return Results.Conflict(
+                Problems.Conflict("Another course with the same code already exists.")
+            );
         }
 
-        CourseMapper.ApplyRequest(course, request);
-        
+        if (request.MaxEnrollment < courseData.CurrentEnrollment)
+        {
+            return Results.Conflict(
+                Problems.Conflict(
+                    $"Cannot reduce capacity to {request.MaxEnrollment}. There are currently {courseData.CurrentEnrollment} students enrolled."
+                )
+            );
+        }
+
+        CourseMapper.ApplyRequest(courseData.Course, request);
+
         await context.SaveChangesAsync();
-        
+
         return Results.Ok();
     }
 }
