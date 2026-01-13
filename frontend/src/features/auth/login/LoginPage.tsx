@@ -24,6 +24,7 @@ export function LoginPage() {
     const { errors, handleError, clearErrors } = useErrorHandler({
         overrides: { // TODO: Handle locked account
             401: 'Email sau parolă incorectă.',
+            429: 'Prea multe cereri. Încercați din nou mai târziu.',
         },
     });
 
