@@ -11,7 +11,11 @@ public class RefreshTokenEndpoint : IEndpoint
     {
         app.MapPost(
                 "/refresh",
-                async (HttpContext httpContext, [FromServices] RefreshTokenHandler handler) =>
+                async (
+                    HttpContext httpContext,
+                    [FromServices] RefreshTokenHandler handler,
+                    [FromServices] AuthCookieFactory cookieFactory
+                ) =>
                 {
                     var providedToken = httpContext.Request.Cookies["RefreshToken"];
 
@@ -29,7 +33,7 @@ public class RefreshTokenEndpoint : IEndpoint
                         httpContext.Response.Cookies.Append(
                             "RefreshToken",
                             loginResponse.RefreshToken,
-                            AuthCookieFactory.CreateRefreshTokenOptions(
+                            cookieFactory.CreateRefreshTokenOptions(
                                 loginResponse.RefreshTokenExpiresAt
                             )
                         );

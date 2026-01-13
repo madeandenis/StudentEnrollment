@@ -1,12 +1,23 @@
 namespace StudentEnrollment.Shared.Security.Services;
 
-public static class AuthCookieFactory
+public class AuthCookieFactory
 {
-    public static CookieOptions CreateRefreshTokenOptions(DateTime expiresAt) => new()
+    private readonly IWebHostEnvironment _environment;
+
+    public AuthCookieFactory(IWebHostEnvironment environment)
     {
-        HttpOnly = true,
-        Secure = true,
-        SameSite = SameSiteMode.Strict,
-        Expires = expiresAt
-    };
+        _environment = environment;
+    }
+
+    public CookieOptions CreateRefreshTokenOptions(DateTime expiresAt)
+    {
+        return new CookieOptions
+        {
+            HttpOnly = true,
+            Secure = true,
+            // In development we use SameSite=None to allow cross-site requests (HTTP -> HTTPS)
+            SameSite = _environment.IsDevelopment() ? SameSiteMode.None : SameSiteMode.Strict,
+            Expires = expiresAt,
+        };
+    }
 }

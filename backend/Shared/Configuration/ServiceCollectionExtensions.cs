@@ -50,6 +50,7 @@ public static class ServiceCollectionExtensions
             services.ConfigureAuthorizationPolicies();
             services.AddScoped<ClaimsIdentityFactory>();
             services.AddScoped<TokenService>();
+            services.AddScoped<AuthCookieFactory>();
             services.RegisterRateLimiting();
 
             return services;

@@ -14,7 +14,8 @@ public class LoginEndpoint : IEndpoint
                 async (
                     HttpContext httpContext,
                     [FromBody] LoginRequest request,
-                    [FromServices] LoginHandler handler
+                    [FromServices] LoginHandler handler,
+                    [FromServices] AuthCookieFactory cookieFactory
                 ) =>
                 {
                     var result = await handler.HandleAsync(request);
@@ -26,7 +27,7 @@ public class LoginEndpoint : IEndpoint
                         httpContext.Response.Cookies.Append(
                             "RefreshToken",
                             loginResponse.RefreshToken,
-                            AuthCookieFactory.CreateRefreshTokenOptions(
+                            cookieFactory.CreateRefreshTokenOptions(
                                 loginResponse.RefreshTokenExpiresAt
                             )
                         );

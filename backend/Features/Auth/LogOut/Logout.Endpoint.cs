@@ -30,7 +30,6 @@ public class LogoutEndpoint : IEndpoint
                 }
             )
             .WithName("Logout")
-            .RequireAuthorization()
             .Produces(StatusCodes.Status200OK)
             .Produces(StatusCodes.Status404NotFound)
             .Produces(StatusCodes.Status401Unauthorized);
