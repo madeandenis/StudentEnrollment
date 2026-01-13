@@ -73,7 +73,7 @@ Finalizați instalarea.
 
 După instalare, puteți testa conexiunea folosind următorul **connection string**:
 
-Data Source=localhost,1433;
+Data Source=localhost;
 Initial Catalog=StudentEnrollmentDb;
 Persist Security Info=False;
 User ID=sa;
@@ -186,7 +186,7 @@ dotnet user-secrets set "JwtSettings:Authority" "https://localhost:7266"
 dotnet user-secrets set "JwtSettings:Audience" "https://localhost:7266"
 
 # Connection string bază de date
-dotnet user-secrets set "ConnectionStrings:DefaultConnection" "Data Source=localhost,1433;Initial Catalog=StudentEnrollmentDb;Persist Security Info=False;User ID=sa;Password=ParolaPuternica123!;Pooling=True;MultipleActiveResultSets=True;Encrypt=True;TrustServerCertificate=True;Application Name=StudentEnrollmentWebApp;Command Timeout=30"
+dotnet user-secrets set "ConnectionStrings:DefaultConnection" "Data Source=localhost;Initial Catalog=StudentEnrollmentDb;Persist Security Info=False;User ID=sa;Password=ParolaPuternica123!;Pooling=True;MultipleActiveResultSets=True;Encrypt=True;TrustServerCertificate=True;Application Name=StudentEnrollmentWebApp;Command Timeout=30"
 ```
 
 **Explicații:**
