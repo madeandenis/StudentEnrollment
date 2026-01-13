@@ -1,6 +1,6 @@
 import { AppShell, Center, Loader } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
-import { Outlet } from '@tanstack/react-router';
+import { Outlet, Navigate, useLocation } from '@tanstack/react-router';
 import { Users, BookOpen, User, FileText } from 'lucide-react';
 import { Sidebar } from '@/features/_common/components/Layout/Sidebar';
 import { HeaderContent } from '@/features/_common/components/Layout/HeaderContent';
@@ -9,7 +9,8 @@ import { useAuth } from '@/features/auth/_contexts/AuthContext';
 export function AppLayout() {
     const [mobileOpened, { toggle: toggleMobile }] = useDisclosure();
     const [desktopOpened, { toggle: toggleDesktop }] = useDisclosure(true);
-    const { isLoading } = useAuth();
+    const { isLoading, isAuthenticated } = useAuth();
+    const location = useLocation();
 
     // Show loader while user data is being fetched
     if (isLoading) {
@@ -18,6 +19,11 @@ export function AppLayout() {
                 <Loader size="lg" />
             </Center>
         );
+    }
+
+    // Redirect to login once auth state is resolved and user is not authenticated
+    if (!isAuthenticated) {
+        return <Navigate to="/login" search={{ redirect: location.pathname }} />;
     }
 
     return (
