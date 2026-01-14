@@ -44,7 +44,7 @@ public static class ServiceCollectionExtensions
                 .AddEntityFrameworkStores<ApplicationDbContext>()
                 .AddDefaultTokenProviders();
             services.ConfigureIdentity();
-            services.AddScoped<CurrentUserService>();
+            services.AddScoped<ICurrentUserService, CurrentUserService>();
             services.AddJwtAuthentication(configuration);
             services.AddAuthorization();
             services.ConfigureAuthorizationPolicies();

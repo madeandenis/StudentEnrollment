@@ -10,14 +10,16 @@ namespace StudentEnrollment.Shared.Persistence.Interceptors;
 /// EF Core interceptor that automatically sets audit properties (CreatedAt, CreatedBy, UpdatedAt, UpdatedBy)
 /// on entities implementing <see cref="IAuditableEntity"/> during SaveChanges and SaveChangesAsync.
 /// </summary>
-public class AuditableEntityInterceptor(CurrentUserService currentUserService) : SaveChangesInterceptor
+public class AuditableEntityInterceptor(ICurrentUserService currentUserService)
+    : SaveChangesInterceptor
 {
     /// <summary>
     /// Intercepts synchronous SaveChanges calls to apply auditing properties before changes are persisted.
     /// </summary>
     public override InterceptionResult<int> SavingChanges(
         DbContextEventData eventData,
-        InterceptionResult<int> result)
+        InterceptionResult<int> result
+    )
     {
         if (eventData.Context is not null)
         {
@@ -33,7 +35,8 @@ public class AuditableEntityInterceptor(CurrentUserService currentUserService) :
     public override ValueTask<InterceptionResult<int>> SavingChangesAsync(
         DbContextEventData eventData,
         InterceptionResult<int> result,
-        CancellationToken cancellationToken = default)
+        CancellationToken cancellationToken = default
+    )
     {
         if (eventData.Context is not null)
         {
@@ -47,7 +50,8 @@ public class AuditableEntityInterceptor(CurrentUserService currentUserService) :
     // that are Added or Modified, and sets their audit properties accordingly.
     private void ApplyAuditing(DbContext dbContext)
     {
-        var entries = dbContext.ChangeTracker.Entries<IAuditableEntity>()
+        var entries = dbContext
+            .ChangeTracker.Entries<IAuditableEntity>()
             .Where(e => e.State is EntityState.Added or EntityState.Modified);
 
         var now = DateTime.UtcNow;
@@ -66,7 +70,7 @@ public class AuditableEntityInterceptor(CurrentUserService currentUserService) :
 
         if (entry.State is EntityState.Added)
         {
-            if (entity.CreatedAt == default) 
+            if (entity.CreatedAt == default)
             {
                 entity.CreatedAt = now;
             }

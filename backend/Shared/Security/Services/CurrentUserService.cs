@@ -12,7 +12,7 @@ namespace StudentEnrollment.Shared.Security.Services;
 public sealed class CurrentUserService(
     IHttpContextAccessor httpContextAccessor,
     IServiceProvider serviceProvider
-)
+) : ICurrentUserService
 {
     /// <summary>
     /// Gets the current authenticated user's ID.
