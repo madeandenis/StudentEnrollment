@@ -36,7 +36,7 @@ public class UpdateCourseHandler(UpdateCourseValidator validator, ApplicationDbC
             })
             .FirstOrDefaultAsync();
 
-        if (courseData is null || courseData.Course is null)
+        if (courseData is null)
         {
             return Results.NotFound(Problems.NotFound("Course not found."));
         }
