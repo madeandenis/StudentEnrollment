@@ -1,5 +1,5 @@
 import type { AxiosInstance } from 'axios';
-import { TokenStore } from '@/lib/token-store';
+import { TokenStore } from '@/lib/stores/tokenStore';
 
 export interface AuthHeaderOptions {
     /**
