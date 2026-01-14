@@ -483,6 +483,9 @@ $RECYCLE.BIN/
 # Vim temporary swap files
 *.swp
 
+# Deployment
+appsettings.Production.json
+
 ### Frontend
 
 # Logs
@@ -497,4 +500,3 @@ lerna-debug.log*
 dist
 dist-ssr
 *.local
-
