@@ -77,7 +77,14 @@ public class AuditableEntityInterceptor(CurrentUserService currentUserService) :
             }
         }
 
-        entity.UpdatedAt = now;
-        entity.UpdatedBy = currentUserService.RequiredUserId();
+        if (entity.UpdatedAt == default || entry.State == EntityState.Modified)
+        {
+            entity.UpdatedAt = now;
+        }
+
+        if (entity.UpdatedBy == 0)
+        {
+            entity.UpdatedBy = currentUserService.RequiredUserId();
+        }
     }
 }

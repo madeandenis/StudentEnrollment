@@ -67,6 +67,10 @@ public class RegisterHandler(
         if (student is not null)
         {
             student.UserId = user.Id;
+            student.UpdatedAt = DateTime.UtcNow;
+            student.UpdatedBy = user.Id; 
+            
+            context.Students.Update(student);   
             await context.SaveChangesAsync();
         }
 
