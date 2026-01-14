@@ -56,7 +56,7 @@ Sunt disponibile două opțiuni de deployment pentru serverul de baze de date.
 **Pasul 1: Instalarea SQL Server Express**
 
 Descărcați și instalați SQL Server Express de pe site-ul oficial Microsoft.  
-Porniți installerul și alegeți **Custom** (nu Basic).  
+Porniți installerul și alegeți **Custom** (nu Basic).
 
 În timpul instalării:
 - La **Instance Configuration**, selectați:
@@ -86,7 +86,7 @@ TrustServerCertificate=True;
 Application Name="StudentEnrollmentWebApp";
 Command Timeout=30
 
-- Notă: Connection string-ul trebuie introdus **într-o singură linie**, nu pe mai multe rânduri.  
+- Notă: Connection string-ul trebuie introdus **într-o singură linie**, nu pe mai multe rânduri.
 
 Puteți folosi acest connection string direct în aplicații .NET, SSMS sau orice tool compatibil SQL Server.
 
@@ -217,10 +217,10 @@ dotnet user-secrets set "ConnectionStrings:DefaultConnection" "Data Source=local
 ```
 
 **Explicații:**
-- `JwtSettings:TokenExpirationInMinutes` - durata de valabilitate a token-ului JWT principal (în minute).  
-- `JwtSettings:SecretKey` - cheia secretă folosită pentru semnarea și validarea JWT-urilor; lungă, complexă și unică.  
-- `JwtSettings:RefreshTokenExpirationInDays` - durata de valabilitate a refresh token-urilor (în zile).  
-- `JwtSettings:Authority` - URL-ul aplicației/serverului care emite token-urile.  
+- `JwtSettings:TokenExpirationInMinutes` - durata de valabilitate a token-ului JWT principal (în minute).
+- `JwtSettings:SecretKey` - cheia secretă folosită pentru semnarea și validarea JWT-urilor; lungă, complexă și unică.
+- `JwtSettings:RefreshTokenExpirationInDays` - durata de valabilitate a refresh token-urilor (în zile).
+- `JwtSettings:Authority` - URL-ul aplicației/serverului care emite token-urile.
 - `JwtSettings:Audience` - destinatarii token-urilor; aplicația care le va consuma.
 - `ConnectionStrings:DefaultConnection` - connection string-ul folosit pentru conexiunea la baza de date.
 
@@ -254,10 +254,7 @@ Asigurați-vă că `appsettings.Development.json` conține următoarea configura
 
 ```json
 {
-  "AllowedOrigins": [
-    "http://localhost:5173",
-    "https://localhost:5173"
-  ],
+  "AllowedOrigins": ["http://localhost:5173", "https://localhost:5173"],
   "Logging": {
     "LogLevel": {
       "Default": "Information",
@@ -288,15 +285,15 @@ npm install
 Fișierul `vite.config.ts` ar trebui să conțină următoarea configurație:
 
 ```typescript
-import { defineConfig } from 'vite'
-import react from '@vitejs/plugin-react'
-import path from 'path'
+import { defineConfig } from "vite";
+import react from "@vitejs/plugin-react";
+import path from "path";
 
 export default defineConfig({
   plugins: [react()],
   resolve: {
     alias: {
-      '@': path.resolve(__dirname, './src'),
+      "@": path.resolve(__dirname, "./src"),
     },
   },
   server: {
@@ -310,7 +307,7 @@ export default defineConfig({
     },
     cors: true,
   },
-})
+});
 ```
 
 #### 4.4. Configurarea Endpoint-ului API
@@ -321,8 +318,7 @@ Dacă URL-ul API-ului diferă de cel implicit din codul sursă (https://localhos
 API_BASE_URL=https://localhost:7266/api
 ```
 
-Aplicația frontend este configurată să citească automat această variabilă de mediu. Astfel, nu este nevoie să modificați codul sursă pentru a folosi un alt URL al API-ului.
----
+## Aplicația frontend este configurată să citească automat această variabilă de mediu. Astfel, nu este nevoie să modificați codul sursă pentru a folosi un alt URL al API-ului.
 
 ## Executarea Aplicației
 
@@ -525,9 +521,9 @@ Pentru a pregăti backend-ul pentru producție:
    Porniți aplicația din folderul publicat:
    ```bash
    cd publish
-   dotnet StudentEnrollment.Web.dll
+   dotnet StudentEnrollment.dll
    ```
-   *Notă: În producție, se recomandă rularea în spatele unui reverse proxy precum Nginx sau IIS.*
+   _Notă: În producție, se recomandă rularea în spatele unui reverse proxy precum Nginx sau IIS._
 
 ### 2. Frontend (React + Vite)
 
