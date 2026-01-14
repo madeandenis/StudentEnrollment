@@ -12,7 +12,7 @@ namespace StudentEnrollment.Shared.Security.Policies.Handlers;
 /// </summary>
 public class SameStudentAuthorizationHandler(
     IHttpContextAccessor httpContextAccessor,
-    CurrentUserService currentUserService
+    ICurrentUserService currentUserService
 ) : AuthorizationHandler<SameStudentAuthorizationRequirement>
 {
     protected override async Task HandleRequirementAsync(

@@ -9,7 +9,7 @@ namespace StudentEnrollment.Features.Auth.LogOut;
 /// Handles user logout requests by invalidating refresh tokens.
 /// Supports logging out from the current device or all devices.
 /// </summary>
-public class LogoutHandler(CurrentUserService currentUserService, ApplicationDbContext context)
+public class LogoutHandler(ICurrentUserService currentUserService, ApplicationDbContext context)
     : IHandler
 {
     /// <summary>
