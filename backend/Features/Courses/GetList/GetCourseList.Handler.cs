@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using StudentEnrollment.Features.Common.Contracts;
 using StudentEnrollment.Features.Common.Pagination;
+using StudentEnrollment.Features.Courses.Common;
 using StudentEnrollment.Features.Courses.Common.Mappers;
 using StudentEnrollment.Shared.Persistence;
 
@@ -19,6 +20,8 @@ public class GetCourseListHandler(
         
         var courses = await context.Courses
             .AsNoTracking()
+            .ApplySearchFilter(request)  
+            .ApplySorting(request) 
             .Select(CourseMapper.ProjectToResponse())
             .ToPaginatedListAsync(pagination);
 
