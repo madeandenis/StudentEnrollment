@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Microsoft.EntityFrameworkCore.Diagnostics;
+using Microsoft.EntityFrameworkCore.Metadata;
 using StudentEnrollment.Shared.Domain.Entities.Common.Interfaces;
 using StudentEnrollment.Shared.Security.Services;
 
@@ -64,6 +65,23 @@ public class SoftDeletableEntityInterceptor(ICurrentUserService currentUserServi
     // Updates the soft delete properties of a single entity entry:
     private void UpdateSoftDeleteProperties(EntityEntry<ISoftDeletableEntity> entry, DateTime now)
     {
+        entry.State = EntityState.Unchanged;
+
+        // Set owned entities to Unchanged if they were marked for deletion
+        foreach (var navigation in entry.Navigations)
+        {
+            if (
+                navigation.Metadata is INavigation nav
+                && nav.TargetEntityType.IsOwned()
+                && navigation.CurrentValue is not null
+            )
+            {
+                var ownedEntry = entry.Context.Entry(navigation.CurrentValue);
+                if (ownedEntry.State == EntityState.Deleted)
+                    ownedEntry.State = EntityState.Unchanged;
+            }
+        }
+
         var entity = entry.Entity;
         entity.IsDeleted = true;
         entity.DeletedAt = now;
