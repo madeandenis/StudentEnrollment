@@ -16,8 +16,11 @@ public class CourseConfiguration : IEntityTypeConfiguration<Course>
         builder.Property(c => c.Name).HasMaxLength(150);
         builder.Property(c => c.Description).HasMaxLength(500);
 
-        builder.HasOne(c => c.Professor)
-               .WithMany(p => p.Courses)
-               .HasForeignKey(c => c.ProfessorId);
+        builder
+            .HasOne(c => c.Professor)
+            .WithMany(p => p.Courses)
+            .HasForeignKey(c => c.ProfessorId)
+            .IsRequired(false)
+            .OnDelete(DeleteBehavior.SetNull);
     }
 }
