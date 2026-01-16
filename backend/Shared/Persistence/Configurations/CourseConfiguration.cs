@@ -11,9 +11,13 @@ public class CourseConfiguration : IEntityTypeConfiguration<Course>
         builder.HasKey(c => c.Id);
 
         builder.HasIndex(c => c.CourseCode).IsUnique();
-        
+
         builder.Property(c => c.CourseCode).HasMaxLength(20);
         builder.Property(c => c.Name).HasMaxLength(150);
         builder.Property(c => c.Description).HasMaxLength(500);
+
+        builder.HasOne(c => c.Professor)
+               .WithMany(p => p.Courses)
+               .HasForeignKey(c => c.ProfessorId);
     }
 }

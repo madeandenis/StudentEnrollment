@@ -11,6 +11,7 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
 {
     public DbSet<Student> Students { get; set; }
     public DbSet<Course> Courses { get; set; }
+    public DbSet<Professor> Professors { get; set; }
     public DbSet<Enrollment> Enrollments { get; set; }
     public DbSet<RefreshToken> RefreshTokens { get; set; }
 
@@ -22,6 +23,10 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
             .StartsAt(1)
             .IncrementsBy(1);
 
+        modelBuilder.HasSequence<int>("ProfessorCodeSequence")
+            .StartsAt(1)
+            .IncrementsBy(1);
+        
         modelBuilder.ApplyConfigurationsFromAssembly(typeof(ApplicationDbContext).Assembly);
 
         modelBuilder.Entity<IdentityUserLogin<int>>().ToTable("UserLogins");

@@ -26,7 +26,7 @@ public class StudentConfiguration : IEntityTypeConfiguration<Student>
         builder
             .Property(s => s.StudentCode)
             .HasDefaultValueSql(
-                "RIGHT('000000' + CAST(NEXT VALUE FOR StudentCodeSequence AS VARCHAR), 6)"
+                "'STU-' + RIGHT('000000' + CAST(NEXT VALUE FOR StudentCodeSequence AS VARCHAR), 6)"
             );
 
         builder.Property(s => s.FirstName).HasMaxLength(35);

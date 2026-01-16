@@ -1,5 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
-using StudentEnrollment.Shared.Domain.Entities.Common.Abstractions;
+﻿using StudentEnrollment.Shared.Domain.Entities.Common.Abstractions;
 using StudentEnrollment.Shared.Domain.Entities.Common.Interfaces;
 
 namespace StudentEnrollment.Shared.Domain.Entities;
@@ -14,6 +13,9 @@ public class Course : BaseEntity, IAuditableEntity
     public int Credits { get; set; }
     public int MaxEnrollment { get; set; }
 
+    public int ProfessorId { get; set; }
+    
+    public Professor Professor { get; set; }
     public ICollection<Enrollment> Enrollments { get; set; }
 
     public DateTime CreatedAt { get; set; }
