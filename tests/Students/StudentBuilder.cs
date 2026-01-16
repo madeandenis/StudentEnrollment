@@ -1,4 +1,5 @@
 ﻿using StudentEnrollment.Shared.Domain.Entities;
+using static StudentEnrollment.Shared.Utilities.StringNormalizationService;
 
 namespace tests.Students;
 
@@ -19,10 +20,10 @@ public static class StudentBuilder
         return new Student
         {
             Id = id,
-            StudentCode = studentCode,
-            FirstName = firstName,
-            LastName = lastName,
-            Email = email,
+            StudentCode = NormalizeEmail(studentCode),
+            FirstName = Normalize(firstName),
+            LastName = Normalize(lastName),
+            Email = NormalizeEmail(email),
             PhoneNumber = phoneNumber,
             CNP = cnp,
             IsDeleted = isDeleted,

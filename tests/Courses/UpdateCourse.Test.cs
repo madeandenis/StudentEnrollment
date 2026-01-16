@@ -3,6 +3,7 @@ using StudentEnrollment.Features.Courses.Update;
 using StudentEnrollment.Shared.Domain.Entities;
 using tests.Common;
 using tests.Students;
+using static StudentEnrollment.Shared.Utilities.StringNormalizationService;
 
 namespace tests.Courses;
 
@@ -28,7 +29,7 @@ public class UpdateCourseTest : BaseHandlerTest
     }
 
     [Theory]
-    [MemberData(nameof(CourseTestData.InvalidNames), MemberType = typeof(CourseTestData))]
+    [MemberData(nameof(CourseInvalidTestData.InvalidNames), MemberType = typeof(CourseInvalidTestData))]
     public async Task UpdateCourse_ThrowsValidationError_WhenNameIsInvalid(string name)
     {
         var course = CourseBuilder.Default();
@@ -42,7 +43,7 @@ public class UpdateCourseTest : BaseHandlerTest
     }
 
     [Theory]
-    [MemberData(nameof(CourseTestData.InvalidCourseCodes), MemberType = typeof(CourseTestData))]
+    [MemberData(nameof(CourseInvalidTestData.InvalidCourseCodes), MemberType = typeof(CourseInvalidTestData))]
     public async Task UpdateCourse_ThrowsValidationError_WhenCourseCodeIsInvalid(string courseCode)
     {
         var course = CourseBuilder.Default();
@@ -57,7 +58,7 @@ public class UpdateCourseTest : BaseHandlerTest
     }
 
     [Theory]
-    [MemberData(nameof(CourseTestData.InvalidDescriptions), MemberType = typeof(CourseTestData))]
+    [MemberData(nameof(CourseInvalidTestData.InvalidDescriptions), MemberType = typeof(CourseInvalidTestData))]
     public async Task UpdateCourse_ThrowsValidationError_WhenDescriptionIsInvalid(
         string description
     )
@@ -74,7 +75,7 @@ public class UpdateCourseTest : BaseHandlerTest
     }
 
     [Theory]
-    [MemberData(nameof(CourseTestData.InvalidCredits), MemberType = typeof(CourseTestData))]
+    [MemberData(nameof(CourseInvalidTestData.InvalidCredits), MemberType = typeof(CourseInvalidTestData))]
     public async Task UpdateCourse_ThrowsValidationError_WhenCreditsAreInvalid(int credits)
     {
         var course = CourseBuilder.Default();
@@ -89,7 +90,7 @@ public class UpdateCourseTest : BaseHandlerTest
     }
 
     [Theory]
-    [MemberData(nameof(CourseTestData.InvalidMaxEnrollments), MemberType = typeof(CourseTestData))]
+    [MemberData(nameof(CourseInvalidTestData.InvalidMaxEnrollments), MemberType = typeof(CourseInvalidTestData))]
     public async Task UpdateCourse_ThrowsValidationError_WhenMaxEnrollmentIsInvalid(
         int maxEnrollment
     )
@@ -123,8 +124,8 @@ public class UpdateCourseTest : BaseHandlerTest
         _context.Courses.Add(course);
         await _context.SaveChangesAsync();
 
-        course.Name = "Updated Course Name";
-        course.CourseCode = "CS-UPDATED"; 
+        course.Name = "    Updated Course Name";
+        course.CourseCode = "Cs-Updated    "; 
         course.Description = "Updated Course Description";
         course.Credits = 2;
         course.MaxEnrollment = 100;
@@ -137,10 +138,11 @@ public class UpdateCourseTest : BaseHandlerTest
 
         var updatedCourse = await _context.Courses.FindAsync(course.Id);
 
+        // Data normalization is done in the handler
         Assert.NotNull(updatedCourse);
-        Assert.Equal(request.Name, updatedCourse.Name);
-        Assert.Equal(request.CourseCode, updatedCourse.CourseCode);
-        Assert.Equal(request.Description, updatedCourse.Description);
+        Assert.Equal(Normalize(request.Name), updatedCourse.Name);
+        Assert.Equal(NormalizeEmail(request.CourseCode), updatedCourse.CourseCode);
+        Assert.Equal(Normalize(request.Description), updatedCourse.Description);
         Assert.Equal(request.Credits, updatedCourse.Credits);
         Assert.Equal(request.MaxEnrollment, updatedCourse.MaxEnrollment);
     }

@@ -29,7 +29,7 @@ public class CreateCourseTest : BaseHandlerTest
     }
 
     [Theory]
-    [MemberData(nameof(CourseTestData.InvalidNames), MemberType = typeof(CourseTestData))]
+    [MemberData(nameof(CourseInvalidTestData.InvalidNames), MemberType = typeof(CourseInvalidTestData))]
     public async Task CreateCourse_ThrowsValidationError_WhenNameIsInvalid(string name)
     {
         var course = CourseBuilder.Default(name: name);
@@ -41,7 +41,7 @@ public class CreateCourseTest : BaseHandlerTest
     }
 
     [Theory]
-    [MemberData(nameof(CourseTestData.InvalidCourseCodes), MemberType = typeof(CourseTestData))]
+    [MemberData(nameof(CourseInvalidTestData.InvalidCourseCodes), MemberType = typeof(CourseInvalidTestData))]
     public async Task CreateCourse_ThrowsValidationError_WhenCourseCodeIsInvalid(string courseCode)
     {
         var course = CourseBuilder.Default(courseCode: courseCode);
@@ -53,7 +53,7 @@ public class CreateCourseTest : BaseHandlerTest
     }
 
     [Theory]
-    [MemberData(nameof(CourseTestData.InvalidDescriptions), MemberType = typeof(CourseTestData))]
+    [MemberData(nameof(CourseInvalidTestData.InvalidDescriptions), MemberType = typeof(CourseInvalidTestData))]
     public async Task CreateCourse_ThrowsValidationError_WhenDescriptionIsInvalid(
         string description
     )
@@ -67,7 +67,7 @@ public class CreateCourseTest : BaseHandlerTest
     }
 
     [Theory]
-    [MemberData(nameof(CourseTestData.InvalidCredits), MemberType = typeof(CourseTestData))]
+    [MemberData(nameof(CourseInvalidTestData.InvalidCredits), MemberType = typeof(CourseInvalidTestData))]
     public async Task CreateCourse_ThrowsValidationError_WhenCreditsAreInvalid(int credits)
     {
         var course = CourseBuilder.Default(credits: credits);
@@ -80,7 +80,7 @@ public class CreateCourseTest : BaseHandlerTest
     }
 
     [Theory]
-    [MemberData(nameof(CourseTestData.InvalidMaxEnrollments), MemberType = typeof(CourseTestData))]
+    [MemberData(nameof(CourseInvalidTestData.InvalidMaxEnrollments), MemberType = typeof(CourseInvalidTestData))]
     public async Task CreateCourse_ThrowsValidationError_WhenMaxEnrollmentIsInvalid(
         int maxEnrollment
     )
@@ -107,9 +107,8 @@ public class CreateCourseTest : BaseHandlerTest
     [Fact]
     public async Task CreateCourse_ThrowsConflict_WhenCourseExists()
     {
-        var request = ToCreateCourseRequest(CourseBuilder.Default());
-        // Normalizes data via mapper 
-        var course = CourseMapper.ToEntity(request);
+        var course = CourseBuilder.Default();
+        var request = ToCreateCourseRequest(course);
         
         _context.Courses.Add(course);
         await _context.SaveChangesAsync();

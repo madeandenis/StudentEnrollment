@@ -2,7 +2,6 @@ using System.Linq.Expressions;
 using StudentEnrollment.Features.Students.Common.Interfaces;
 using StudentEnrollment.Features.Students.Common.Responses;
 using StudentEnrollment.Features.Students.Create;
-using StudentEnrollment.Features.Students.GetDetails;
 using StudentEnrollment.Shared.Domain.Entities;
 using static StudentEnrollment.Shared.Utilities.StringNormalizationService;
 
@@ -60,6 +59,7 @@ public static class StudentMapper
             Email = NormalizeEmail(request.Email),
             PhoneNumber = request.PhoneNumber,
             Address = request.Address,
+            StudentCode = string.Empty
         };
 
     /// <summary>

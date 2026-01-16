@@ -1,9 +1,11 @@
+using StudentEnrollment.Shared.Domain.Entities;
+
 namespace tests.Courses;
 
 /// <summary>
 /// Provides sets of invalid test data for <see cref="Course"/> validation tests.
 /// </summary>
-public static class CourseTestData
+public static class CourseInvalidTestData
 {
     public static IEnumerable<object[]> InvalidNames =>
         new List<object[]>

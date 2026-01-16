@@ -24,6 +24,9 @@ public static class ResultsExtension
         public Created<T> AssertCreated<T>(int expectedStatusCode = 201) =>
             AssertResult<Created<T>>(result, expectedStatusCode);
 
+        public CreatedAtRoute<T> AssertCreatedAtRoute<T>(int expectedStatusCode = 201) =>
+            AssertResult<CreatedAtRoute<T>>(result, expectedStatusCode);
+
         public BadRequest<T> AssertBadRequest<T>(int expectedStatusCode = 400) =>
             AssertResult<BadRequest<T>>(result, expectedStatusCode);
 
