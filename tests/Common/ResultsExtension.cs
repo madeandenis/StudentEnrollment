@@ -18,6 +18,9 @@ public static class ResultsExtension
         public Ok AssertOk() =>
             AssertResult<Ok>(result, StatusCodes.Status200OK);
         
+        public Ok<T> AssertOk<T>() =>
+            AssertResult<Ok<T>>(result, StatusCodes.Status200OK);
+        
         public NoContent AssertNoContent() =>
             AssertResult<NoContent>(result, StatusCodes.Status204NoContent);
         
