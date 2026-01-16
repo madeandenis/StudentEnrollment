@@ -16,7 +16,8 @@ public static class CourseBuilder
         string courseCode = "CS-DEFAULT",
         string description = "Default Course Description",
         int credits = 5,
-        int maxEnrollment = 50
+        int maxEnrollment = 50,
+        int? professorId = null
     )
     {
         return new Course
@@ -27,6 +28,7 @@ public static class CourseBuilder
             Description = description,
             Credits = credits,
             MaxEnrollment = maxEnrollment,
+            ProfessorId = professorId,
         };
     }
 }
