@@ -1,4 +1,6 @@
+using System.Linq.Expressions;
 using StudentEnrollment.Features.Professors.Common.Interfaces;
+using StudentEnrollment.Features.Professors.Common.Responses;
 using StudentEnrollment.Features.Professors.Create;
 using StudentEnrollment.Shared.Domain.Entities;
 using static StudentEnrollment.Shared.Utilities.StringNormalizationService;
@@ -30,6 +32,23 @@ public static class ProfessorMapper
             professor.PhoneNumber,
             professor.Address
         );
+
+    /// <summary>
+    /// Provides a projection expression for converting a <see cref="Professor"/> entity
+    /// directly into a <see cref="ProfessorResponse"/> at the database level.
+    /// </summary>
+    public static Expression<Func<Professor, ProfessorResponse>> ProjectToResponse() =>
+        professor => new ProfessorResponse
+        {
+            Id = professor.Id,
+            ProfessorCode = professor.ProfessorCode,
+            UserId = professor.UserId,
+            FullName = $"{professor.FirstName} {professor.LastName}",
+            Email = professor.Email,
+            PhoneNumber = professor.PhoneNumber,
+            Address = professor.Address,
+            CreatedAt = professor.CreatedAt,
+        };
 
     /// <summary>
     /// Updates an existing <see cref="Professor"/> entity with values from an <see cref="IProfessorRequest"/>.
