@@ -1,70 +1,114 @@
-using System.Text.Json;
 using Microsoft.AspNetCore.Mvc;
 using StudentEnrollment.Features.Courses.Update;
 using StudentEnrollment.Shared.Domain.Entities;
 using tests.Common;
 using tests.Students;
-using Xunit.Abstractions;
 
 namespace tests.Courses;
 
 public class UpdateCourseTest : BaseHandlerTest
 {
-    private readonly ITestOutputHelper _output;
     private readonly UpdateCourseHandler _sut;
 
-    public UpdateCourseTest(ITestOutputHelper output)
+    public UpdateCourseTest()
     {
-        _output = output;
         var validator = new UpdateCourseValidator();
         _sut = new UpdateCourseHandler(validator, _context);
     }
-
-    [Fact]
-    public async Task UpdateCourse_ThrowsValidationError_WhenInvalid()
+    
+    public UpdateCourseRequest ToUpdateCourseRequest(Course course)
     {
-        var course = new Course
-        {
-            Name = "Test Course",
-            CourseCode = "CS-101",
-            Description = "Test Course Description",
-            Credits = 1,
-            MaxEnrollment = 100
-        };
-        
+        return new UpdateCourseRequest(
+            course.Name,
+            course.CourseCode,
+            course.Description,
+            course.Credits,
+            course.MaxEnrollment
+        );
+    }
+
+    [Theory]
+    [MemberData(nameof(CourseTestData.InvalidNames), MemberType = typeof(CourseTestData))]
+    public async Task UpdateCourse_ThrowsValidationError_WhenNameIsInvalid(string name)
+    {
+        var course = CourseBuilder.Default();
         _context.Courses.Add(course);
         await _context.SaveChangesAsync();
-        
-        var request = new UpdateCourseRequest(
-            new string('d', 501),
-            new string('d', 21),
-            new string('d', 501),
-            11,
-            10000
-        );
 
+        course.Name = name;
+        var request = ToUpdateCourseRequest(course);
         var result = await _sut.HandleAsync(course.Id, request);
-
-        var validationProblemDetails = result.AssertValidationFailed();
-        
-        var errors = JsonSerializer.Serialize(validationProblemDetails.Errors, new JsonSerializerOptions
-        {
-            WriteIndented = true
-        });
-        
-        _output.WriteLine(errors);
+        result.AssertValidationFailed();
     }
-    
+
+    [Theory]
+    [MemberData(nameof(CourseTestData.InvalidCourseCodes), MemberType = typeof(CourseTestData))]
+    public async Task UpdateCourse_ThrowsValidationError_WhenCourseCodeIsInvalid(string courseCode)
+    {
+        var course = CourseBuilder.Default();
+        _context.Courses.Add(course);
+        await _context.SaveChangesAsync();
+
+        course.CourseCode = courseCode;
+        var request = ToUpdateCourseRequest(course);
+        var result = await _sut.HandleAsync(course.Id, request);
+        
+        result.AssertValidationFailed();
+    }
+
+    [Theory]
+    [MemberData(nameof(CourseTestData.InvalidDescriptions), MemberType = typeof(CourseTestData))]
+    public async Task UpdateCourse_ThrowsValidationError_WhenDescriptionIsInvalid(
+        string description
+    )
+    {
+        var course = CourseBuilder.Default();
+        _context.Courses.Add(course);
+        await _context.SaveChangesAsync();
+
+        course.Description = description;
+        var request = ToUpdateCourseRequest(course);
+        var result = await _sut.HandleAsync(course.Id, request);
+        
+        result.AssertValidationFailed();
+    }
+
+    [Theory]
+    [MemberData(nameof(CourseTestData.InvalidCredits), MemberType = typeof(CourseTestData))]
+    public async Task UpdateCourse_ThrowsValidationError_WhenCreditsAreInvalid(int credits)
+    {
+        var course = CourseBuilder.Default();
+        _context.Courses.Add(course);
+        await _context.SaveChangesAsync();
+
+        course.Credits = credits;
+        var request = ToUpdateCourseRequest(course);
+        var result = await _sut.HandleAsync(course.Id, request);
+        
+        result.AssertValidationFailed();
+    }
+
+    [Theory]
+    [MemberData(nameof(CourseTestData.InvalidMaxEnrollments), MemberType = typeof(CourseTestData))]
+    public async Task UpdateCourse_ThrowsValidationError_WhenMaxEnrollmentIsInvalid(
+        int maxEnrollment
+    )
+    {
+        var course = CourseBuilder.Default();
+        _context.Courses.Add(course);
+        await _context.SaveChangesAsync();
+
+        course.MaxEnrollment = maxEnrollment;
+        var request = ToUpdateCourseRequest(course);
+        var result = await _sut.HandleAsync(course.Id, request);
+        
+        result.AssertValidationFailed();
+    }
+
     [Fact]
     public async Task UpdateCourse_ReturnsNotFound_WhenCourseDoesNotExist()
     {
-        var request = new UpdateCourseRequest(
-            "Test Course",
-            "CS-101",
-            "Test Course Description",
-            1,
-            100
-        );
+        var request = ToUpdateCourseRequest(CourseBuilder.Default());
 
         var result = await _sut.HandleAsync(1, request);
 
@@ -74,32 +118,25 @@ public class UpdateCourseTest : BaseHandlerTest
     [Fact]
     public async Task UpdateCourse_Succeeds_WhenRequestIsValid()
     {
-        var course = new Course
-        {
-            Name = "Test Course",
-            CourseCode = "CS-101",
-            Description = "Test Course Description",
-            Credits = 1,
-            MaxEnrollment = 100
-        };
-
+        var course = CourseBuilder.Default();
+        
         _context.Courses.Add(course);
         await _context.SaveChangesAsync();
 
-        var request = new UpdateCourseRequest(
-            "Test Course Updated",
-            course.CourseCode,
-            course.Description,
-            course.Credits,
-            1
-        );
+        course.Name = "Updated Course Name";
+        course.CourseCode = "CS-UPDATED"; 
+        course.Description = "Updated Course Description";
+        course.Credits = 2;
+        course.MaxEnrollment = 100;
+        
+        var request = ToUpdateCourseRequest(course);
 
         var result = await _sut.HandleAsync(course.Id, request);
-        
+
         result.AssertOk();
-        
+
         var updatedCourse = await _context.Courses.FindAsync(course.Id);
-    
+
         Assert.NotNull(updatedCourse);
         Assert.Equal(request.Name, updatedCourse.Name);
         Assert.Equal(request.CourseCode, updatedCourse.CourseCode);
@@ -107,65 +144,38 @@ public class UpdateCourseTest : BaseHandlerTest
         Assert.Equal(request.Credits, updatedCourse.Credits);
         Assert.Equal(request.MaxEnrollment, updatedCourse.MaxEnrollment);
     }
-    
+
     [Fact]
     public async Task UpdateCourse_ThrowsConflict_WhenCourseCodeAlreadyExists()
     {
-        var course1 = new Course
-        {
-            Name = "Course1",
-            CourseCode = "CS-1",
-            Description = "Test Course Description",
-            Credits = 1,
-            MaxEnrollment = 100
-        };
+        var course1 = CourseBuilder.Default(name: "Course1", courseCode: "CS-1");
+        var course2 = CourseBuilder.Default(name: "Course2", courseCode: "CS-2");
 
-        var course2 = new Course
-        {
-            Name = "Course2",
-            CourseCode = "CS-2",
-            Description = "Test Course Description",
-            Credits = 1,
-            MaxEnrollment = 100
-        };
-        
         _context.Courses.Add(course1);
         _context.Courses.Add(course2);
         await _context.SaveChangesAsync();
-        
-        var request = new UpdateCourseRequest(
-            "Course1",
-            course1.CourseCode,
-            "Test Course Description",
-            1,
-            100
-        );
-        
+
+        course2.CourseCode = course1.CourseCode;
+        var request = ToUpdateCourseRequest(course2);
+
         var result = await _sut.HandleAsync(course2.Id, request);
-        
+
         result.AssertConflict<ProblemDetails>();
     }
-    
+
     [Fact]
     public async Task UpdateCourse_ThrowsConflict_WhenMaxEnrollmentLessThanCurrentEnrollment()
     {
-        var course = new Course
-        {
-            Name = "Test Course",
-            CourseCode = "CS-101",
-            Description = "Test Course Description",
-            Credits = 1,
-            MaxEnrollment = 100
-        };
-        
+        var course = CourseBuilder.Default();
+
         _context.Courses.Add(course);
         await _context.SaveChangesAsync();
-        
+
         var students = new[]
         {
             StudentBuilder.Default(1),
             StudentBuilder.Default(2),
-            StudentBuilder.Default(3)
+            StudentBuilder.Default(3),
         };
 
         _context.Students.AddRange(students);
@@ -175,21 +185,16 @@ public class UpdateCourseTest : BaseHandlerTest
         {
             new() { CourseId = course.Id, StudentId = 1 },
             new() { CourseId = course.Id, StudentId = 2 },
-            new() { CourseId = course.Id, StudentId = 3 }
+            new() { CourseId = course.Id, StudentId = 3 },
         };
         _context.Enrollments.AddRange(enrollments);
         await _context.SaveChangesAsync();
-        
-        var request = new UpdateCourseRequest(
-            course.Name,
-            course.CourseCode,
-            course.Description,
-            3,
-            2 
-        );
 
+        course.MaxEnrollment = enrollments.Count - 1;
+
+        var request = ToUpdateCourseRequest(course);
         var result = await _sut.HandleAsync(course.Id, request);
 
-        result.AssertConflict<ProblemDetails>(); 
+        result.AssertConflict<ProblemDetails>();
     }
 }

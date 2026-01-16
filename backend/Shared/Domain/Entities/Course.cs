@@ -7,11 +7,11 @@ namespace StudentEnrollment.Shared.Domain.Entities;
 public class Course : BaseEntity, IAuditableEntity
 {
     public string CourseCode { get; set; }
-    
+
     public string Name { get; set; }
     public string Description { get; set; }
 
-    public int Credits { get; set; }    
+    public int Credits { get; set; }
     public int MaxEnrollment { get; set; }
 
     public ICollection<Enrollment> Enrollments { get; set; }
