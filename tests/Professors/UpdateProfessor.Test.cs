@@ -165,8 +165,8 @@ public class UpdateProfessorTest : BaseHandlerTest
         // Data normalization is done in the handler
         Assert.NotNull(updatedProfessor);
         Assert.Equal(Normalize(request.FirstName), updatedProfessor.FirstName);
-        Assert.Equal(NormalizeEmail(request.LastName), updatedProfessor.LastName);
-        Assert.Equal(Normalize(request.Email), updatedProfessor.Email);
+        Assert.Equal(Normalize(request.LastName), updatedProfessor.LastName);
+        Assert.Equal(NormalizeEmail(request.Email), updatedProfessor.Email);
         Assert.Equal(request.PhoneNumber, updatedProfessor.PhoneNumber);
     }
 
