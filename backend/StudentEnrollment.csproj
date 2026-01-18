@@ -22,6 +22,7 @@
     <PackageReference Include="Swashbuckle.AspNetCore" Version="10.1.0" />
   </ItemGroup>
   <ItemGroup>
+    <Folder Include="Features\EditGrade\" />
     <Folder Include="Shared\Persistence\Migrations\" />
   </ItemGroup>
 </Project>
