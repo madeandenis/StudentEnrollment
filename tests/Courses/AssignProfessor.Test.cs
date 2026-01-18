@@ -31,7 +31,7 @@ public class AssignProfessorTest : BaseHandlerTest
         
         await _context.SaveChangesAsync();
 
-        var result = await _sut.HandleAsync(course.Id, professor.Id);
+        var result = await _sut.HandleAsync(course.Id, professor.Id.ToString());
 
         result.AssertOk();
 
@@ -51,7 +51,7 @@ public class AssignProfessorTest : BaseHandlerTest
         _context.Professors.Add(professor);
         await _context.SaveChangesAsync();
 
-        var result = await _sut.HandleAsync(999, professor.Id);
+        var result = await _sut.HandleAsync(999, professor.Id.ToString());
 
         result.AssertNotFound<ProblemDetails>();
     }
@@ -63,7 +63,7 @@ public class AssignProfessorTest : BaseHandlerTest
         _context.Courses.Add(course);
         await _context.SaveChangesAsync();
 
-        var result = await _sut.HandleAsync(course.Id, 999);
+        var result = await _sut.HandleAsync(course.Id, 999.ToString());
 
         result.AssertNotFound<ProblemDetails>();
     }
@@ -82,7 +82,7 @@ public class AssignProfessorTest : BaseHandlerTest
         _context.Courses.Add(course);
         await _context.SaveChangesAsync();
 
-        var result = await _sut.HandleAsync(course.Id, professor.Id);
+        var result = await _sut.HandleAsync(course.Id, professor.Id.ToString());
 
         result.AssertConflict<ProblemDetails>();
     }
@@ -111,7 +111,7 @@ public class AssignProfessorTest : BaseHandlerTest
         _context.Courses.Add(course);
         await _context.SaveChangesAsync();
 
-        var result = await _sut.HandleAsync(course.Id, professor2.Id);
+        var result = await _sut.HandleAsync(course.Id, professor2.Id.ToString());
 
         result.AssertConflict<ProblemDetails>();
     }
@@ -130,7 +130,7 @@ public class AssignProfessorTest : BaseHandlerTest
         _context.Courses.Add(course);
         await _context.SaveChangesAsync();
 
-        var result = await _sut.HandleAsync(course.Id, professor.Id);
+        var result = await _sut.HandleAsync(course.Id, professor.Id.ToString());
 
         result.AssertNotFound<ProblemDetails>();
     }
