@@ -6,8 +6,8 @@ namespace StudentEnrollment.Shared.Security.Services;
 
 /// <summary>
 /// Provides a builder for constructing <see cref="ClaimsIdentity"/> instances.
-/// Adds standard claims recognized by JWT (<see cref="JwtRegisteredClaimNames"/>) 
-/// and .NET (<see cref="ClaimTypes"/>), including user ID, personal info, roles, 
+/// Adds standard claims recognized by JWT (<see cref="JwtRegisteredClaimNames"/>)
+/// and .NET (<see cref="ClaimTypes"/>), including user ID, personal info, roles,
 /// and allows custom claims.
 /// </summary>
 public class ClaimsIdentityBuilder
@@ -81,6 +81,12 @@ public class ClaimsIdentityBuilder
     public ClaimsIdentityBuilder AddStudentCode(string studentCode)
     {
         _identity.AddClaim(new Claim(ApplicationUserClaims.StudentCode, studentCode));
+        return this;
+    }
+
+    public ClaimsIdentityBuilder AddProfessorCode(string professorCode)
+    {
+        _identity.AddClaim(new Claim(ApplicationUserClaims.ProfessorCode, professorCode));
         return this;
     }
 

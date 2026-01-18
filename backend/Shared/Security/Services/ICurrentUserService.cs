@@ -24,4 +24,14 @@ public interface ICurrentUserService
     /// Gets the current authenticated user's student code from JWT claims.
     /// </summary>
     string? StudentCode();
+
+    /// <summary>
+    /// Gets the current authenticated user's professor code from JWT claims.
+    /// </summary>
+    string? ProfessorCode();
+
+    /// <summary>
+    /// Gets the current authenticated user's professor ID (database primary key) by querying the database.
+    /// </summary>
+    Task<int?> ProfessorIdAsync();
 }

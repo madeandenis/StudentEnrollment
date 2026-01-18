@@ -74,7 +74,7 @@ public class RegisterHandler(
             await context.SaveChangesAsync();
         }
 
-        var identity = await identityFactory.CreateAsync(user, student);
+        var identity = await identityFactory.CreateAsync(user, student, null);
 
         return Results.Created($"/auth/me", ClaimsUser.FromClaimsIdentity(identity));
     }
