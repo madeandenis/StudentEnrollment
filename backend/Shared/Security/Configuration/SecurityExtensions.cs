@@ -17,7 +17,8 @@ public static class SecurityExtensions
         /// </summary>
         public IServiceCollection AddJwtAuthentication(IConfiguration configuration)
         {
-            services.AddOptions<JwtSettings>()
+            services
+                .AddOptions<JwtSettings>()
                 .Bind(configuration.GetSection("JwtSettings"))
                 .ValidateDataAnnotations()
                 .ValidateOnStart();
@@ -25,11 +26,13 @@ public static class SecurityExtensions
             // Register custom JWT bearer options configuration
             services.AddSingleton<IConfigureOptions<JwtBearerOptions>, ConfigureJwtBearerOptions>();
 
-            services.AddAuthentication(options =>
-            {
-                options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-                options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-            }).AddJwtBearer(JwtBearerDefaults.AuthenticationScheme);
+            services
+                .AddAuthentication(options =>
+                {
+                    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+                })
+                .AddJwtBearer(JwtBearerDefaults.AuthenticationScheme);
 
             return services;
         }
@@ -42,18 +45,39 @@ public static class SecurityExtensions
             // Register custom authorization handlers
             services.AddScoped<IAuthorizationHandler, AdminBypassAuthorizationHandler>();
             services.AddScoped<IAuthorizationHandler, SameStudentAuthorizationHandler>();
-            
+
             services.Configure<AuthorizationOptions>(options =>
             {
                 // Define role-based policies
                 options.AddPolicy("SuAdmin", policy => policy.RequireRole("SuAdmin"));
-                options.AddPolicy("Admin", policy => { policy.RequireRole("Admin", "SuAdmin"); });
+                options.AddPolicy(
+                    "Admin",
+                    policy =>
+                    {
+                        policy.RequireRole("Admin", "SuAdmin");
+                    }
+                );
 
                 // Define context-based policies
-                options.AddPolicy("SameStudent", policy =>
-                    policy.AddRequirements(new SameStudentAuthorizationRequirement()));
-                
-                options.AddPolicy("IsStudent", policy => policy.RequireClaim(ApplicationUserClaims.StudentCode));
+                options.AddPolicy(
+                    "SameStudent",
+                    policy => policy.AddRequirements(new SameStudentAuthorizationRequirement())
+                );
+
+                options.AddPolicy(
+                    "SameProfessor",
+                    policy => policy.AddRequirements(new SameProfessorAuthorizationRequirement())
+                );
+
+                options.AddPolicy(
+                    "IsStudent",
+                    policy => policy.RequireClaim(ApplicationUserClaims.StudentCode)
+                );
+
+                options.AddPolicy(
+                    "IsProfessor",
+                    policy => policy.RequireClaim(ApplicationUserClaims.ProfessorCode)
+                );
 
                 // Fallback policy: require authentication by default
                 options.FallbackPolicy = new AuthorizationPolicyBuilder()
@@ -66,25 +90,25 @@ public static class SecurityExtensions
 
         /// <summary>
         /// Configures ASP.NET Identity options such as password rules, lockout, and user settings.
-            /// </summary>
-            public IServiceCollection ConfigureIdentity()
+        /// </summary>
+        public IServiceCollection ConfigureIdentity()
+        {
+            services.Configure<IdentityOptions>(options =>
             {
-                services.Configure<IdentityOptions>(options =>
-                {
-                    options.Password.RequireDigit = true;
-                    options.Password.RequiredLength = 8;
-                    options.Password.RequireNonAlphanumeric = true;
-                    options.Password.RequireUppercase = true;
-                    options.Password.RequireLowercase = true;
-                    options.Password.RequiredUniqueChars = 4;
+                options.Password.RequireDigit = true;
+                options.Password.RequiredLength = 8;
+                options.Password.RequireNonAlphanumeric = true;
+                options.Password.RequireUppercase = true;
+                options.Password.RequireLowercase = true;
+                options.Password.RequiredUniqueChars = 4;
 
-                    options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(15);
-                    options.Lockout.MaxFailedAccessAttempts = 10;
+                options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(15);
+                options.Lockout.MaxFailedAccessAttempts = 10;
 
-                    options.SignIn.RequireConfirmedEmail = false;
-                    options.User.RequireUniqueEmail = true;
-                });
-                return services;
-            }
+                options.SignIn.RequireConfirmedEmail = false;
+                options.User.RequireUniqueEmail = true;
+            });
+            return services;
+        }
     }
 }
