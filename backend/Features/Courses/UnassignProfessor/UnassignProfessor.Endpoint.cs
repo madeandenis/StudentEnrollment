@@ -8,15 +8,15 @@ public class UnassignProfessorEndpoint : IEndpoint
     public void MapEndpoint(IEndpointRouteBuilder app)
     {
         app.MapDelete(
-                "/{courseId:int}/unassign/{professorId:int}",
+                "/{courseId:int}/unassign/{professorIdentifier}",
                 async (
                     [FromRoute] int courseId,
-                    [FromRoute] int professorId,
+                    [FromRoute] string professorIdentifier,
                     [FromServices] UnassignProfessorHandler handler
-                ) => await handler.HandleAsync(courseId, professorId)
+                ) => await handler.HandleAsync(courseId, professorIdentifier)
             )
             .WithName("UnassignProfessor")
-            .RequireAuthorization("Admin")
+            .RequireAuthorization("SameProfessor")
             .Produces(StatusCodes.Status204NoContent)
             .Produces(StatusCodes.Status404NotFound)
             .Produces(StatusCodes.Status409Conflict);
