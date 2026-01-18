@@ -16,7 +16,7 @@ public class GetProfessorDetailsEndpoint : IEndpoint
                 ) => await handler.HandleAsync(professorIdentifier)
             )
             .WithName("GetProfessorById")
-            .RequireAuthorization("Admin")
+            .RequireAuthorization("SameProfessor")
             .Produces<ProfessorResponse>()
             .Produces(StatusCodes.Status404NotFound);
     }
