@@ -8,15 +8,15 @@ public class AssignProfessorEndpoint : IEndpoint
     public void MapEndpoint(IEndpointRouteBuilder app)
     {
         app.MapPost(
-                "/{courseId:int}/assign/{professorId:int}",
+                "/{courseId:int}/assign/{professorIdentifier}",
                 async (
                     [FromRoute] int courseId,
-                    [FromRoute] int professorId,
+                    [FromRoute] string professorIdentifier,
                     [FromServices] AssignProfessorHandler handler
-                ) => await handler.HandleAsync(courseId, professorId)
+                ) => await handler.HandleAsync(courseId, professorIdentifier)
             )
             .WithName("AssignProfessor")
-            .RequireAuthorization("Admin")
+            .RequireAuthorization("SameProfessor")
             .Produces(StatusCodes.Status200OK)
             .Produces(StatusCodes.Status404NotFound)
             .Produces(StatusCodes.Status409Conflict);
