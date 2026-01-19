@@ -17,8 +17,7 @@ public static class ProfessorMapper
             LastName = Normalize(request.LastName),
             Email = NormalizeEmail(request.Email),
             PhoneNumber = request.PhoneNumber,
-            Address = request.Address,
-            ProfessorCode = string.Empty,
+            Address = request.Address
         };
 
     public static CreateProfessorResponse ToResponse(Professor professor) =>

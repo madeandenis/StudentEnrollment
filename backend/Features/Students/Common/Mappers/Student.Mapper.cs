@@ -59,7 +59,6 @@ public static class StudentMapper
             Email = NormalizeEmail(request.Email),
             PhoneNumber = request.PhoneNumber,
             Address = request.Address,
-            StudentCode = string.Empty
         };
 
     /// <summary>
