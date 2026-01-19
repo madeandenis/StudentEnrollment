@@ -8,6 +8,8 @@ public record GetCourseListRequest
     public string? Search { get; init; }
     public string? Code { get; init; }
     public string? Name { get; init; }
+
+    public bool? HasAssignedProfessor { get; init; }
     
     public int? MinCredits { get; init; }
     public int? MaxCredits { get; init; }

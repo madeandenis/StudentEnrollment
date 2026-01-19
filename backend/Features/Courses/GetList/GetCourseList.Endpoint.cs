@@ -18,7 +18,7 @@ public class GetCourseListEndpoint : IEndpoint
                 ) => await handler.HandleAsync(request, pagination)
             )
             .WithName("GetCourseList")
-            .RequireAuthorization("Admin")
+            .RequireAuthorization("IsProfessor")
             .Produces<PaginatedList<CourseResponse>>();
     }
 }

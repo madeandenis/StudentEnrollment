@@ -28,6 +28,9 @@ public static class CourseQueryExtensions
             if (!string.IsNullOrWhiteSpace(request.Name))
                 query = query.Where(c => EF.Functions.Like(c.Name, $"%{request.Name}%"));
 
+            if (request.HasAssignedProfessor.HasValue)
+                query = query.Where(c => c.ProfessorId.HasValue == request.HasAssignedProfessor.Value);
+            
             if (request.MinCredits.HasValue)
                 query = query.Where(c => c.Credits >= request.MinCredits.Value);
 
