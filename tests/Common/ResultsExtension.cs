@@ -30,6 +30,9 @@ public static class ResultsExtension
         public CreatedAtRoute<T> AssertCreatedAtRoute<T>(int expectedStatusCode = 201) =>
             AssertResult<CreatedAtRoute<T>>(result, expectedStatusCode);
 
+        public UnauthorizedHttpResult AssertUnauthorized()
+            => AssertResult<UnauthorizedHttpResult>(result, StatusCodes.Status401Unauthorized);
+        
         public BadRequest<T> AssertBadRequest<T>(int expectedStatusCode = 400) =>
             AssertResult<BadRequest<T>>(result, expectedStatusCode);
 
