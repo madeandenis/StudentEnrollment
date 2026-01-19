@@ -14,7 +14,7 @@ public class CreateProfessorEndpoint : IEndpoint
                     [FromServices] CreateProfessorHandler handler
                 ) => await handler.HandleAsync(request)
             )
-            .WithName("CreateStudent")
+            .WithName("CreateProfessor")
             .RequireAuthorization("Admin")
             .Produces<CreateProfessorResponse>(StatusCodes.Status201Created)
             .Produces(StatusCodes.Status400BadRequest)
