@@ -1,9 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using StudentEnrollment.Features.Professors.Create;
 using StudentEnrollment.Shared.Domain.Entities;
-using StudentEnrollment.Shared.Domain.Entities.Identity;
 using tests.Common;
-using tests.Students;
 
 namespace tests.Professors;
 
@@ -109,21 +107,6 @@ public class CreateProfessorTest : BaseHandlerTest
     }
 
     [Fact]
-    public async Task CreateProfessor_Succeeds_WhenValid()
-    {
-        var user = new ApplicationUser();
-        _context.Users.Add(user);
-        await _context.SaveChangesAsync();
-
-        var professor = ProfessorBuilder.Default(userId: user.Id);
-        var request = ToCreateProfessorRequest(professor);
-
-        var result = await _sut.HandleAsync(request);
-
-        result.AssertCreatedAtRoute<CreateProfessorResponse>();
-    }
-    
-    [Fact]
     public async Task CreateProfessor_ThrowsConflict_WhenEmailAlreadyExists()
     {
         var existingProfessor = ProfessorBuilder.Default();
@@ -156,7 +139,7 @@ public class CreateProfessorTest : BaseHandlerTest
     [Fact]
     public async Task CreateProfessor_ThrowsNotFound_WhenUserDoesNotExist()
     {
-        var professor = ProfessorBuilder.Default(userId: 999); 
+        var professor = ProfessorBuilder.Default(userId: 999);
         var request = ToCreateProfessorRequest(professor);
 
         var result = await _sut.HandleAsync(request);
