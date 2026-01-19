@@ -1,5 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using StudentEnrollment.Features.Courses.Enroll;
+using StudentEnrollment.Features.Courses.EnrollStudent;
 using StudentEnrollment.Shared.Domain.Entities;
 using tests.Common;
 using tests.Students;
