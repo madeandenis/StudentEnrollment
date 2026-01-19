@@ -207,11 +207,18 @@ namespace StudentEnrollment.Migrations
                     b.Property<int>("CourseId")
                         .HasColumnType("int");
 
+                    b.Property<int?>("AssignedByProfessorId")
+                        .HasColumnType("int");
+
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
 
                     b.Property<int>("CreatedBy")
                         .HasColumnType("int");
+
+                    b.Property<decimal?>("Grade")
+                        .HasPrecision(3, 2)
+                        .HasColumnType("decimal(3,2)");
 
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("datetime2");
@@ -220,6 +227,8 @@ namespace StudentEnrollment.Migrations
                         .HasColumnType("int");
 
                     b.HasKey("StudentId", "CourseId");
+
+                    b.HasIndex("AssignedByProfessorId");
 
                     b.HasIndex("CourseId");
 
@@ -573,6 +582,11 @@ namespace StudentEnrollment.Migrations
 
             modelBuilder.Entity("StudentEnrollment.Shared.Domain.Entities.Enrollment", b =>
                 {
+                    b.HasOne("StudentEnrollment.Shared.Domain.Entities.Professor", "AssignedByProfessor")
+                        .WithMany()
+                        .HasForeignKey("AssignedByProfessorId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
                     b.HasOne("StudentEnrollment.Shared.Domain.Entities.Course", "Course")
                         .WithMany("Enrollments")
                         .HasForeignKey("CourseId")
@@ -584,6 +598,8 @@ namespace StudentEnrollment.Migrations
                         .HasForeignKey("StudentId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
+
+                    b.Navigation("AssignedByProfessor");
 
                     b.Navigation("Course");
 

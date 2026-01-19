@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace StudentEnrollment.Migrations
 {
     /// <inheritdoc />
-    public partial class ProfessorFeature : Migration
+    public partial class ProfessorAndGradesFeature : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -25,11 +25,24 @@ namespace StudentEnrollment.Migrations
                 oldDefaultValueSql: "RIGHT('000000' + CAST(NEXT VALUE FOR StudentCodeSequence AS VARCHAR), 6)");
 
             migrationBuilder.AddColumn<int>(
+                name: "AssignedByProfessorId",
+                table: "Enrollments",
+                type: "int",
+                nullable: true);
+
+            migrationBuilder.AddColumn<decimal>(
+                name: "Grade",
+                table: "Enrollments",
+                type: "decimal(3,2)",
+                precision: 3,
+                scale: 2,
+                nullable: true);
+
+            migrationBuilder.AddColumn<int>(
                 name: "ProfessorId",
                 table: "Courses",
                 type: "int",
-                nullable: false,
-                defaultValue: 0);
+                nullable: true);
 
             migrationBuilder.CreateTable(
                 name: "Professors",
@@ -63,6 +76,11 @@ namespace StudentEnrollment.Migrations
                 });
 
             migrationBuilder.CreateIndex(
+                name: "IX_Enrollments_AssignedByProfessorId",
+                table: "Enrollments",
+                column: "AssignedByProfessorId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Courses_ProfessorId",
                 table: "Courses",
                 column: "ProfessorId");
@@ -94,7 +112,15 @@ namespace StudentEnrollment.Migrations
                 column: "ProfessorId",
                 principalTable: "Professors",
                 principalColumn: "Id",
-                onDelete: ReferentialAction.Cascade);
+                onDelete: ReferentialAction.SetNull);
+
+            migrationBuilder.AddForeignKey(
+                name: "FK_Enrollments_Professors_AssignedByProfessorId",
+                table: "Enrollments",
+                column: "AssignedByProfessorId",
+                principalTable: "Professors",
+                principalColumn: "Id",
+                onDelete: ReferentialAction.Restrict);
         }
 
         /// <inheritdoc />
@@ -104,12 +130,28 @@ namespace StudentEnrollment.Migrations
                 name: "FK_Courses_Professors_ProfessorId",
                 table: "Courses");
 
+            migrationBuilder.DropForeignKey(
+                name: "FK_Enrollments_Professors_AssignedByProfessorId",
+                table: "Enrollments");
+
             migrationBuilder.DropTable(
                 name: "Professors");
 
             migrationBuilder.DropIndex(
+                name: "IX_Enrollments_AssignedByProfessorId",
+                table: "Enrollments");
+
+            migrationBuilder.DropIndex(
                 name: "IX_Courses_ProfessorId",
                 table: "Courses");
+
+            migrationBuilder.DropColumn(
+                name: "AssignedByProfessorId",
+                table: "Enrollments");
+
+            migrationBuilder.DropColumn(
+                name: "Grade",
+                table: "Enrollments");
 
             migrationBuilder.DropColumn(
                 name: "ProfessorId",
