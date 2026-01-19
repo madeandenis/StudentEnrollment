@@ -4,7 +4,7 @@ using StudentEnrollment.Features.Common.Contracts;
 using StudentEnrollment.Shared.Domain.Entities;
 using StudentEnrollment.Shared.Persistence;
 
-namespace StudentEnrollment.Features.Courses.Enroll;
+namespace StudentEnrollment.Features.Courses.EnrollStudent;
 
 public class EnrollStudentHandler(ApplicationDbContext context) : IHandler
 {

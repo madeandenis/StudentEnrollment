@@ -1,7 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using StudentEnrollment.Features.Common.Contracts;
 
-namespace StudentEnrollment.Features.Courses.Enroll;
+namespace StudentEnrollment.Features.Courses.EnrollStudent;
 
 public class EnrollStudentEndpoint : IEndpoint
 {
