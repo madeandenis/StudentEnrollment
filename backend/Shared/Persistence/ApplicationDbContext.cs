@@ -30,7 +30,25 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
         modelBuilder.ApplyConfigurationsFromAssembly(typeof(ApplicationDbContext).Assembly);
 
         modelBuilder.Entity<IdentityUserLogin<int>>().ToTable("UserLogins");
-        modelBuilder.Entity<IdentityUserRole<int>>().ToTable("UserRoles");
+        
+        modelBuilder.Entity<ApplicationUserRole>(entity =>
+        {
+            entity.ToTable("UserRoles"); 
+            entity.HasBaseType((Type)null!);
+            
+            entity.HasKey(ur => new { ur.UserId, ur.RoleId });
+
+            entity.HasOne(ur => ur.Role)
+                .WithMany(r => r.UserRoles)
+                .HasForeignKey(ur => ur.RoleId)
+                .IsRequired();
+
+            entity.HasOne(ur => ur.User)
+                .WithMany(u => u.UserRoles)
+                .HasForeignKey(ur => ur.UserId)
+                .IsRequired();
+        });
+        
         modelBuilder.Entity<IdentityUserToken<int>>().ToTable("UserTokens");
         modelBuilder.Entity<IdentityUserClaim<int>>().ToTable("UserClaims");
         modelBuilder.Entity<IdentityRoleClaim<int>>().ToTable("RoleClaims");
