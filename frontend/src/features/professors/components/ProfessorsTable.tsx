@@ -4,8 +4,8 @@ import {
   ActionIcon,
   Group,
   Tooltip,
-  Badge,
   Center,
+  Badge,
 } from "@mantine/core";
 import { Eye, Pencil, Trash2 } from "lucide-react";
 import type { ProfessorResponse } from "@/features/professors/_common/types";
@@ -40,8 +40,8 @@ export function ProfessorsTable({
 
   return (
     <Table.ScrollContainer minWidth={800}>
-      <Table striped highlightOnHover withTableBorder withColumnBorders>
-        <Table.Thead>
+      <Table verticalSpacing="sm" withTableBorder highlightOnHover>
+        <Table.Thead bg="gray.0">
           <Table.Tr>
             <SortableTh
               sortKey="ProfessorCode"
@@ -50,7 +50,7 @@ export function ProfessorsTable({
               onSort={onSort}
               width={110}
             >
-              Cod Profesor
+              <Text fw={700} size="sm" c="dimmed">Cod</Text>
             </SortableTh>
             <SortableTh
               sortKey="FullName"
@@ -58,7 +58,7 @@ export function ProfessorsTable({
               sortOrder={sortOrder}
               onSort={onSort}
             >
-              Nume Complet
+              <Text fw={700} size="sm" c="dimmed">Nume Complet</Text>
             </SortableTh>
             <SortableTh
               sortKey="Email"
@@ -66,7 +66,7 @@ export function ProfessorsTable({
               sortOrder={sortOrder}
               onSort={onSort}
             >
-              Email
+              <Text fw={700} size="sm" c="dimmed">Email</Text>
             </SortableTh>
             <SortableTh
               sortKey="PhoneNumber"
@@ -74,7 +74,7 @@ export function ProfessorsTable({
               sortOrder={sortOrder}
               onSort={onSort}
             >
-              Telefon
+              <Text fw={700} size="sm" c="dimmed">Telefon</Text>
             </SortableTh>
 
             <SortableTh
@@ -83,10 +83,10 @@ export function ProfessorsTable({
               sortOrder={sortOrder}
               onSort={onSort}
             >
-              Data Înregistrării
+              <Text fw={700} size="sm" c="dimmed">Dată Înregistrare</Text>
             </SortableTh>
             <SortableTh width={120}>
-              <Center>Acțiuni</Center>
+              <Center><Text fw={700} size="sm" c="dimmed">Acțiuni</Text></Center>
             </SortableTh>
           </Table.Tr>
         </Table.Thead>
@@ -103,15 +103,15 @@ export function ProfessorsTable({
             professors.map((professor) => (
               <Table.Tr key={professor.id}>
                 <Table.Td>
-                  <Badge variant="light" color="blue">
+                  <Badge variant="light" color="gray" radius="sm" tt="unset" style={{ fontFamily: 'monospace' }}>
                     {professor.professorCode}
                   </Badge>
                 </Table.Td>
                 <Table.Td>
-                  <Text fw={500}>{professor.fullName}</Text>
+                  <Text fw={600} size="sm">{professor.fullName}</Text>
                 </Table.Td>
                 <Table.Td>
-                  <Text size="sm" c="dimmed">
+                  <Text size="sm">
                     {professor.email}
                   </Text>
                 </Table.Td>
@@ -122,29 +122,32 @@ export function ProfessorsTable({
                   <Text size="sm">{formatDate(professor.createdAt)}</Text>
                 </Table.Td>
                 <Table.Td>
-                  <Group gap="xs" justify="center" wrap="nowrap">
+                  <Group gap={4} justify="center" wrap="nowrap">
                     <Tooltip label="Vizualizare">
                       <ActionIcon
                         variant="subtle"
                         color="blue"
+                        size="sm"
                         onClick={() => onView(professor.id)}
                       >
-                        <Eye size={18} />
+                        <Eye size={16} />
                       </ActionIcon>
                     </Tooltip>
                     <Tooltip label="Editare">
                       <ActionIcon
                         variant="subtle"
                         color="yellow"
+                        size="sm"
                         onClick={() => onEdit(professor.id)}
                       >
-                        <Pencil size={18} />
+                        <Pencil size={16} />
                       </ActionIcon>
                     </Tooltip>
                     <Tooltip label="Ștergere">
                       <ActionIcon
                         variant="subtle"
                         color="red"
+                        size="sm"
                         onClick={() =>
                           onDelete({
                             id: professor.id,
@@ -152,7 +155,7 @@ export function ProfessorsTable({
                           })
                         }
                       >
-                        <Trash2 size={18} />
+                        <Trash2 size={16} />
                       </ActionIcon>
                     </Tooltip>
                   </Group>

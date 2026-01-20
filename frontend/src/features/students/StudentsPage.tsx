@@ -1,5 +1,5 @@
 import { useCallback } from 'react';
-import { Button, Paper, Title, Group, Text, Stack, Loader, Center } from '@mantine/core';
+import { Button, Paper, Title, Group, Text, Stack, Loader, Center, Divider } from '@mantine/core';
 import { Plus } from 'lucide-react';
 import { useNavigate } from '@tanstack/react-router';
 import { StudentFormModal } from '@/features/students/components/StudentFormModal';
@@ -71,72 +71,80 @@ export function StudentsPage() {
 
     return (
         <>
-            <Paper p="md" shadow="sm" withBorder>
-                <Stack gap="lg">
-                    {/* Header */}
-                    <Group justify="space-between">
-                        <div>
-                            <Title order={2}>Studenți</Title>
-                            <Text size="sm" c="dimmed" mt={4}>
-                                Gestionează studenții înregistrați în sistem
-                            </Text>
-                        </div>
-                        <Button
-                            leftSection={<Plus size={18} />}
-                            onClick={handleCreate}
-                        >
-                            Adaugă Student
-                        </Button>
-                    </Group>
+            <Stack gap="lg">
+                {/* Page Header */}
+                <Group justify="space-between" align="end">
+                    <div>
+                        <Title order={2} c="dark.4">Studenți</Title>
+                        <Text c="dimmed" size="sm" mt={4}>
+                            Gestionează studenții înregistrați în sistem
+                        </Text>
+                    </div>
+                    <Button
+                        leftSection={<Plus size={16} />}
+                        onClick={handleCreate}
+                        variant="filled"
+                        color="blue"
+                        size="sm"
+                    >
+                        Adaugă Student
+                    </Button>
+                </Group>
 
-                    {/* Search Bar */}
-                    <SearchBar
-                        onSearch={table.setSearch}
-                        placeholder="Caută după nume sau email..."
-                    />
-
-                    {/* Error Display */}
-                    {isError && (
-                        <ErrorAlert
-                            errors={error?.message || 'A apărut o eroare la încărcarea studenților'}
-                            onClose={() => { }}
+                {/* Content Card */}
+                <Paper p="lg" shadow="xs" withBorder bg="white" radius="md">
+                    <Stack gap="lg">
+                        {/* Search Bar */}
+                        <SearchBar
+                            onSearch={table.setSearch}
+                            placeholder="Caută după nume sau email..."
                         />
-                    )}
 
-                    {/* Loading State */}
-                    {isLoading && (
-                        <Center py="xl">
-                            <Loader size="lg" />
-                        </Center>
-                    )}
-
-                    {/* Table */}
-                    {!isLoading && !isError && data && (
-                        <>
-                            <StudentsTable
-                                students={data.items}
-                                sortBy={table.filters.sortBy}
-                                sortOrder={table.filters.sortOrder}
-                                onView={handleView}
-                                onEdit={handleEdit}
-                                onDelete={handleDeleteClick}
-                                onSort={table.setSort}
+                        {/* Error Display */}
+                        {isError && (
+                            <ErrorAlert
+                                errors={error?.message || 'A apărut o eroare la încărcarea studenților'}
+                                onClose={() => { }}
                             />
+                        )}
 
-                            {/* Pagination */}
-                            <Pagination
-                                currentPage={table.pageIndex}
-                                totalPages={data.pageCount}
-                                pageSize={table.pageSize}
-                                totalItems={data.itemsCount}
-                                onPageChange={table.setPageIndex}
-                                onPageSizeChange={table.setPageSize}
-                                itemLabel="studenți"
-                            />
-                        </>
-                    )}
-                </Stack>
-            </Paper>
+                        {/* Loading State */}
+                        {isLoading && (
+                            <Center py="xl">
+                                <Loader size="lg" color="gray" />
+                            </Center>
+                        )}
+
+                        {/* Table */}
+                        {!isLoading && !isError && data && (
+                            <>
+                                <StudentsTable
+                                    students={data.items}
+                                    sortBy={table.filters.sortBy}
+                                    sortOrder={table.filters.sortOrder}
+                                    onView={handleView}
+                                    onEdit={handleEdit}
+                                    onDelete={handleDeleteClick}
+                                    onSort={table.setSort}
+                                />
+
+                                <Divider color="gray.1" />
+
+                                {/* Pagination */}
+                                <Pagination
+                                    currentPage={table.pageIndex}
+                                    totalPages={data.pageCount}
+                                    pageSize={table.pageSize}
+                                    totalItems={data.itemsCount}
+                                    onPageChange={table.setPageIndex}
+                                    onPageSizeChange={table.setPageSize}
+                                    itemLabel="studenți"
+                                />
+                            </>
+                        )}
+                    </Stack>
+                </Paper>
+            </Stack>
 
             {/* Modals */}
             <StudentFormModal

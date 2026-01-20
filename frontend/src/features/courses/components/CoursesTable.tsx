@@ -51,34 +51,34 @@ export function CoursesTable({
 
     return (
         <Table.ScrollContainer minWidth={800}>
-            <Table striped highlightOnHover withTableBorder withColumnBorders>
-                <Table.Thead>
+            <Table verticalSpacing="sm" withTableBorder highlightOnHover>
+                <Table.Thead bg="gray.0">
                     <Table.Tr>
                         <SortableTh sortKey="CourseCode" sortBy={sortBy} sortOrder={sortOrder} onSort={onSort}>
-                            Cod Curs
+                            <Text fw={700} size="sm" c="dimmed">Cod</Text>
                         </SortableTh>
                         <SortableTh sortKey="Name" sortBy={sortBy} sortOrder={sortOrder} onSort={onSort}>
-                            Nume Curs
+                            <Text fw={700} size="sm" c="dimmed">Nume    </Text>
                         </SortableTh>
                         <SortableTh sortKey="Credits" sortBy={sortBy} sortOrder={sortOrder} onSort={onSort}>
-                            Credite
+                            <Text fw={700} size="sm" c="dimmed">Credite</Text>
                         </SortableTh>
                         <SortableTh sortKey="MaxEnrollment" sortBy={sortBy} sortOrder={sortOrder} onSort={onSort}>
-                            Capacitate
+                            <Text fw={700} size="sm" c="dimmed">Capacitate</Text>
                         </SortableTh>
                         <SortableTh sortKey="EnrolledStudents" sortBy={sortBy} sortOrder={sortOrder} onSort={onSort}>
-                            Înscriși
+                            <Text fw={700} size="sm" c="dimmed">Înscriși</Text>
                         </SortableTh>
                         {showProfessorColumn && (
                             <SortableTh sortKey="ProfessorName" sortBy={sortBy} sortOrder={sortOrder} onSort={onSort}>
-                                Profesor
+                                <Text fw={700} size="sm" c="dimmed">Profesor</Text>
                             </SortableTh>
                         )}
                         <SortableTh sortKey="CreatedAt" sortBy={sortBy} sortOrder={sortOrder} onSort={onSort}>
-                            Data Creării
+                            <Text fw={700} size="sm" c="dimmed">Dată Creare</Text>
                         </SortableTh>
-                        <SortableTh width={140}>
-                            <Center>Acțiuni</Center>
+                        <SortableTh width={120}>
+                            <Center><Text fw={700} size="sm" c="dimmed">Acțiuni</Text></Center>
                         </SortableTh>
                     </Table.Tr>
                 </Table.Thead>
@@ -101,16 +101,16 @@ export function CoursesTable({
                             return (
                                 <Table.Tr key={id}>
                                     <Table.Td>
-                                        <Badge variant="light" color="blue">
+                                        <Badge variant="light" color="gray" radius="sm" tt="unset" style={{ fontFamily: 'monospace' }}>
                                             {code}
                                         </Badge>
                                     </Table.Td>
                                     <Table.Td>
-                                        <Text fw={500}>{course.name}</Text>
+                                        <Text fw={600} size="sm">{course.name}</Text>
                                     </Table.Td>
                                     <Table.Td>
-                                        <Badge variant="light" color="grape">
-                                            {course.credits} {course.credits === 1 ? 'credit' : 'credite'}
+                                        <Badge variant="light" color="gray" size="sm" radius="sm">
+                                            {course.credits}
                                         </Badge>
                                     </Table.Td>
                                     <Table.Td>
@@ -122,12 +122,12 @@ export function CoursesTable({
                                                 {course.enrolledStudents}
                                             </Text>
                                             {course.hasAvailableSeats ? (
-                                                <Badge variant="light" color="green" size="sm">
-                                                    {course.availableSeats} locuri
+                                                <Badge variant="dot" color="teal" size="sm" radius="sm">
+                                                    Disponibil
                                                 </Badge>
                                             ) : (
-                                                <Badge variant="light" color="red" size="sm">
-                                                    Complet
+                                                <Badge variant="dot" color="red" size="sm" radius="sm">
+                                                    Plin
                                                 </Badge>
                                             )}
                                         </Group>
@@ -137,19 +137,21 @@ export function CoursesTable({
                                             {professor ? (
                                                 <Badge
                                                     variant="light"
-                                                    color={isProfessor && professor.code === userCode ? "teal" : "cyan"}
-                                                    style={{ cursor: isAdmin ? 'pointer' : 'default' }}
+                                                    color={isProfessor && professor.code === userCode ? "teal" : "gray"}
+                                                    radius="sm"
+                                                    size="sm"
+                                                    style={{ cursor: isAdmin ? 'pointer' : 'default', textTransform: 'none' }}
                                                     onClick={(e) => {
                                                         if (!isAdmin) return;
                                                         e.stopPropagation();
                                                         navigate({ to: `/professors/${professor.id}` });
                                                     }}
                                                 >
-                                                    {isProfessor && professor.code === userCode ? "Tu" : professor.name}
+                                                    {isProfessor && professor.code === userCode ? "Dvs." : professor.name}
                                                 </Badge>
                                             ) : (
-                                                <Text size="sm" c="dimmed" fs="italic">
-                                                    Neasignat
+                                                <Text size="xs" fs="italic">
+                                                    -
                                                 </Text>
                                             )}
                                         </Table.Td>
@@ -158,14 +160,15 @@ export function CoursesTable({
                                         <Text size="sm">{formatDate(course.createdAt)}</Text>
                                     </Table.Td>
                                     <Table.Td>
-                                        <Group gap="xs" justify="center" wrap="nowrap">
+                                        <Group gap={4} justify="center" wrap="nowrap">
                                             <Tooltip label="Vizualizare">
                                                 <ActionIcon
                                                     variant="subtle"
                                                     color="blue"
+                                                    size="sm"
                                                     onClick={() => onView(id)}
                                                 >
-                                                    <Eye size={18} />
+                                                    <Eye size={16} />
                                                 </ActionIcon>
                                             </Tooltip>
 
@@ -175,50 +178,49 @@ export function CoursesTable({
                                                         <ActionIcon
                                                             variant="subtle"
                                                             color="yellow"
+                                                            size="sm"
                                                             onClick={() => onEdit(id)}
                                                         >
-                                                            <Pencil size={18} />
+                                                            <Pencil size={16} />
                                                         </ActionIcon>
                                                     </Tooltip>
                                                     <Tooltip label="Ștergere">
                                                         <ActionIcon
                                                             variant="subtle"
                                                             color="red"
+                                                            size="sm"
                                                             onClick={() => onDelete({ id, name: course.name })}
                                                         >
-                                                            <Trash2 size={18} />
+                                                            <Trash2 size={16} />
                                                         </ActionIcon>
                                                     </Tooltip>
                                                 </>
                                             )}
 
-                                            {/* Logic for Assigning: Only show if it's a CourseResponse (has 'professor' key) and professor is null */}
                                             {isProfessor && onAssignSelf && ('professor' in course) && !(course as CourseResponse).professor && (
                                                 <Tooltip label="Preia Cursul">
                                                     <ActionIcon
-                                                        variant="light"
+                                                        variant="subtle"
                                                         color="teal"
+                                                        size="sm"
                                                         onClick={() => onAssignSelf(id)}
                                                     >
-                                                        <UserPlus size={18} />
+                                                        <UserPlus size={16} />
                                                     </ActionIcon>
                                                 </Tooltip>
                                             )}
 
-                                            {/* Logic for Unassigning:
-                                                1. If professor info exists (CourseResponse) and matches userCode
-                                                2. OR if professor info does NOT exist (AssignedCourseResponse) - implying it's in the assigned list
-                                            */}
                                             {isProfessor && onUnassignSelf && (
                                                 ((professor && professor.code === userCode) || !('professor' in course))
                                             ) && (
-                                                    <Tooltip label="Renunță la Curs">
+                                                    <Tooltip label="Renunță">
                                                         <ActionIcon
-                                                            variant="light"
+                                                            variant="subtle"
                                                             color="red"
+                                                            size="sm"
                                                             onClick={() => onUnassignSelf(id)}
                                                         >
-                                                            <Trash2 size={18} />
+                                                            <Trash2 size={16} />
                                                         </ActionIcon>
                                                     </Tooltip>
                                                 )}

@@ -1,4 +1,4 @@
-import { Paper, Title, Stack, Table, Text, Badge, Loader, Center, Group } from '@mantine/core';
+import { Paper, Title, Stack, Table, Text, Badge, Loader, Center, Group, Divider } from '@mantine/core';
 import { GraduationCap } from 'lucide-react';
 import { useAuth } from '@/features/auth/_contexts/AuthContext';
 import { useStudentEnrolledCourses } from '@/features/students/get-enrolled-courses/useStudentEnrolledCourses';
@@ -54,92 +54,92 @@ export function MyCoursesPage() {
     const totalCredits = data?.totalCreditsAccumulated || 0;
 
     return (
-        <Paper p="md" shadow="sm" withBorder>
-            <Stack gap="lg">
-                {/* Header */}
-                <Group>
-                    <GraduationCap size={32} strokeWidth={1.5} />
-                    <div>
-                        <Title order={2}>Cursurile Mele</Title>
-                        <Text size="sm" c="dimmed" mt={4}>
-                            Cursurile la care ești înscris
-                        </Text>
-                    </div>
-                </Group>
+        <Stack gap="lg">
+            <Paper p="lg" shadow="xs" withBorder bg="white" radius="md">
+                <Stack gap="lg">
+                    {/* Header */}
+                    <Group justify="space-between" align="flex-start">
+                        <Group>
+                            <GraduationCap size={24} className="text-gray-400" />
+                            <div>
+                                <Title order={3} c="dark.4">Cursurile Mele</Title>
+                                <Text size="sm" c="dimmed">
+                                    Lista cursurilor la care ești înscris în prezent
+                                </Text>
+                            </div>
+                        </Group>
+                    </Group>
 
-                {/* Total Credits */}
-                <Group>
-                    <Badge size="lg" variant="light" color="blue">
-                        Total credite acumulate: {totalCredits}
-                    </Badge>
-                    <Badge size="lg" variant="light" color="gray">
-                        Număr cursuri: {enrolledCourses.length}
-                    </Badge>
-                </Group>
+                    <Divider color="gray.2" />
 
-                {/* Courses Table */}
-                {enrolledCourses.length === 0 ? (
-                    <Text size="sm" c="dimmed" fs="italic" ta="center" py="xl">
-                        Nu ești înscris la niciun curs momentan.
-                    </Text>
-                ) : (
-                    <Table striped highlightOnHover withTableBorder>
-                        <Table.Thead>
-                            <Table.Tr>
-                                <Table.Th>Cod Curs</Table.Th>
-                                <Table.Th>Nume Curs</Table.Th>
-                                <Table.Th>Credite</Table.Th>
-                                <Table.Th>Data Înscrierii</Table.Th>
-                            </Table.Tr>
-                        </Table.Thead>
-                        <Table.Tbody>
-                            {enrolledCourses.map((course) => (
-                                <Table.Tr key={course.code}>
-                                    <Table.Td>
-                                        <Badge variant="light" color="blue" size="lg">
-                                            {course.code}
-                                        </Badge>
-                                    </Table.Td>
-                                    <Table.Td>
-                                        <Text size="sm" fw={500}>
-                                            {course.name}
-                                        </Text>
-                                    </Table.Td>
-                                    <Table.Td>
-                                        <Badge variant="outline" color="gray">
-                                            {course.credits} credite
-                                        </Badge>
-                                    </Table.Td>
-                                    <Table.Td>
-                                        <Text size="sm" c="dimmed">
-                                            {formatDate(course.enrollmentDate)}
-                                        </Text>
-                                    </Table.Td>
+                    {/* Courses Table */}
+                    <Table.ScrollContainer minWidth={800}>
+                        <Table verticalSpacing="sm" withTableBorder highlightOnHover>
+                            <Table.Thead bg="gray.0">
+                                <Table.Tr>
+                                    <Table.Th><Text fw={700} size="sm" c="dimmed">Cod Curs</Text></Table.Th>
+                                    <Table.Th><Text fw={700} size="sm" c="dimmed">Nume Curs</Text></Table.Th>
+                                    <Table.Th><Text fw={700} size="sm" c="dimmed">Credite</Text></Table.Th>
+                                    <Table.Th><Text fw={700} size="sm" c="dimmed">Data Înscrierii</Text></Table.Th>
                                 </Table.Tr>
-                            ))}
-                        </Table.Tbody>
-                    </Table>
-                )}
-
-                {/* Summary */}
-                {enrolledCourses.length > 0 && (
-                    <Paper p="md" withBorder bg="gray.0">
-                        <Stack gap="xs">
-                            <Text size="sm" fw={500}>
-                                Rezumat Academic
-                            </Text>
-                            <Group>
-                                <Text size="sm" c="dimmed">
-                                    Total cursuri înscrise: <strong>{enrolledCourses.length}</strong>
-                                </Text>
-                                <Text size="sm" c="dimmed">
-                                    Total credite: <strong>{totalCredits}</strong>
-                                </Text>
-                            </Group>
-                        </Stack>
-                    </Paper>
-                )}
-            </Stack>
-        </Paper>
+                            </Table.Thead>
+                            <Table.Tbody>
+                                {enrolledCourses.length === 0 ? (
+                                    <Table.Tr>
+                                        <Table.Td colSpan={4}>
+                                            <Text size="sm" c="dimmed" fs="italic" ta="center" py="xl">
+                                                Nu ești înscris la niciun curs momentan.
+                                            </Text>
+                                        </Table.Td>
+                                    </Table.Tr>
+                                ) : (
+                                    enrolledCourses.map((course) => (
+                                        <Table.Tr key={course.code}>
+                                            <Table.Td>
+                                                <Badge variant="light" color="gray" radius="sm" tt="unset" style={{ fontFamily: 'monospace' }}>
+                                                    {course.code}
+                                                </Badge>
+                                            </Table.Td>
+                                            <Table.Td>
+                                                <Text size="sm" fw={600}>
+                                                    {course.name}
+                                                </Text>
+                                            </Table.Td>
+                                            <Table.Td>
+                                                <Badge variant="light" color="gray" size="sm" radius="sm">
+                                                    {course.credits} credite
+                                                </Badge>
+                                            </Table.Td>
+                                            <Table.Td>
+                                                <Text size="sm">
+                                                    {formatDate(course.enrollmentDate)}
+                                                </Text>
+                                            </Table.Td>
+                                        </Table.Tr>
+                                    ))
+                                )}
+                                {/* Summary Row */}
+                                {enrolledCourses.length > 0 && (
+                                    <Table.Tr bg="gray.0">
+                                        <Table.Td>
+                                            <Text size="sm" fw={700} c="dimmed">Total</Text>
+                                        </Table.Td>
+                                        <Table.Td>
+                                            <Text size="sm" fw={700}>{enrolledCourses.length} cursuri</Text>
+                                        </Table.Td>
+                                        <Table.Td>
+                                            <Badge variant="light" size="sm" radius="sm">
+                                                {totalCredits} credite
+                                            </Badge>
+                                        </Table.Td>
+                                        <Table.Td />
+                                    </Table.Tr>
+                                )}
+                            </Table.Tbody>
+                        </Table>
+                    </Table.ScrollContainer>
+                </Stack>
+            </Paper>
+        </Stack>
     );
 }

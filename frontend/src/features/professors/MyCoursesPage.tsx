@@ -1,4 +1,4 @@
-import { Paper, Title, Stack, Text, Badge, Loader, Center, Group, Divider } from '@mantine/core';
+import { Paper, Title, Stack, Text, Loader, Center, Group, Divider } from '@mantine/core';
 import { BookOpen } from 'lucide-react';
 import { useAuth } from '@/features/auth/_contexts/AuthContext';
 import { useProfessorAssignedCourses } from '@/features/professors/get-assigned-courses/useProfessorAssignedCourses';
@@ -6,11 +6,12 @@ import { useCourseList } from '@/features/courses/get-list/useCourseList';
 import { useAssignProfessor } from '@/features/courses/assign-professor/useAssignProfessor';
 import { useUnassignProfessor } from '@/features/courses/unassign-professor/useUnassignProfessor';
 import ErrorAlert from '@/features/_common/components/ErrorAlert';
-import { notifications } from '@mantine/notifications';
-import { useState } from 'react';
 import { useNavigate } from '@tanstack/react-router';
 import { ConfirmModal } from '@/features/_common/components/ConfirmModal';
 import { CoursesTable } from '@/features/courses/components/CoursesTable';
+import { useModalState } from '@/features/_common/hooks/useModalState';
+import { notifications } from '@mantine/notifications';
+
 
 interface CourseActionState {
     courseId: number | null;
@@ -22,10 +23,8 @@ export function MyCoursesPage() {
     const navigate = useNavigate();
 
     // Modal states
-    const [assignModal, setAssignModal] = useState<CourseActionState>({ courseId: null, courseName: '' });
-    const [unassignModal, setUnassignModal] = useState<CourseActionState>({ courseId: null, courseName: '' });
-    const [isAssignModalOpen, setIsAssignModalOpen] = useState(false);
-    const [isUnassignModalOpen, setIsUnassignModalOpen] = useState(false);
+    const assignModal = useModalState<CourseActionState>();
+    const unassignModal = useModalState<CourseActionState>();
 
     // Fetch professor's assigned courses using professorCode
     const { data: assignedData, isLoading: isLoadingAssigned, isError: isErrorAssigned, error: errorAssigned } = useProfessorAssignedCourses(user?.professorCode);
@@ -43,33 +42,31 @@ export function MyCoursesPage() {
     const openAssignModal = (courseId: number) => {
         const course = availableData?.items.find(c => c.id === courseId);
         if (course) {
-            setAssignModal({ courseId, courseName: course.name });
-            setIsAssignModalOpen(true);
+            assignModal.open({ courseId, courseName: course.name });
         }
     };
 
     const openUnassignModal = (courseId: number) => {
         const course = assignedData?.assignedCourses.find(c => c.courseId === courseId);
         if (course) {
-            setUnassignModal({ courseId, courseName: course.name });
-            setIsUnassignModalOpen(true);
+            unassignModal.open({ courseId, courseName: course.name });
         }
     };
 
     const handleConfirmAssign = async () => {
-        if (!user?.professorCode || !assignModal.courseId) return;
+        if (!user?.professorCode || !assignModal.item?.courseId) return;
 
         try {
             await assignMutation.mutateAsync({
-                courseId: assignModal.courseId,
+                courseId: assignModal.item.courseId,
                 professorIdentifier: user.professorCode,
             });
             notifications.show({
                 title: 'Succes',
-                message: `Ați fost asignat la cursul "${assignModal.courseName}" cu succes!`,
+                message: `Ați fost asignat la cursul "${assignModal.item.courseName}" cu succes!`,
                 color: 'green',
             });
-            setIsAssignModalOpen(false);
+            assignModal.close();
         } catch (error: any) {
             notifications.show({
                 title: 'Eroare',
@@ -80,19 +77,19 @@ export function MyCoursesPage() {
     };
 
     const handleConfirmUnassign = async () => {
-        if (!user?.professorCode || !unassignModal.courseId) return;
+        if (!user?.professorCode || !unassignModal.item?.courseId) return;
 
         try {
             await unassignMutation.mutateAsync({
-                courseId: unassignModal.courseId,
+                courseId: unassignModal.item.courseId,
                 professorIdentifier: user.professorCode,
             });
             notifications.show({
                 title: 'Succes',
-                message: `Ați renunțat la cursul "${unassignModal.courseName}" cu succes.`,
+                message: `Ați renunțat la cursul "${unassignModal.item.courseName}" cu succes.`,
                 color: 'green',
             });
-            setIsUnassignModalOpen(false);
+            unassignModal.close();
         } catch (error: any) {
             notifications.show({
                 title: 'Eroare',
@@ -146,28 +143,22 @@ export function MyCoursesPage() {
     return (
         <Stack gap="lg">
             {/* My Assigned Courses Section */}
-            <Paper p="md" shadow="sm" withBorder>
+            <Paper p="lg" shadow="xs" withBorder bg="white" radius="md">
                 <Stack gap="lg">
                     {/* Header */}
-                    <Group>
-                        <BookOpen size={32} strokeWidth={1.5} />
-                        <div>
-                            <Title order={2}>Cursurile Mele</Title>
-                            <Text size="sm" c="dimmed" mt={4}>
-                                Cursurile la care ești asignat ca profesor
-                            </Text>
-                        </div>
+                    <Group justify="space-between" align="flex-start">
+                        <Group>
+                            <BookOpen size={24} className="text-gray-400" />
+                            <div>
+                                <Title order={3} c="dark.4">Activitatea ta didactică</Title>
+                                <Text size="sm" c="dimmed">
+                                    Gestionezi <Text span fw={700} c="black" fs="italic">{assignedCourses.length}</Text> cursuri cu un total de <Text span fw={700} c="black" fs="italic">{totalStudents}</Text> studenți înscriși.
+                                </Text>
+                            </div>
+                        </Group>
                     </Group>
 
-                    {/* Summary */}
-                    <Group>
-                        <Badge size="lg" variant="light" color="blue">
-                            Total cursuri: {assignedCourses.length}
-                        </Badge>
-                        <Badge size="lg" variant="light" color="grape">
-                            Total studenți: {totalStudents}
-                        </Badge>
-                    </Group>
+                    <Divider color="gray.2" />
 
                     {/* Assigned Courses Table */}
                     <CoursesTable
@@ -184,16 +175,18 @@ export function MyCoursesPage() {
             </Paper>
 
             {/* Available Courses Section */}
-            <Paper p="md" shadow="sm" withBorder>
+            <Paper p="lg" shadow="xs" withBorder bg="white" radius="md">
                 <Stack gap="lg">
-                    <div>
-                        <Title order={3}>Cursuri Disponibile</Title>
-                        <Text size="sm" c="dimmed" mt={4}>
-                            Cursuri fără profesor asignat - poți să te asignezi singur
-                        </Text>
-                    </div>
+                    <Group justify="space-between" align="center">
+                        <div>
+                            <Title order={3} c="dark.4">Cursuri fără titular</Title>
+                            <Text size="sm" c="dimmed">
+                                Următoarele cursuri nu au încă un profesor alocat. Te poți înscrie ca titular.
+                            </Text>
+                        </div>
+                    </Group>
 
-                    <Divider />
+                    <Divider color="gray.2" />
 
                     <CoursesTable
                         courses={availableCourses}
@@ -210,23 +203,23 @@ export function MyCoursesPage() {
 
             {/* Confirm Modals */}
             <ConfirmModal
-                opened={isAssignModalOpen}
-                onClose={() => setIsAssignModalOpen(false)}
+                opened={assignModal.opened}
+                onClose={assignModal.close}
                 onConfirm={handleConfirmAssign}
                 title="Preluare Curs"
-                description={(name) => `Ești sigur că vrei să preiei cursul "${name}"? Vei deveni profesorul titular.`}
-                item={assignModal.courseName}
+                description={(name) => `Ești sigur că vrei să preiei cursul "${name}"?`}
+                item={assignModal.item?.courseName || ''}
                 confirmLabel="Preia Cursul"
                 isLoading={assignMutation.isPending}
             />
 
             <ConfirmModal
-                opened={isUnassignModalOpen}
-                onClose={() => setIsUnassignModalOpen(false)}
+                opened={unassignModal.opened}
+                onClose={unassignModal.close}
                 onConfirm={handleConfirmUnassign}
                 title="Renunțare Curs"
                 description={(name) => `Ești sigur că vrei să renunți la cursul "${name}"? Această acțiune nu poate fi anulată.`}
-                item={unassignModal.courseName}
+                item={unassignModal.item?.courseName || ''}
                 confirmLabel="Renunță"
                 isLoading={unassignMutation.isPending}
             />

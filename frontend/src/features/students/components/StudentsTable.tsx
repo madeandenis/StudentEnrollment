@@ -1,4 +1,4 @@
-import { Table, Text, ActionIcon, Group, Tooltip, Badge, Center } from '@mantine/core';
+import { Table, Text, ActionIcon, Group, Tooltip, Center, Badge } from '@mantine/core';
 import { Eye, Pencil, Trash2 } from 'lucide-react';
 import type { StudentResponse } from '@/features/students/_common/types';
 import { SortableTh } from '@/features/_common/components/SortableTh';
@@ -32,26 +32,26 @@ export function StudentsTable({
 
     return (
         <Table.ScrollContainer minWidth={800}>
-            <Table striped highlightOnHover withTableBorder withColumnBorders>
-                <Table.Thead>
+            <Table verticalSpacing="sm" withTableBorder highlightOnHover>
+                <Table.Thead bg="gray.0">
                     <Table.Tr>
                         <SortableTh sortKey="StudentCode" sortBy={sortBy} sortOrder={sortOrder} onSort={onSort} width={110}>
-                            Cod Student
+                            <Text fw={700} size="sm" c="dimmed">Cod</Text>
                         </SortableTh>
                         <SortableTh sortKey="FullName" sortBy={sortBy} sortOrder={sortOrder} onSort={onSort}>
-                            Nume Complet
+                            <Text fw={700} size="sm" c="dimmed">Nume Complet</Text>
                         </SortableTh>
                         <SortableTh sortKey="Email" sortBy={sortBy} sortOrder={sortOrder} onSort={onSort}>
-                            Email
+                            <Text fw={700} size="sm" c="dimmed">Email</Text>
                         </SortableTh>
                         <SortableTh sortKey="PhoneNumber" sortBy={sortBy} sortOrder={sortOrder} onSort={onSort}>
-                            Telefon
+                            <Text fw={700} size="sm" c="dimmed">Telefon</Text>
                         </SortableTh>
                         <SortableTh sortKey="CreatedAt" sortBy={sortBy} sortOrder={sortOrder} onSort={onSort}>
-                            Data Înregistrării
+                            <Text fw={700} size="sm" c="dimmed">Dată Înregistrare</Text>
                         </SortableTh>
                         <SortableTh width={120}>
-                            <Center>Acțiuni</Center>
+                            <Center><Text fw={700} size="sm" c="dimmed">Acțiuni</Text></Center>
                         </SortableTh>
                     </Table.Tr>
                 </Table.Thead>
@@ -68,15 +68,15 @@ export function StudentsTable({
                         students.map((student) => (
                             <Table.Tr key={student.id}>
                                 <Table.Td>
-                                    <Badge variant="light" color="blue">
+                                    <Badge variant="light" color="gray" radius="sm" tt="unset" style={{ fontFamily: 'monospace' }}>
                                         {student.studentCode}
                                     </Badge>
                                 </Table.Td>
                                 <Table.Td>
-                                    <Text fw={500}>{student.fullName}</Text>
+                                    <Text fw={600} size="sm">{student.fullName}</Text>
                                 </Table.Td>
                                 <Table.Td>
-                                    <Text size="sm" c="dimmed">
+                                    <Text size="sm">
                                         {student.email}
                                     </Text>
                                 </Table.Td>
@@ -87,32 +87,35 @@ export function StudentsTable({
                                     <Text size="sm">{formatDate(student.createdAt)}</Text>
                                 </Table.Td>
                                 <Table.Td>
-                                    <Group gap="xs" justify="center" wrap="nowrap">
+                                    <Group gap={4} justify="center" wrap="nowrap">
                                         <Tooltip label="Vizualizare">
                                             <ActionIcon
                                                 variant="subtle"
                                                 color="blue"
+                                                size="sm"
                                                 onClick={() => onView(student.id)}
                                             >
-                                                <Eye size={18} />
+                                                <Eye size={16} />
                                             </ActionIcon>
                                         </Tooltip>
                                         <Tooltip label="Editare">
                                             <ActionIcon
                                                 variant="subtle"
                                                 color="yellow"
+                                                size="sm"
                                                 onClick={() => onEdit(student.id)}
                                             >
-                                                <Pencil size={18} />
+                                                <Pencil size={16} />
                                             </ActionIcon>
                                         </Tooltip>
                                         <Tooltip label="Ștergere">
                                             <ActionIcon
                                                 variant="subtle"
                                                 color="red"
+                                                size="sm"
                                                 onClick={() => onDelete({ id: student.id, fullName: student.fullName })}
                                             >
-                                                <Trash2 size={18} />
+                                                <Trash2 size={16} />
                                             </ActionIcon>
                                         </Tooltip>
                                     </Group>
