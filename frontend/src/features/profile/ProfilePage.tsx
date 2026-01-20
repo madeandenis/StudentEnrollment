@@ -10,7 +10,7 @@ import {
   Divider,
   ThemeIcon,
 } from "@mantine/core";
-import { Mail, Phone, GraduationCap, Shield } from "lucide-react";
+import { Mail, Phone, GraduationCap, Shield, School } from "lucide-react";
 import { useAuth } from "@/features/auth/_contexts/AuthContext";
 import { MyDataPage } from "./MyDataPage";
 
@@ -118,6 +118,27 @@ export function ProfilePage() {
                           style={{ fontFamily: "monospace" }}
                         >
                           {user.studentCode}
+                        </Text>
+                      </div>
+                    </Group>
+                  </Grid.Col>
+                )}
+                {user.professorCode && (
+                  <Grid.Col span={{ base: 12, sm: 6 }}>
+                    <Group wrap="nowrap" align="flex-start">
+                      <ThemeIcon variant="light" size="lg" color="blue">
+                        <School size={20} />
+                      </ThemeIcon>
+                      <div>
+                        <Text size="xs" c="dimmed">
+                          Cod Profesor
+                        </Text>
+                        <Text
+                          size="sm"
+                          fw={500}
+                          style={{ fontFamily: "monospace" }}
+                        >
+                          {user.professorCode}
                         </Text>
                       </div>
                     </Group>

@@ -2,6 +2,7 @@ import { Title, Group, Button, Stack, Table, Text, Badge } from "@mantine/core";
 import { Download, FileText } from "lucide-react";
 import { useAuth } from "@/features/auth/_contexts/AuthContext";
 import { useStudentDetails } from "@/features/students/get-details/useStudentDetails";
+import { useProfessorDetails } from "@/features/professors/get-details/useProfessorDetails";
 
 export function MyDataPage() {
   const { user } = useAuth();
@@ -27,34 +28,59 @@ export function MyDataPage() {
     ...(user.studentCode != null
       ? [{ key: "Cod Student", value: user.studentCode }]
       : []),
+    ...(user.professorCode != null
+      ? [{ key: "Cod Profesor", value: user.professorCode }]
+      : []),
     ...(user.roles != null && user.roles.length > 0
       ? [{ key: "Roluri", value: user.roles.join(", ") }]
       : []),
   ];
 
   const { data: student } = useStudentDetails(user.studentCode || null);
+  const { data: professor } = useProfessorDetails(user.professorCode || null);
 
   const getEnhancedDataRows = () => {
     const basicRows = getDataRows();
-    if (!student) return basicRows;
 
-    return [
-      ...basicRows,
-      { key: "CNP", value: student.cnp },
-      { key: "Dată Naștere", value: student.dateOfBirth },
-      {
-        key: "Adresă",
-        value: [
-          student.address?.address1,
-          student.address?.address2,
-          student.address?.city,
-          student.address?.country,
-          student.address?.postalCode,
-        ]
-          .filter(Boolean)
-          .join(", "),
-      },
-    ];
+    if (user.studentCode && student) {
+      return [
+        ...basicRows,
+        { key: "CNP", value: student.cnp },
+        { key: "Dată Naștere", value: student.dateOfBirth },
+        {
+          key: "Adresă",
+          value: [
+            student.address?.address1,
+            student.address?.address2,
+            student.address?.city,
+            student.address?.country,
+            student.address?.postalCode,
+          ]
+            .filter(Boolean)
+            .join(", "),
+        },
+      ];
+    }
+
+    if (user.professorCode && professor) {
+      return [
+        ...basicRows,
+        {
+          key: "Adresă",
+          value: [
+            professor.address?.address1,
+            professor.address?.address2,
+            professor.address?.city,
+            professor.address?.country,
+            professor.address?.postalCode,
+          ]
+            .filter(Boolean)
+            .join(", "),
+        },
+      ];
+    }
+
+    return basicRows;
   };
 
   const handleDownloadCsv = () => {
