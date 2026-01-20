@@ -65,13 +65,6 @@ public class CreateProfessorHandler(
             );
         }
 
-        if (hasAdminRole)
-        {
-            return Results.BadRequest(
-                Problems.BadRequest("Users with admin privileges cannot be professors.")
-            );
-        }
-
         var professor = ProfessorMapper.ToEntity(request);
 
         context.Professors.Add(professor);
