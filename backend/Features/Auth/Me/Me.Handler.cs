@@ -16,10 +16,8 @@ public class MeHandler : IHandler
     {
         var user = httpContext.User;
 
-        if (user?.Identity is not ClaimsIdentity identity || !identity.IsAuthenticated)
-        {
+        if (user.Identity is not ClaimsIdentity { IsAuthenticated: true } identity)
             return TypedResults.Unauthorized();
-        }
 
         var claimsUser = ClaimsUser.FromClaimsIdentity(identity);
 

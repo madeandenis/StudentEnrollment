@@ -7,13 +7,7 @@ public class MeEndpoint : IEndpoint
 {
     public void MapEndpoint(IEndpointRouteBuilder app)
     {
-        app.MapGet(
-                "/me",
-                (HttpContext httpContext, [FromServices] MeHandler handler) =>
-                {
-                    return handler.Handle(httpContext);
-                }
-            )
+        app.MapGet("/me", (HttpContext httpContext, [FromServices] MeHandler handler) => handler.Handle(httpContext))
             .WithName("GetMe")
             .RequireAuthorization()
             .Produces<MeResponse>(StatusCodes.Status200OK)

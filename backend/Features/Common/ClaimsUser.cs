@@ -14,7 +14,8 @@ public record ClaimsUser(
     string? Email,
     string? PhoneNumber,
     IEnumerable<string> Roles,
-    string? StudentCode
+    string? StudentCode,
+    string? ProfessorCode
 )
 {
     /// <summary>
@@ -35,8 +36,9 @@ public record ClaimsUser(
             PhoneNumber: claims.FirstOrDefault(c => c.Type == ClaimTypes.MobilePhone)?.Value,
             Roles: claims.Where(c => c.Type == ClaimTypes.Role).Select(c => c.Value),
             StudentCode: claims
-                .FirstOrDefault(c => c.Type == ApplicationUserClaims.StudentCode)
-                ?.Value
+                .FirstOrDefault(c => c.Type == ApplicationUserClaims.StudentCode)?.Value,
+            ProfessorCode: claims
+                .FirstOrDefault(c => c.Type == ApplicationUserClaims.ProfessorCode)?.Value
         );
     }
 }
