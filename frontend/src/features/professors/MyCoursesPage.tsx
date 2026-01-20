@@ -152,7 +152,7 @@ export function MyCoursesPage() {
                             <div>
                                 <Title order={3} c="dark.4">Activitatea ta didactică</Title>
                                 <Text size="sm" c="dimmed">
-                                    Gestionezi <Text span fw={700} c="black" fs="italic">{assignedCourses.length}</Text> cursuri cu un total de <Text span fw={700} c="black" fs="italic">{totalStudents}</Text> studenți înscriși.
+                                    Gestionezi <Text span fw={700} c="black">{assignedCourses.length}</Text> cursuri cu un total de <Text span fw={700} c="black">{totalStudents}</Text> studenți înscriși.
                                 </Text>
                             </div>
                         </Group>

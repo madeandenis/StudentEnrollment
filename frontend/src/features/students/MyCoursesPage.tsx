@@ -1,11 +1,13 @@
-import { Paper, Title, Stack, Table, Text, Badge, Loader, Center, Group, Divider } from '@mantine/core';
-import { GraduationCap } from 'lucide-react';
+import { Paper, Title, Stack, Table, Text, Badge, Loader, Center, Group, Divider, ActionIcon, Tooltip } from '@mantine/core';
+import { GraduationCap, Eye } from 'lucide-react';
 import { useAuth } from '@/features/auth/_contexts/AuthContext';
 import { useStudentEnrolledCourses } from '@/features/students/get-enrolled-courses/useStudentEnrolledCourses';
 import ErrorAlert from '@/features/_common/components/ErrorAlert';
+import { useNavigate } from '@tanstack/react-router';
 
 export function MyCoursesPage() {
     const { user } = useAuth();
+    const navigate = useNavigate();
 
     const { data, isLoading, isError, error } = useStudentEnrolledCourses(user?.studentCode);
 
@@ -81,12 +83,13 @@ export function MyCoursesPage() {
                                     <Table.Th><Text fw={700} size="sm" c="dimmed">Nume Curs</Text></Table.Th>
                                     <Table.Th><Text fw={700} size="sm" c="dimmed">Credite</Text></Table.Th>
                                     <Table.Th><Text fw={700} size="sm" c="dimmed">Data Înscrierii</Text></Table.Th>
+                                    <Table.Th><Text fw={700} size="sm" c="dimmed"></Text></Table.Th>
                                 </Table.Tr>
                             </Table.Thead>
                             <Table.Tbody>
                                 {enrolledCourses.length === 0 ? (
                                     <Table.Tr>
-                                        <Table.Td colSpan={4}>
+                                        <Table.Td colSpan={5}>
                                             <Text size="sm" c="dimmed" fs="italic" ta="center" py="xl">
                                                 Nu ești înscris la niciun curs momentan.
                                             </Text>
@@ -115,6 +118,20 @@ export function MyCoursesPage() {
                                                     {formatDate(course.enrollmentDate)}
                                                 </Text>
                                             </Table.Td>
+                                            <Table.Td>
+                                                <Center>
+                                                    <Tooltip label="Vizualizare detalii curs">
+                                                        <ActionIcon
+                                                            variant="subtle"
+                                                            color="blue"
+                                                            size="sm"
+                                                            onClick={() => navigate({ to: `/courses/${course.courseId}` })}
+                                                        >
+                                                            <Eye size={16} />
+                                                        </ActionIcon>
+                                                    </Tooltip>
+                                                </Center>
+                                            </Table.Td>
                                         </Table.Tr>
                                     ))
                                 )}
@@ -132,6 +149,7 @@ export function MyCoursesPage() {
                                                 {totalCredits} credite
                                             </Badge>
                                         </Table.Td>
+                                        <Table.Td />
                                         <Table.Td />
                                     </Table.Tr>
                                 )}
