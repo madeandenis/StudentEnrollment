@@ -5,5 +5,7 @@ public record EnrolledCourseResponse(
     string Code,
     string Name,
     int Credits,
-    DateTime EnrollmentDate
+    DateTime EnrollmentDate,
+    decimal? Grade,
+    string? AssignedByProfessor
 );

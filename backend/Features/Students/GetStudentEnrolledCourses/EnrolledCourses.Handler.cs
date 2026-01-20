@@ -28,7 +28,11 @@ public class EnrolledCoursesHandler(ApplicationDbContext context) : IHandler
                         e.Course.CourseCode,
                         e.Course.Name,
                         e.Course.Credits,
-                        e.CreatedAt
+                        e.CreatedAt,
+                        e.Grade,
+                        e.AssignedByProfessor != null
+                            ? $"{e.AssignedByProfessor.FirstName} {e.AssignedByProfessor.LastName}"
+                            : null
                     ))
                     .ToList()
             )
