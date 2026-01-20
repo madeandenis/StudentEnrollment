@@ -11,5 +11,8 @@ public record CourseResponse
     public int EnrolledStudents { get; init; }
     public int AvailableSeats { get; init; }
     public bool HasAvailableSeats { get; init; }
+    public ProfessorInfo? Professor { get; init; }
     public DateTime CreatedAt { get; init; }
 }
+
+public record ProfessorInfo(int Id, string Code, string Name);

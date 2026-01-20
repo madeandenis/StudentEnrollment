@@ -29,6 +29,14 @@ public class CourseMapper
             EnrolledStudents = course.Enrollments.Count,
             AvailableSeats = course.MaxEnrollment - course.Enrollments.Count,
             HasAvailableSeats = course.MaxEnrollment > course.Enrollments.Count,
+            Professor =
+                course.Professor != null
+                    ? new ProfessorInfo(
+                        course.Professor.Id,
+                        course.Professor.ProfessorCode,
+                        course.Professor.FirstName + " " + course.Professor.LastName
+                    )
+                    : null,
             CreatedAt = course.CreatedAt,
         };
 
@@ -76,6 +84,14 @@ public class CourseMapper
             EnrolledStudents = course.Enrollments?.Count ?? 0,
             AvailableSeats = course.MaxEnrollment - (course.Enrollments?.Count ?? 0),
             HasAvailableSeats = course.MaxEnrollment > (course.Enrollments?.Count ?? 0),
+            Professor =
+                course.Professor != null
+                    ? new ProfessorInfo(
+                        course.Professor.Id,
+                        course.Professor.ProfessorCode,
+                        $"{course.Professor.FirstName} {course.Professor.LastName}"
+                    )
+                    : null,
             CreatedAt = course.CreatedAt,
         };
 }

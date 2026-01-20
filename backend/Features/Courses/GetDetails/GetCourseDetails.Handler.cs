@@ -10,15 +10,14 @@ public class GetCourseDetailsHandler(ApplicationDbContext context) : IHandler
 {
     public async Task<IResult> HandleAsync(int courseId)
     {
-        var course = await context.Courses
-            .AsNoTracking()
+        var course = await context
+            .Courses.AsNoTracking()
+            .Include(c => c.Professor)
             .Select(CourseMapper.ProjectToResponse())
             .FirstOrDefaultAsync(c => c.Id == courseId);
 
         if (course is null)
-        {
             return Results.NotFound(Problems.NotFound("Course not found."));
-        }
 
         return Results.Ok(course);
     }

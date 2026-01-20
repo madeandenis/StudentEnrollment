@@ -7,21 +7,23 @@ using StudentEnrollment.Shared.Persistence;
 
 namespace StudentEnrollment.Features.Courses.GetList;
 
-public class GetCourseListHandler(
-    GetCourseListValidator validator,
-    ApplicationDbContext context
-) : IHandler
+public class GetCourseListHandler(GetCourseListValidator validator, ApplicationDbContext context)
+    : IHandler
 {
-    public async Task<IResult> HandleAsync(GetCourseListRequest request, PaginationRequest pagination)
+    public async Task<IResult> HandleAsync(
+        GetCourseListRequest request,
+        PaginationRequest pagination
+    )
     {
         var validationResult = await validator.ValidateAsync(request);
         if (!validationResult.IsValid)
             return Results.ValidationProblem(validationResult.ToDictionary());
-        
-        var courses = await context.Courses
-            .AsNoTracking()
-            .ApplySearchFilter(request)  
-            .ApplySorting(request) 
+
+        var courses = await context
+            .Courses.AsNoTracking()
+            .Include(c => c.Professor)
+            .ApplySearchFilter(request)
+            .ApplySorting(request)
             .Select(CourseMapper.ProjectToResponse())
             .ToPaginatedListAsync(pagination);
 
