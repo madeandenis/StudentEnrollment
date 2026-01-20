@@ -36,7 +36,7 @@ export function AppLayout() {
         <AppShell.Navbar p="md">
           <Sidebar
             toggleMobile={toggleMobile}
-            toggleDesktop={() => {}}
+            toggleDesktop={() => { }}
             navItems={[
               {
                 label: "Studenți",
@@ -55,7 +55,7 @@ export function AppLayout() {
                 icon: <BookOpen size={20} />,
                 path: "/courses",
                 roles: ["SuAdmin", "Admin"],
-                claims: ["studentCode"],
+                claims: ["studentCode", "professorCode"],
               },
             ]}
             userNavItems={[

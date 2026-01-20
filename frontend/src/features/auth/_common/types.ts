@@ -7,4 +7,5 @@ export interface ClaimsUser {
     phoneNumber: string | null;
     roles: string[];
     studentCode: string | null;
+    professorCode: string | null;
 }

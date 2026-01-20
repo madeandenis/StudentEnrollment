@@ -163,13 +163,6 @@ const professorsListRoute = createRoute({
 const professorDetailsRoute = createRoute({
   getParentRoute: () => protectedLayoutRoute,
   path: "/professors/$id",
-  beforeLoad() {
-    if (!UserStore.isAdmin()) {
-      throw redirect({
-        to: "/",
-      });
-    }
-  },
   component: ProfessorDetailsPage,
 });
 

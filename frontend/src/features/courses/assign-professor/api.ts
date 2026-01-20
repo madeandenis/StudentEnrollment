@@ -1,5 +1,5 @@
 import { api } from "@/lib/api";
-import type { AssignProfessorRequest } from "./types";
+import type { AssignProfessorRequest } from "@/features/courses/_common/types";
 
 export const assignProfessor = async ({
   courseId,
