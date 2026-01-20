@@ -13,6 +13,7 @@ import {
     Divider,
     ActionIcon,
     Tooltip,
+    Box,
 } from '@mantine/core';
 import { ArrowLeft, Edit, Trash2, BookOpen, Award, Users, Calendar, UserCircle } from 'lucide-react';
 import { useCourseDetails } from '@/features/courses/get-details/useCourseDetails';
@@ -22,6 +23,7 @@ import { useErrorHandler } from '@/features/_common/hooks/useErrorHandler';
 import { useModalState } from '@/features/_common/hooks/useModalState';
 import { ConfirmModal } from '../_common/components/ConfirmModal';
 import { CourseFormModal } from '@/features/courses/components/CourseFormModal';
+import { CourseEnrolledStudentsSection } from '@/features/courses/components/CourseEnrolledStudentsSection';
 import { useAuth } from '@/features/auth/_contexts/AuthContext';
 
 export function CourseDetailsPage() {
@@ -301,6 +303,15 @@ export function CourseDetailsPage() {
                     </div>
                 </Stack>
             </Paper>
+
+            <Box mt="md">
+                {/* Enrolled Students Section */}
+                <CourseEnrolledStudentsSection
+                    courseId={courseId}
+                    courseName={course.name}
+                    professorId={course.professor?.id}
+                />
+            </Box>
 
             {/* Edit Modal */}
             <CourseFormModal

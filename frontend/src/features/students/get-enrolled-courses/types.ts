@@ -4,6 +4,8 @@ export interface EnrolledCourseResponse {
     name: string;
     credits: number;
     enrollmentDate: string;
+    grade?: number;
+    assignedByProfessor?: string;
 }
 
 export interface AcademicSituationResponse {

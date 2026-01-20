@@ -96,6 +96,7 @@ export function StudentEnrolledCoursesSection({
                                     <Table.Th>Cod</Table.Th>
                                     <Table.Th>Nume</Table.Th>
                                     <Table.Th>Credite</Table.Th>
+                                    <Table.Th>Notă</Table.Th>
                                     <Table.Th>Data Înscrierii</Table.Th>
                                     {isAdmin && <Table.Th style={{ width: '80px' }}>Acțiuni</Table.Th>}
                                 </Table.Tr>
@@ -117,6 +118,26 @@ export function StudentEnrolledCoursesSection({
                                             <Badge variant="outline" color="gray">
                                                 {course.credits} credite
                                             </Badge>
+                                        </Table.Td>
+                                        <Table.Td>
+                                            {course.grade !== undefined && course.grade !== null ? (
+                                                <Group gap="xs">
+                                                    <Badge variant="light" color={course.grade >= 5 ? 'green' : 'red'}>
+                                                        {course.grade.toFixed(2)}
+                                                    </Badge>
+                                                    {course.assignedByProfessor && (
+                                                        <Tooltip label={`Asignată de: ${course.assignedByProfessor}`}>
+                                                            <Text size="xs" c="dimmed">
+                                                                ({course.assignedByProfessor.split(' ').map(n => n[0]).join('.')})
+                                                            </Text>
+                                                        </Tooltip>
+                                                    )}
+                                                </Group>
+                                            ) : (
+                                                <Text size="sm" c="dimmed" fs="italic">
+                                                    Neasignată
+                                                </Text>
+                                            )}
                                         </Table.Td>
                                         <Table.Td>
                                             <Text size="sm" c="dimmed">
