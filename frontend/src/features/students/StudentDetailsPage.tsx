@@ -14,6 +14,7 @@ import {
   ActionIcon,
   Tooltip,
   Box,
+  Anchor,
 } from "@mantine/core";
 import {
   ArrowLeft,
@@ -111,7 +112,7 @@ export function StudentDetailsPage() {
       <Paper p="md" shadow="sm" withBorder>
         <ErrorAlert
           errors={error?.message || "Nu s-a putut încărca datele studentului"}
-          onClose={() => {}}
+          onClose={() => { }}
         />
         <Button
           mt="md"
@@ -235,9 +236,15 @@ export function StudentDetailsPage() {
                     <Text size="xs" c="dimmed">
                       Email
                     </Text>
-                    <Text size="sm" fw={500}>
+                    <Anchor
+                      href={`mailto:${student.email}`}
+                      size="sm"
+                      c="violet"
+                      td="underline"
+                      fw={500}
+                    >
                       {student.email}
-                    </Text>
+                    </Anchor>
                   </div>
                 </Group>
               </Grid.Col>

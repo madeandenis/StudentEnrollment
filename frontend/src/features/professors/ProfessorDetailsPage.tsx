@@ -14,6 +14,7 @@ import {
   ActionIcon,
   Tooltip,
   Box,
+  Anchor,
 } from "@mantine/core";
 import {
   ArrowLeft,
@@ -217,9 +218,15 @@ export function ProfessorDetailsPage() {
                     <Text size="xs" c="dimmed">
                       Email
                     </Text>
-                    <Text size="sm" fw={500}>
+                    <Anchor
+                      href={`mailto:${professor.email}`}
+                      size="sm"
+                      c="violet"
+                      td="underline"
+                      fw={500}
+                    >
                       {professor.email}
-                    </Text>
+                    </Anchor>
                   </div>
                 </Group>
               </Grid.Col>

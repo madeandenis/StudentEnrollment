@@ -1,8 +1,9 @@
-import { Paper, Title, Stack, Table, Text, Badge, Group, Loader, Center, ActionIcon, Tooltip } from '@mantine/core';
-import { GraduationCap, Edit } from 'lucide-react';
+import { Paper, Title, Stack, Text, Group, Loader, Center } from '@mantine/core';
+import { GraduationCap } from 'lucide-react';
 import { useCourseEnrolledStudents } from '@/features/courses/get-enrolled-students/useCourseEnrolledStudents';
 import { useModalState } from '@/features/_common/hooks/useModalState';
 import { AssignGradeModal } from '@/features/students/components/AssignGradeModal';
+import { EnrolledStudentsTable } from './EnrolledStudentsTable';
 import ErrorAlert from '@/features/_common/components/ErrorAlert';
 import type { EnrolledStudentResponse } from '@/features/courses/get-enrolled-students/types';
 import { useAuth } from '@/features/auth/_contexts/AuthContext';
@@ -19,37 +20,23 @@ export function CourseEnrolledStudentsSection({
     professorId,
 }: CourseEnrolledStudentsSectionProps) {
     const { user, isAdmin } = useAuth();
-    const canAssignGrade = isAdmin || (user?.professorCode && professorId); // Professors can only assign grades to their own courses
+    const isProfessor = !!user?.professorCode;
+    const canAssignGrade = isAdmin || (isProfessor && !!professorId); // Professors can only assign grades to their own courses
+
+    // Only admins and professors can view the enrolled students list
+    const canViewStudents = isAdmin || isProfessor;
 
     const { data, isLoading, isError, error } = useCourseEnrolledStudents(courseId);
     const gradeModal = useModalState<EnrolledStudentResponse>();
-
-    const formatDate = (dateString: string) => {
-        return new Date(dateString).toLocaleDateString('ro-RO', {
-            year: 'numeric',
-            month: 'long',
-            day: 'numeric',
-        });
-    };
 
     const handleGradeClick = (student: EnrolledStudentResponse) => {
         gradeModal.open(student);
     };
 
-    const formatGrade = (grade?: number) => {
-        if (grade === undefined || grade === null) {
-            return (
-                <Text size="sm" c="dimmed" fs="italic">
-                    Neasignată
-                </Text>
-            );
-        }
-        return (
-            <Badge variant="light" color={grade >= 5 ? 'green' : 'red'}>
-                {grade.toFixed(2)}
-            </Badge>
-        );
-    };
+    // Students cannot view the enrolled students section
+    if (!canViewStudents) {
+        return null;
+    }
 
     if (isLoading) {
         return (
@@ -98,70 +85,11 @@ export function CourseEnrolledStudentsSection({
                             Niciun student înscris la acest curs.
                         </Text>
                     ) : (
-                        <Table striped highlightOnHover withTableBorder>
-                            <Table.Thead>
-                                <Table.Tr>
-                                    <Table.Th>Cod Student</Table.Th>
-                                    <Table.Th>Nume</Table.Th>
-                                    <Table.Th>Email</Table.Th>
-                                    <Table.Th>Data Înscrierii</Table.Th>
-                                    <Table.Th>Notă</Table.Th>
-                                    {canAssignGrade && <Table.Th style={{ width: '80px' }}>Acțiuni</Table.Th>}
-                                </Table.Tr>
-                            </Table.Thead>
-                            <Table.Tbody>
-                                {enrolledStudents.map((student) => (
-                                    <Table.Tr key={student.studentId}>
-                                        <Table.Td>
-                                            <Badge variant="light" color="blue">
-                                                {student.studentCode}
-                                            </Badge>
-                                        </Table.Td>
-                                        <Table.Td>
-                                            <Text size="sm" fw={500}>
-                                                {student.fullName}
-                                            </Text>
-                                        </Table.Td>
-                                        <Table.Td>
-                                            <Text size="sm" c="dimmed">
-                                                {student.email}
-                                            </Text>
-                                        </Table.Td>
-                                        <Table.Td>
-                                            <Text size="sm" c="dimmed">
-                                                {formatDate(student.enrollmentDate)}
-                                            </Text>
-                                        </Table.Td>
-                                        <Table.Td>
-                                            <Group gap="xs">
-                                                {formatGrade(student.grade)}
-                                                {student.assignedByProfessor && (
-                                                    <Tooltip label={`Asignată de: ${student.assignedByProfessor}`}>
-                                                        <Text size="xs" c="dimmed">
-                                                            ({student.assignedByProfessor.split(' ').map(n => n[0]).join('.')})
-                                                        </Text>
-                                                    </Tooltip>
-                                                )}
-                                            </Group>
-                                        </Table.Td>
-                                        {canAssignGrade && (
-                                            <Table.Td>
-                                                <Tooltip label={student.grade ? "Modifică nota" : "Asignează notă"}>
-                                                    <ActionIcon
-                                                        variant="subtle"
-                                                        color="blue"
-                                                        onClick={() => handleGradeClick(student)}
-                                                        aria-label="Asignează/Modifică notă"
-                                                    >
-                                                        <Edit size={18} />
-                                                    </ActionIcon>
-                                                </Tooltip>
-                                            </Table.Td>
-                                        )}
-                                    </Table.Tr>
-                                ))}
-                            </Table.Tbody>
-                        </Table>
+                        <EnrolledStudentsTable
+                            students={enrolledStudents}
+                            onAssignGrade={handleGradeClick}
+                            canAssignGrade={canAssignGrade}
+                        />
                     )}
                 </Stack>
             </Paper>

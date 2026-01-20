@@ -267,7 +267,7 @@ export function CourseDetailsPage() {
                             </Group>
                         ) : (
                             <Text size="sm" c="dimmed" fs="italic">
-                                Neasignat
+                                Neatribuit
                             </Text>
                         )}
                     </div>

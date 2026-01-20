@@ -63,14 +63,14 @@ export function MyCoursesPage() {
             });
             notifications.show({
                 title: 'Succes',
-                message: `Ați fost asignat la cursul "${assignModal.item.courseName}" cu succes!`,
+                message: `Ați fost alocat la cursul "${assignModal.item.courseName}" cu succes!`,
                 color: 'green',
             });
             assignModal.close();
         } catch (error: any) {
             notifications.show({
                 title: 'Eroare',
-                message: error?.response?.data?.detail || 'A apărut o eroare la asignarea cursului.',
+                message: error?.response?.data?.detail || 'A apărut o eroare la alocarea cursului.',
                 color: 'red',
             });
         }

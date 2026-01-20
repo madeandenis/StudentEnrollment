@@ -1,5 +1,5 @@
-import { Table, Text, ActionIcon, Group, Tooltip, Center, Badge } from '@mantine/core';
-import { Eye, Pencil, Trash2 } from 'lucide-react';
+import { Table, Text, ActionIcon, Group, Tooltip, Center, Badge, Anchor } from '@mantine/core';
+import { Eye, Pencil, Trash2, UserPlus } from 'lucide-react';
 import type { StudentResponse } from '@/features/students/_common/types';
 import { SortableTh } from '@/features/_common/components/SortableTh';
 
@@ -10,7 +10,9 @@ interface StudentsTableProps {
     onView: (id: number) => void;
     onEdit: (id: number) => void;
     onDelete: ({ id, fullName }: { id: number; fullName: string }) => void;
+    onEnroll?: (student: StudentResponse) => void;
     onSort?: (column: string) => void;
+    isAdmin?: boolean;
 }
 
 export function StudentsTable({
@@ -20,7 +22,9 @@ export function StudentsTable({
     onView,
     onEdit,
     onDelete,
-    onSort
+    onEnroll,
+    onSort,
+    isAdmin
 }: StudentsTableProps) {
     const formatDate = (dateString: string) => {
         return new Date(dateString).toLocaleDateString('ro-RO', {
@@ -32,26 +36,26 @@ export function StudentsTable({
 
     return (
         <Table.ScrollContainer minWidth={800}>
-            <Table verticalSpacing="sm" withTableBorder highlightOnHover>
+            <Table verticalSpacing="md" horizontalSpacing="md" withTableBorder highlightOnHover>
                 <Table.Thead bg="gray.0">
                     <Table.Tr>
-                        <SortableTh sortKey="StudentCode" sortBy={sortBy} sortOrder={sortOrder} onSort={onSort} width={110}>
-                            <Text fw={700} size="sm" c="dimmed">Cod</Text>
+                        <SortableTh sortKey="StudentCode" sortBy={sortBy} sortOrder={sortOrder} onSort={onSort} width={140}>
+                            <Text size="xs" fw={600} tt="uppercase" c="dimmed">Cod</Text>
                         </SortableTh>
                         <SortableTh sortKey="FullName" sortBy={sortBy} sortOrder={sortOrder} onSort={onSort}>
-                            <Text fw={700} size="sm" c="dimmed">Nume Complet</Text>
+                            <Text size="xs" fw={600} tt="uppercase" c="dimmed">Nume Complet</Text>
                         </SortableTh>
                         <SortableTh sortKey="Email" sortBy={sortBy} sortOrder={sortOrder} onSort={onSort}>
-                            <Text fw={700} size="sm" c="dimmed">Email</Text>
+                            <Text size="xs" fw={600} tt="uppercase" c="dimmed">Email</Text>
                         </SortableTh>
                         <SortableTh sortKey="PhoneNumber" sortBy={sortBy} sortOrder={sortOrder} onSort={onSort}>
-                            <Text fw={700} size="sm" c="dimmed">Telefon</Text>
+                            <Text size="xs" fw={600} tt="uppercase" c="dimmed">Telefon</Text>
                         </SortableTh>
                         <SortableTh sortKey="CreatedAt" sortBy={sortBy} sortOrder={sortOrder} onSort={onSort}>
-                            <Text fw={700} size="sm" c="dimmed">Dată Înregistrare</Text>
+                            <Text size="xs" fw={600} tt="uppercase" c="dimmed">Dată Creare</Text>
                         </SortableTh>
-                        <SortableTh width={120}>
-                            <Center><Text fw={700} size="sm" c="dimmed">Acțiuni</Text></Center>
+                        <SortableTh width={isAdmin && onEnroll ? 160 : 120}>
+                            <Center><Text size="xs" fw={600} tt="uppercase" c="dimmed">Acțiuni</Text></Center>
                         </SortableTh>
                     </Table.Tr>
                 </Table.Thead>
@@ -68,23 +72,34 @@ export function StudentsTable({
                         students.map((student) => (
                             <Table.Tr key={student.id}>
                                 <Table.Td>
-                                    <Badge variant="light" color="gray" radius="sm" tt="unset" style={{ fontFamily: 'monospace' }}>
+                                    <Badge
+                                        variant="light"
+                                        color="gray"
+                                        size="md"
+                                        radius="sm"
+                                        styles={{ root: { textTransform: 'none', fontFamily: 'monospace' } }}
+                                    >
                                         {student.studentCode}
                                     </Badge>
                                 </Table.Td>
                                 <Table.Td>
-                                    <Text fw={600} size="sm">{student.fullName}</Text>
+                                    <Text size="sm" fw={500}>{student.fullName}</Text>
                                 </Table.Td>
                                 <Table.Td>
-                                    <Text size="sm">
+                                    <Anchor
+                                        href={`mailto:${student.email}`}
+                                        size="sm"
+                                        c="violet"
+                                        td="underline"
+                                    >
                                         {student.email}
-                                    </Text>
+                                    </Anchor>
                                 </Table.Td>
                                 <Table.Td>
                                     <Text size="sm">{student.phoneNumber}</Text>
                                 </Table.Td>
                                 <Table.Td>
-                                    <Text size="sm">{formatDate(student.createdAt)}</Text>
+                                    <Text size="xs" c="dimmed">{formatDate(student.createdAt)}</Text>
                                 </Table.Td>
                                 <Table.Td>
                                     <Group gap={4} justify="center" wrap="nowrap">
@@ -98,6 +113,18 @@ export function StudentsTable({
                                                 <Eye size={16} />
                                             </ActionIcon>
                                         </Tooltip>
+                                        {isAdmin && onEnroll && (
+                                            <Tooltip label="Înscrie la Curs">
+                                                <ActionIcon
+                                                    variant="subtle"
+                                                    color="green"
+                                                    size="sm"
+                                                    onClick={() => onEnroll(student)}
+                                                >
+                                                    <UserPlus size={16} />
+                                                </ActionIcon>
+                                            </Tooltip>
+                                        )}
                                         <Tooltip label="Editare">
                                             <ActionIcon
                                                 variant="subtle"

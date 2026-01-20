@@ -56,7 +56,7 @@ export function AssignGradeModal({
 
             notifications.show({
                 title: 'Succes',
-                message: `Nota ${values.grade} a fost asignată cu succes pentru cursul "${courseName}"`,
+                message: `Nota ${values.grade} a fost atribuită cu succes pentru cursul "${courseName}"`,
                 color: 'green',
             });
 
@@ -83,7 +83,7 @@ export function AssignGradeModal({
         <Modal
             opened={opened}
             onClose={handleClose}
-            title={currentGrade ? "Modifică Nota" : "Asignează Notă"}
+            title={currentGrade ? "Modifică Nota" : "Adaugă Notă"}
             size="md"
         >
             <form onSubmit={form.onSubmit(handleSubmit)}>
@@ -91,7 +91,7 @@ export function AssignGradeModal({
                     <Text size="sm" c="dimmed">
                         {currentGrade
                             ? `Modifică nota pentru cursul "${courseName}". Nota curentă: ${currentGrade}`
-                            : `Asignează o notă pentru cursul "${courseName}"`
+                            : `Adaugă o notă pentru cursul "${courseName}"`
                         }
                     </Text>
 
@@ -115,7 +115,7 @@ export function AssignGradeModal({
                         fullWidth
                         loading={assignGradeMutation.isPending}
                     >
-                        {currentGrade ? 'Actualizează Nota' : 'Asignează Nota'}
+                        {currentGrade ? 'Actualizează Nota' : 'Adaugă Nota'}
                     </Button>
                 </Stack>
             </form>

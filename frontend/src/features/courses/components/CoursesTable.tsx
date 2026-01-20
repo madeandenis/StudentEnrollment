@@ -51,34 +51,34 @@ export function CoursesTable({
 
     return (
         <Table.ScrollContainer minWidth={800}>
-            <Table verticalSpacing="sm" withTableBorder highlightOnHover>
+            <Table verticalSpacing="md" horizontalSpacing="md" withTableBorder highlightOnHover>
                 <Table.Thead bg="gray.0">
                     <Table.Tr>
-                        <SortableTh sortKey="CourseCode" sortBy={sortBy} sortOrder={sortOrder} onSort={onSort}>
-                            <Text fw={700} size="sm" c="dimmed">Cod</Text>
+                        <SortableTh sortKey="CourseCode" sortBy={sortBy} sortOrder={sortOrder} onSort={onSort} width={140}>
+                            <Text size="xs" fw={600} tt="uppercase" c="dimmed">Cod</Text>
                         </SortableTh>
                         <SortableTh sortKey="Name" sortBy={sortBy} sortOrder={sortOrder} onSort={onSort}>
-                            <Text fw={700} size="sm" c="dimmed">Nume    </Text>
+                            <Text size="xs" fw={600} tt="uppercase" c="dimmed">Nume</Text>
                         </SortableTh>
                         <SortableTh sortKey="Credits" sortBy={sortBy} sortOrder={sortOrder} onSort={onSort}>
-                            <Text fw={700} size="sm" c="dimmed">Credite</Text>
+                            <Text size="xs" fw={600} tt="uppercase" c="dimmed">Credite</Text>
                         </SortableTh>
                         <SortableTh sortKey="MaxEnrollment" sortBy={sortBy} sortOrder={sortOrder} onSort={onSort}>
-                            <Text fw={700} size="sm" c="dimmed">Capacitate</Text>
+                            <Text size="xs" fw={600} tt="uppercase" c="dimmed">Capacitate</Text>
                         </SortableTh>
                         <SortableTh sortKey="EnrolledStudents" sortBy={sortBy} sortOrder={sortOrder} onSort={onSort}>
-                            <Text fw={700} size="sm" c="dimmed">Înscriși</Text>
+                            <Text size="xs" fw={600} tt="uppercase" c="dimmed">Înscriși</Text>
                         </SortableTh>
                         {showProfessorColumn && (
                             <SortableTh sortKey="ProfessorName" sortBy={sortBy} sortOrder={sortOrder} onSort={onSort}>
-                                <Text fw={700} size="sm" c="dimmed">Profesor</Text>
+                                <Text size="xs" fw={600} tt="uppercase" c="dimmed">Profesor</Text>
                             </SortableTh>
                         )}
                         <SortableTh sortKey="CreatedAt" sortBy={sortBy} sortOrder={sortOrder} onSort={onSort}>
-                            <Text fw={700} size="sm" c="dimmed">Dată Creare</Text>
+                            <Text size="xs" fw={600} tt="uppercase" c="dimmed">Dată Creare</Text>
                         </SortableTh>
                         <SortableTh width={120}>
-                            <Center><Text fw={700} size="sm" c="dimmed">Acțiuni</Text></Center>
+                            <Center><Text size="xs" fw={600} tt="uppercase" c="dimmed">Acțiuni</Text></Center>
                         </SortableTh>
                     </Table.Tr>
                 </Table.Thead>
@@ -101,35 +101,39 @@ export function CoursesTable({
                             return (
                                 <Table.Tr key={id}>
                                     <Table.Td>
-                                        <Badge variant="light" color="gray" radius="sm" tt="unset" style={{ fontFamily: 'monospace' }}>
+                                        <Badge
+                                            variant="light"
+                                            color="gray"
+                                            size="md"
+                                            radius="sm"
+                                            styles={{ root: { textTransform: 'none', fontFamily: 'monospace' } }}
+                                        >
                                             {code}
                                         </Badge>
                                     </Table.Td>
                                     <Table.Td>
-                                        <Text fw={600} size="sm">{course.name}</Text>
+                                        <Text size="sm" fw={500}>{course.name}</Text>
                                     </Table.Td>
                                     <Table.Td>
-                                        <Badge variant="light" color="gray" size="sm" radius="sm">
+                                        <Badge variant="light" color="blue" size="md" radius="sm">
                                             {course.credits}
                                         </Badge>
                                     </Table.Td>
                                     <Table.Td>
-                                        <Text size="sm">{course.maxEnrollment}</Text>
+                                        <Badge variant="light" color="gray" size="md" radius="sm">
+                                            {course.maxEnrollment}
+                                        </Badge>
                                     </Table.Td>
                                     <Table.Td>
-                                        <Group gap="xs">
-                                            <Text size="sm" fw={500}>
+                                        <Group gap="xs" wrap="nowrap">
+                                            <Text size="sm">
                                                 {course.enrolledStudents}
                                             </Text>
-                                            {course.hasAvailableSeats ? (
-                                                <Badge variant="dot" color="teal" size="sm" radius="sm">
-                                                    Disponibil
-                                                </Badge>
-                                            ) : (
-                                                <Badge variant="dot" color="red" size="sm" radius="sm">
-                                                    Plin
-                                                </Badge>
-                                            )}
+                                            <Badge
+                                                color={course.hasAvailableSeats ? "teal" : "red"}
+                                                size="xs"
+                                                styles={{ root: { paddingLeft: 0, paddingRight: 0 } }}
+                                            />
                                         </Group>
                                     </Table.Td>
                                     {showProfessorColumn && (
@@ -137,10 +141,10 @@ export function CoursesTable({
                                             {professor ? (
                                                 <Badge
                                                     variant="light"
-                                                    color={isProfessor && professor.code === userCode ? "teal" : "gray"}
+                                                    color='black'
                                                     radius="sm"
-                                                    size="sm"
-                                                    style={{ cursor: isAdmin ? 'pointer' : 'default', textTransform: 'none' }}
+                                                    size="md"
+                                                    styles={{ root: { textTransform: 'none', cursor: isAdmin ? 'pointer' : 'default' } }}
                                                     onClick={(e) => {
                                                         if (!isAdmin) return;
                                                         e.stopPropagation();
@@ -150,14 +154,14 @@ export function CoursesTable({
                                                     {isProfessor && professor.code === userCode ? "Dvs." : professor.name}
                                                 </Badge>
                                             ) : (
-                                                <Text size="xs" fs="italic">
-                                                    -
-                                                </Text>
+                                                <Badge variant="light" color="gray" size="sm" radius="sm" styles={{ root: { textTransform: 'none' } }}>
+                                                    Neatribuit
+                                                </Badge>
                                             )}
                                         </Table.Td>
                                     )}
                                     <Table.Td>
-                                        <Text size="sm">{formatDate(course.createdAt)}</Text>
+                                        <Text size="xs" c="dimmed">{formatDate(course.createdAt)}</Text>
                                     </Table.Td>
                                     <Table.Td>
                                         <Group gap={4} justify="center" wrap="nowrap">

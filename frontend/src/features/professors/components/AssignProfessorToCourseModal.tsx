@@ -78,7 +78,7 @@ export function AssignProfessorToCourseModal({
 
             notifications.show({
                 title: 'Succes',
-                message: `Profesorul ${professorName} a fost asignat cursului cu succes!`,
+                message: `Profesorul ${professorName} a fost alocat cursului cu succes!`,
                 color: 'green',
             });
 
@@ -106,7 +106,7 @@ export function AssignProfessorToCourseModal({
         <Modal
             opened={opened}
             onClose={handleClose}
-            title="Asignare Profesor la Curs"
+            title="Alocare Profesor la Curs"
             size="md"
         >
             <Stack gap="md">
@@ -137,7 +137,7 @@ export function AssignProfessorToCourseModal({
                         )}
                         {professorAlreadyAssignedAll && (
                             <Text size="sm" c="dimmed" fs="italic">
-                                Profesorul este deja asignat la toate cursurile disponibile.
+                                Profesorul este deja alocat la toate cursurile disponibile.
                             </Text>
                         )}
                     </>
@@ -155,7 +155,7 @@ export function AssignProfessorToCourseModal({
                             isLoadingCourses
                         }
                     >
-                        Asignează Profesor
+                        Alocă Profesor
                     </Button>
                 </Group>
             </Stack>

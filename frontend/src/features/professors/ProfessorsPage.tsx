@@ -23,12 +23,17 @@ import { Pagination } from "../_common/components/Pagination";
 import { useModalState } from "@/features/_common/hooks/useModalState";
 import { ConfirmModal } from "../_common/components/ConfirmModal";
 import { SearchBar } from "../_common/components/SearchBar";
+import { AssignProfessorToCourseModal } from "./components/AssignProfessorToCourseModal";
+import { useAuth } from "@/features/auth/_contexts/AuthContext";
+import type { ProfessorResponse } from "@/features/professors/_common/types";
 
 export function ProfessorsPage() {
   const navigate = useNavigate();
 
   const formModal = useModalState<{ professorId?: number }>();
   const deleteModal = useModalState<{ id: number; name: string }>();
+  const assignModal = useModalState<ProfessorResponse>();
+  const { isAdmin } = useAuth();
 
   const table = useTableState({
     initialPageSize: 10,
@@ -75,6 +80,13 @@ export function ProfessorsPage() {
   const handleDeleteClick = (professor: { id: number; fullName: string }) => {
     deleteModal.open({ id: professor.id, name: professor.fullName });
   };
+
+  const handleAssign = useCallback(
+    (professor: ProfessorResponse) => {
+      assignModal.open(professor);
+    },
+    [assignModal],
+  );
 
   const deleteProfessorMutation = useDeleteProfessor();
   const handleDeleteConfirm = async () => {
@@ -146,7 +158,9 @@ export function ProfessorsPage() {
                   onView={handleView}
                   onEdit={handleEdit}
                   onDelete={handleDeleteClick}
+                  onAssign={handleAssign}
                   onSort={table.setSort}
+                  isAdmin={isAdmin}
                 />
 
                 <Divider color="gray.1" />
@@ -201,6 +215,16 @@ export function ProfessorsPage() {
             zIndex: 1000,
             maxWidth: 400,
           }}
+        />
+      )}
+      {/* Assign Modal */}
+      {isAdmin && assignModal.opened && assignModal.item && (
+        <AssignProfessorToCourseModal
+          opened={assignModal.opened}
+          professorId={assignModal.item.id}
+          professorName={assignModal.item.fullName}
+          professorCode={assignModal.item.professorCode}
+          onClose={assignModal.close}
         />
       )}
     </>

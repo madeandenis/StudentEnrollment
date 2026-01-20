@@ -44,7 +44,7 @@ export function UnassignProfessorFromCourseModal({
 
             notifications.show({
                 title: 'Succes',
-                message: `Profesorul ${professorName} a fost dezasignat de la cursul ${courseCode} cu succes!`,
+                message: `Profesorul ${professorName} a fost retras de la cursul ${courseCode} cu succes!`,
                 color: 'green',
             });
 
@@ -67,7 +67,7 @@ export function UnassignProfessorFromCourseModal({
         <Modal
             opened={opened}
             onClose={handleClose}
-            title="Confirmare Dezasignare"
+            title="Confirmare Revocare Alocare"
             size="md"
         >
             <Stack gap="md">
@@ -76,7 +76,7 @@ export function UnassignProfessorFromCourseModal({
                 <Group gap="sm">
                     <AlertTriangle size={20} color="var(--mantine-color-orange-6)" />
                     <Text size="sm">
-                        Ești sigur că vrei să dezasignezi profesorul{' '}
+                        Ești sigur că vrei să retragi profesorul{' '}
                         <strong>{professorName}</strong> de la cursul{' '}
                         <strong>{courseCode} - {courseName}</strong>?
                     </Text>
@@ -95,7 +95,7 @@ export function UnassignProfessorFromCourseModal({
                         onClick={handleUnassign}
                         loading={unassignMutation.isPending}
                     >
-                        Dezasignează
+                        Retrage
                     </Button>
                 </Group>
             </Stack>

@@ -13,12 +13,17 @@ import { Pagination } from '../_common/components/Pagination';
 import { useModalState } from '@/features/_common/hooks/useModalState';
 import { ConfirmModal } from '../_common/components/ConfirmModal';
 import { SearchBar } from '../_common/components/SearchBar';
+import { EnrollStudentModal } from './components/EnrollStudentModal';
+import { useAuth } from '@/features/auth/_contexts/AuthContext';
+import type { StudentResponse } from '@/features/students/_common/types';
 
 export function StudentsPage() {
     const navigate = useNavigate();
 
     const formModal = useModalState<{ studentId?: number }>();
     const deleteModal = useModalState<{ id: number; name: string }>();
+    const enrollModal = useModalState<StudentResponse>();
+    const { isAdmin } = useAuth();
 
     const table = useTableState({
         initialPageSize: 10,
@@ -55,6 +60,10 @@ export function StudentsPage() {
     const handleDeleteClick = (student: { id: number; fullName: string }) => {
         deleteModal.open({ id: student.id, name: student.fullName });
     };
+
+    const handleEnroll = useCallback((student: StudentResponse) => {
+        enrollModal.open(student);
+    }, [enrollModal]);
 
 
     const deleteStudentMutation = useDeleteStudent();
@@ -125,7 +134,9 @@ export function StudentsPage() {
                                     onView={handleView}
                                     onEdit={handleEdit}
                                     onDelete={handleDeleteClick}
+                                    onEnroll={handleEnroll}
                                     onSort={table.setSort}
+                                    isAdmin={isAdmin}
                                 />
 
                                 <Divider color="gray.1" />
@@ -174,6 +185,15 @@ export function StudentsPage() {
                     errors={deleteErrors}
                     onClose={clearDeleteErrors}
                     style={{ position: 'fixed', bottom: 20, right: 20, zIndex: 1000, maxWidth: 400 }}
+                />
+            )}
+            {/* Enroll Modal */}
+            {isAdmin && enrollModal.opened && enrollModal.item && (
+                <EnrollStudentModal
+                    opened={enrollModal.opened}
+                    studentId={enrollModal.item.id}
+                    studentName={enrollModal.item.fullName}
+                    onClose={enrollModal.close}
                 />
             )}
         </>

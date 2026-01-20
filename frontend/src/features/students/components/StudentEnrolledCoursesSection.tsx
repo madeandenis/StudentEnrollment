@@ -1,9 +1,11 @@
-import { Paper, Title, Stack, Table, Text, Badge, Group, Button, Loader, Center, ActionIcon, Tooltip } from '@mantine/core';
-import { GraduationCap, Plus, X } from 'lucide-react';
+import { Paper, Title, Stack, Text, Group, Button, Loader, Center } from '@mantine/core';
+import { GraduationCap, Plus } from 'lucide-react';
 import { useStudentEnrolledCourses } from '@/features/students/get-enrolled-courses/useStudentEnrolledCourses';
 import { useModalState } from '@/features/_common/hooks/useModalState';
+import { useNavigate } from '@tanstack/react-router';
 import { EnrollStudentModal } from './EnrollStudentModal';
 import { WithdrawCourseModal } from './WithdrawCourseModal';
+import { EnrolledCoursesTable } from './EnrolledCoursesTable';
 import ErrorAlert from '@/features/_common/components/ErrorAlert';
 import type { EnrolledCourseResponse } from '@/features/students/get-enrolled-courses/types';
 import { useAuth } from '@/features/auth/_contexts/AuthContext';
@@ -18,21 +20,18 @@ export function StudentEnrolledCoursesSection({
     studentName,
 }: StudentEnrolledCoursesSectionProps) {
     const { isAdmin } = useAuth();
+    const navigate = useNavigate();
 
     const { data, isLoading, isError, error } = useStudentEnrolledCourses(studentId);
     const enrollModal = useModalState();
     const withdrawModal = useModalState<EnrolledCourseResponse>();
 
-    const formatDate = (dateString: string) => {
-        return new Date(dateString).toLocaleDateString('ro-RO', {
-            year: 'numeric',
-            month: 'long',
-            day: 'numeric',
-        });
-    };
-
     const handleWithdrawClick = (course: EnrolledCourseResponse) => {
         withdrawModal.open(course);
+    };
+
+    const handleViewCourse = (courseId: number) => {
+        navigate({ to: `/courses/${courseId}` });
     };
 
     if (isLoading) {
@@ -90,78 +89,12 @@ export function StudentEnrolledCoursesSection({
                             Studentul nu este înscris la niciun curs.
                         </Text>
                     ) : (
-                        <Table striped highlightOnHover withTableBorder>
-                            <Table.Thead>
-                                <Table.Tr>
-                                    <Table.Th>Cod</Table.Th>
-                                    <Table.Th>Nume</Table.Th>
-                                    <Table.Th>Credite</Table.Th>
-                                    <Table.Th>Notă</Table.Th>
-                                    <Table.Th>Data Înscrierii</Table.Th>
-                                    {isAdmin && <Table.Th style={{ width: '80px' }}>Acțiuni</Table.Th>}
-                                </Table.Tr>
-                            </Table.Thead>
-                            <Table.Tbody>
-                                {enrolledCourses.map((course) => (
-                                    <Table.Tr key={course.code}>
-                                        <Table.Td>
-                                            <Badge variant="light" color="blue">
-                                                {course.code}
-                                            </Badge>
-                                        </Table.Td>
-                                        <Table.Td>
-                                            <Text size="sm" fw={500}>
-                                                {course.name}
-                                            </Text>
-                                        </Table.Td>
-                                        <Table.Td>
-                                            <Badge variant="outline" color="gray">
-                                                {course.credits} credite
-                                            </Badge>
-                                        </Table.Td>
-                                        <Table.Td>
-                                            {course.grade !== undefined && course.grade !== null ? (
-                                                <Group gap="xs">
-                                                    <Badge variant="light" color={course.grade >= 5 ? 'green' : 'red'}>
-                                                        {course.grade.toFixed(2)}
-                                                    </Badge>
-                                                    {course.assignedByProfessor && (
-                                                        <Tooltip label={`Asignată de: ${course.assignedByProfessor}`}>
-                                                            <Text size="xs" c="dimmed">
-                                                                ({course.assignedByProfessor.split(' ').map(n => n[0]).join('.')})
-                                                            </Text>
-                                                        </Tooltip>
-                                                    )}
-                                                </Group>
-                                            ) : (
-                                                <Text size="sm" c="dimmed" fs="italic">
-                                                    Neasignată
-                                                </Text>
-                                            )}
-                                        </Table.Td>
-                                        <Table.Td>
-                                            <Text size="sm" c="dimmed">
-                                                {formatDate(course.enrollmentDate)}
-                                            </Text>
-                                        </Table.Td>
-                                        {isAdmin && (
-                                            <Table.Td>
-                                                <Tooltip label="Renunță la curs">
-                                                    <ActionIcon
-                                                        variant="subtle"
-                                                        color="red"
-                                                        onClick={() => handleWithdrawClick(course)}
-                                                        aria-label="Renunță la curs"
-                                                    >
-                                                        <X size={18} />
-                                                    </ActionIcon>
-                                                </Tooltip>
-                                            </Table.Td>
-                                        )}
-                                    </Table.Tr>
-                                ))}
-                            </Table.Tbody>
-                        </Table>
+                        <EnrolledCoursesTable
+                            courses={enrolledCourses}
+                            onWithdraw={handleWithdrawClick}
+                            onViewCourse={handleViewCourse}
+                            isAdmin={isAdmin}
+                        />
                     )}
                 </Stack>
             </Paper>
