@@ -14,4 +14,5 @@ export interface CourseListParams {
   MinCredits?: number;
   MaxCredits?: number;
   HasAvailableSeats?: boolean;
+  HasAssignedProfessor?: boolean;
 }

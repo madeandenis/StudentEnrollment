@@ -14,7 +14,7 @@ import {
     ActionIcon,
     Tooltip,
 } from '@mantine/core';
-import { ArrowLeft, Edit, Trash2, BookOpen, Award, Users, Calendar } from 'lucide-react';
+import { ArrowLeft, Edit, Trash2, BookOpen, Award, Users, Calendar, UserCircle } from 'lucide-react';
 import { useCourseDetails } from '@/features/courses/get-details/useCourseDetails';
 import { useDeleteCourse } from '@/features/courses/delete/useDeleteCourse';
 import ErrorAlert from '@/features/_common/components/ErrorAlert';
@@ -233,6 +233,41 @@ export function CourseDetailsPage() {
                                 </Group>
                             </Grid.Col>
                         </Grid>
+                    </div>
+
+                    <Divider />
+
+                    {/* Professor Information */}
+                    <div>
+                        <Title order={4} mb="md">
+                            Profesor
+                        </Title>
+                        {course.professor ? (
+                            <Group gap="xs">
+                                <UserCircle
+                                    size={18}
+                                    strokeWidth={1.5}
+                                    style={{ color: 'var(--mantine-color-dimmed)' }}
+                                />
+                                <div>
+                                    <Badge
+                                        variant="light"
+                                        color="blue"
+                                        style={{ cursor: 'pointer' }}
+                                        onClick={() => navigate({ to: `/professors/${course.professor!.id}` })}
+                                    >
+                                        {course.professor.code}
+                                    </Badge>
+                                    <Text size="sm" fw={500} mt={4}>
+                                        {course.professor.name}
+                                    </Text>
+                                </div>
+                            </Group>
+                        ) : (
+                            <Text size="sm" c="dimmed" fs="italic">
+                                Neasignat
+                            </Text>
+                        )}
                     </div>
 
                     <Divider />

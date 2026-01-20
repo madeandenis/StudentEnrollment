@@ -2,6 +2,7 @@ import { Table, Text, ActionIcon, Group, Tooltip, Badge, Center } from '@mantine
 import { Eye, Pencil, Trash2 } from 'lucide-react';
 import type { CourseResponse } from '@/features/courses/_common/types';
 import { SortableTh } from '@/features/_common/components/SortableTh';
+import { useNavigate } from '@tanstack/react-router';
 
 interface CoursesTableProps {
     courses: CourseResponse[];
@@ -22,6 +23,8 @@ export function CoursesTable({
     onDelete,
     onSort
 }: CoursesTableProps) {
+    const navigate = useNavigate();
+
     const formatDate = (dateString: string) => {
         return new Date(dateString).toLocaleDateString('ro-RO', {
             year: 'numeric',
@@ -50,6 +53,9 @@ export function CoursesTable({
                         <SortableTh sortKey="EnrolledStudents" sortBy={sortBy} sortOrder={sortOrder} onSort={onSort}>
                             Înscriși
                         </SortableTh>
+                        <SortableTh sortKey="ProfessorName" sortBy={sortBy} sortOrder={sortOrder} onSort={onSort}>
+                            Profesor
+                        </SortableTh>
                         <SortableTh sortKey="CreatedAt" sortBy={sortBy} sortOrder={sortOrder} onSort={onSort}>
                             Data Creării
                         </SortableTh>
@@ -61,7 +67,7 @@ export function CoursesTable({
                 <Table.Tbody>
                     {courses.length === 0 ? (
                         <Table.Tr>
-                            <Table.Td colSpan={7}>
+                            <Table.Td colSpan={8}>
                                 <Text ta="center" c="dimmed" py="xl">
                                     Nu există cursuri înregistrate
                                 </Text>
@@ -101,6 +107,25 @@ export function CoursesTable({
                                             </Badge>
                                         )}
                                     </Group>
+                                </Table.Td>
+                                <Table.Td>
+                                    {course.professor ? (
+                                        <Badge
+                                            variant="light"
+                                            color="cyan"
+                                            style={{ cursor: 'pointer' }}
+                                            onClick={(e) => {
+                                                e.stopPropagation();
+                                                navigate({ to: `/professors/${course.professor!.id}` });
+                                            }}
+                                        >
+                                            {course.professor.name}
+                                        </Badge>
+                                    ) : (
+                                        <Text size="sm" c="dimmed" fs="italic">
+                                            Neasignat
+                                        </Text>
+                                    )}
                                 </Table.Td>
                                 <Table.Td>
                                     <Text size="sm">{formatDate(course.createdAt)}</Text>

@@ -1,3 +1,9 @@
+export interface ProfessorInfo {
+  id: number;
+  code: string;
+  name: string;
+}
+
 export interface CourseResponse {
   id: number;
   courseCode: string;
@@ -8,6 +14,7 @@ export interface CourseResponse {
   enrolledStudents: number;
   availableSeats: number;
   hasAvailableSeats: boolean;
+  professor?: ProfessorInfo;
   createdAt: string;
 }
 
@@ -16,6 +23,6 @@ export interface AssignProfessorRequest {
   professorIdentifier: string;
 }
 
-export interface UnassignProfessorRequest extends AssignProfessorRequest {}
+export interface UnassignProfessorRequest extends AssignProfessorRequest { }
 
 

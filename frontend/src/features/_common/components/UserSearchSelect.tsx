@@ -1,6 +1,7 @@
-import { Select, Loader, Text } from "@mantine/core";
+import { Select, Loader, Text, Group, Avatar, type SelectProps } from "@mantine/core";
 import { useDebouncedValue } from "@mantine/hooks";
 import { useState } from "react";
+import { Search } from "lucide-react";
 import { useUserList } from "@/features/users/get-list/useUserList";
 import type { UserResponse } from "@/features/users/_common/types";
 
@@ -26,31 +27,34 @@ export function UserSearchSelect({
   const [searchValue, setSearchValue] = useState("");
   const [debouncedSearch] = useDebouncedValue(searchValue, 300);
 
-  // Fetch users based on search
   const { data: usersData, isLoading } = useUserList({
     PageIndex: 1,
-    PageSize: 20,
-    // IsAdmin: false,
+    PageSize: 10,
+    IsAdmin: false,
     Search: debouncedSearch || undefined,
   });
 
   const users = usersData?.items || [];
 
-  // Convert users to select options
   const selectData = users.map((user) => ({
     value: user.id.toString(),
-    label: `${user.email || user.userName || "N/A"} (ID: ${user.id})`,
+    label: user.email || user.userName || "N/A",
   }));
 
-  // Find selected user
-  const selectedUser = users.find((u) => u.id === value);
+  const renderSelectOption: SelectProps['renderOption'] = ({ option }) => (
+    <Group gap="sm" wrap="nowrap">
+      <Avatar size="sm" radius="xl" color="blue" variant="light">
+        {option.label?.charAt(0).toUpperCase()}
+      </Avatar>
+      <Text size="sm">{option.label}</Text>
+    </Group>
+  );
 
   const handleChange = (selectedValue: string | null) => {
     if (!selectedValue) {
       onChange(null, null);
       return;
     }
-
     const userId = parseInt(selectedValue);
     const user = users.find((u) => u.id === userId);
     onChange(userId, user || null);
@@ -69,25 +73,20 @@ export function UserSearchSelect({
       searchable
       searchValue={searchValue}
       onSearchChange={setSearchValue}
+      leftSection={<Search size={16} />}
+      rightSection={isLoading ? <Loader size="xs" /> : null}
+      renderOption={renderSelectOption}
       nothingFoundMessage={
-        isLoading ? (
-          <Text size="sm" c="dimmed" ta="center">
-            <Loader size="xs" /> Se încarcă...
-          </Text>
-        ) : (
-          <Text size="sm" c="dimmed">
-            {debouncedSearch
-              ? "Nu s-au găsit utilizatori"
-              : "Începe să scrii pentru a căuta"}
-          </Text>
-        )
+        debouncedSearch ? "Nu s-au găsit utilizatori" : "Începe să scrii pentru a căuta"
       }
-      rightSection={isLoading ? <Loader size="xs" /> : undefined}
-      description={
-        selectedUser
-          ? `Selectat: ${selectedUser.email || selectedUser.userName} - Roluri: ${selectedUser.roles.join(", ")}`
-          : "Caută și selectează un utilizator din sistem"
-      }
+      comboboxProps={{
+        shadow: "md",
+        transitionProps: {
+          transition: 'slide-down',
+          duration: 200
+        },
+        dropdownPadding: 5
+      }}
     />
   );
 }

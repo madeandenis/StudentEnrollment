@@ -13,6 +13,7 @@ import {
   Divider,
   ActionIcon,
   Tooltip,
+  Box,
 } from "@mantine/core";
 import {
   ArrowLeft,
@@ -31,6 +32,7 @@ import { useErrorHandler } from "@/features/_common/hooks/useErrorHandler";
 import { useModalState } from "@/features/_common/hooks/useModalState";
 import { ConfirmModal } from "../_common/components/ConfirmModal";
 import { ProfessorFormModal } from "@/features/professors/components/ProfessorFormModal";
+import { ProfessorAssignedCoursesSection } from "@/features/professors/components/ProfessorAssignedCoursesSection";
 import { useAuth } from "@/features/auth/_contexts/AuthContext";
 
 export function ProfessorDetailsPage() {
@@ -109,7 +111,7 @@ export function ProfessorDetailsPage() {
       <Paper p="md" shadow="sm" withBorder>
         <ErrorAlert
           errors={error?.message || "Nu s-a putut încărca datele profesorului"}
-          onClose={() => {}}
+          onClose={() => { }}
         />
         <Button
           mt="md"
@@ -309,6 +311,15 @@ export function ProfessorDetailsPage() {
           </div>
         </Stack>
       </Paper>
+
+      <Box mt="md">
+        {/* Assigned Courses Section */}
+        <ProfessorAssignedCoursesSection
+          professorId={professorId}
+          professorName={professor.fullName}
+          professorCode={professor.professorCode}
+        />
+      </Box>
 
       {/* Edit Modal */}
       <ProfessorFormModal
