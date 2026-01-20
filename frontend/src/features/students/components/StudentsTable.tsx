@@ -35,7 +35,7 @@ export function StudentsTable({
             <Table striped highlightOnHover withTableBorder withColumnBorders>
                 <Table.Thead>
                     <Table.Tr>
-                        <SortableTh sortKey="StudentCode" sortBy={sortBy} sortOrder={sortOrder} onSort={onSort}>
+                        <SortableTh sortKey="StudentCode" sortBy={sortBy} sortOrder={sortOrder} onSort={onSort} width={110}>
                             Cod Student
                         </SortableTh>
                         <SortableTh sortKey="FullName" sortBy={sortBy} sortOrder={sortOrder} onSort={onSort}>
