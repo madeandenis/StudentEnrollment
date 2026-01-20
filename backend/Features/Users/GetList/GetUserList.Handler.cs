@@ -19,11 +19,12 @@ public class GetUserListHandler(
         if (!validationResult.IsValid)
             return Results.ValidationProblem(validationResult.ToDictionary());
 
-        var users = await userManager
-            .Users.Include(u => u.UserRoles)
+        var users = await userManager.Users
+            .Include(u => u.UserRoles)
             .ThenInclude(ur => ur.Role)
             .AsNoTracking()
             .ApplySearchFilter(request)
+            .ApplyRoleFilter(request)
             .ApplySorting(request)
             .Select(UserMapper.ProjectToResponse())
             .ToPaginatedListAsync(pagination);
