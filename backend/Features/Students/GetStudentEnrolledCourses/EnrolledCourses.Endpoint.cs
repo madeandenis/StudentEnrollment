@@ -16,7 +16,7 @@ public class GetStudentEnrolledCoursesEndpoint : IEndpoint
             )
             .WithName("GetStudentEnrolledCourses")
             .RequireAuthorization("SameStudent")
-            .Produces<AcademicSituationResponse>(StatusCodes.Status200OK)
+            .Produces<StudentEnrollmentResponse>(StatusCodes.Status200OK)
             .Produces(StatusCodes.Status404NotFound);
     }
 }

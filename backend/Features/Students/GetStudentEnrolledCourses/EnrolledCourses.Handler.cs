@@ -38,7 +38,7 @@ public class EnrolledCoursesHandler(ApplicationDbContext context) : IHandler
             return Results.NotFound(Problems.NotFound("Student not found."));
         }
 
-        var academicSituation = new AcademicSituationResponse(
+        var academicSituation = new StudentEnrollmentResponse(
             enrolledCourses,
             enrolledCourses.Sum(c => c.Credits)
         );
