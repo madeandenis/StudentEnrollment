@@ -45,6 +45,7 @@ public static class SecurityExtensions
             // Register custom authorization handlers
             services.AddScoped<IAuthorizationHandler, AdminBypassAuthorizationHandler>();
             services.AddScoped<IAuthorizationHandler, SameStudentAuthorizationHandler>();
+            services.AddScoped<IAuthorizationHandler, SameProfessorAuthorizationHandler>();
 
             services.Configure<AuthorizationOptions>(options =>
             {
