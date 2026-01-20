@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using StudentEnrollment.Shared.Domain.Entities.Identity;
 using StudentEnrollment.Shared.Persistence.Seeders.Contracts;
+using StudentEnrollment.Shared.Security.Common;
 
 namespace StudentEnrollment.Shared.Persistence.Seeders;
 
@@ -18,7 +19,7 @@ public class RoleSeeder(
     /// </summary>
     public async Task SeedAsync()
     {
-        var roleNames = new[] { "SuAdmin", "Admin" };
+        var roleNames = Roles.All();
         foreach (var roleName in roleNames)
         {
             if (await roleManager.RoleExistsAsync(roleName))
