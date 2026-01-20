@@ -1,7 +1,7 @@
 import { AppShell } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 import { Outlet } from "@tanstack/react-router";
-import { Users, BookOpen, User } from "lucide-react";
+import { Users, BookOpen, User, GraduationCap } from "lucide-react";
 import { Sidebar } from "@/features/_common/components/Layout/Sidebar";
 import { HeaderContent } from "@/features/_common/components/Layout/HeaderContent";
 import { AuthProvider } from "@/features/auth/_contexts/AuthContext";
@@ -42,6 +42,12 @@ export function AppLayout() {
                 label: "Studenți",
                 icon: <Users size={20} />,
                 path: "/students",
+                roles: ["SuAdmin", "Admin"],
+              },
+              {
+                label: "Profesori",
+                icon: <GraduationCap size={20} />,
+                path: "/professors",
                 roles: ["SuAdmin", "Admin"],
               },
               {

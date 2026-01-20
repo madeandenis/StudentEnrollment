@@ -10,6 +10,8 @@ import { LoginPage } from "@/features/auth/login/LoginPage";
 import { AppLayout } from "./features/_common/components/Layout/AppLayout";
 import { StudentsPage } from "@/features/students/StudentsPage";
 import { StudentDetailsPage } from "@/features/students/StudentDetailsPage";
+import { ProfessorsPage } from "@/features/professors/ProfessorsPage";
+import { ProfessorDetailsPage } from "@/features/professors/ProfessorDetailsPage";
 import { CoursesPageWrapper } from "@/features/courses/CoursesPageWrapper";
 import { CourseDetailsPage } from "@/features/courses/CourseDetailsPage";
 import { ProfilePage } from "@/features/profile/ProfilePage";
@@ -68,7 +70,7 @@ async function hydrateUser(): Promise<ClaimsUser | null> {
         tokenData.accessToken,
         tokenData.accessTokenExpiresAt,
         tokenData.refreshTokenExpiresAt,
-        tokenData.tokenType
+        tokenData.tokenType,
       );
     }
 
@@ -145,6 +147,32 @@ const courseDetailsRoute = createRoute({
   component: CourseDetailsPage,
 });
 
+const professorsListRoute = createRoute({
+  getParentRoute: () => protectedLayoutRoute,
+  path: "/professors",
+  beforeLoad() {
+    if (!UserStore.isAdmin()) {
+      throw redirect({
+        to: "/",
+      });
+    }
+  },
+  component: ProfessorsPage,
+});
+
+const professorDetailsRoute = createRoute({
+  getParentRoute: () => protectedLayoutRoute,
+  path: "/professors/$id",
+  beforeLoad() {
+    if (!UserStore.isAdmin()) {
+      throw redirect({
+        to: "/",
+      });
+    }
+  },
+  component: ProfessorDetailsPage,
+});
+
 const profileRoute = createRoute({
   getParentRoute: () => protectedLayoutRoute,
   path: "/profile",
@@ -159,6 +187,8 @@ const routeTree = rootRoute.addChildren([
     dashboardRoute,
     studentsListRoute,
     studentDetailsRoute,
+    professorsListRoute,
+    professorDetailsRoute,
     coursesListRoute,
     courseDetailsRoute,
     profileRoute,
