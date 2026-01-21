@@ -112,8 +112,9 @@ export function StudentFormModal({
   useEffect(() => {
     if (student && opened && isEditMode) {
       const address = student.address;
-      const firstName = student.fullName.split(" ")[0];
-      const lastName = student.fullName.split(" ")[1];
+      const nameParts = student.fullName.split(" ");
+      const lastName = nameParts.pop() || "";
+      const firstName = nameParts.join(" ");
 
       form.setValues({
         cnp: student.cnp,

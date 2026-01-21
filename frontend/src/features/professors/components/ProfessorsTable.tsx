@@ -45,7 +45,12 @@ export function ProfessorsTable({
 
   return (
     <Table.ScrollContainer minWidth={800}>
-      <Table verticalSpacing="md" horizontalSpacing="md" withTableBorder highlightOnHover>
+      <Table
+        verticalSpacing="md"
+        horizontalSpacing="md"
+        withTableBorder
+        highlightOnHover
+      >
         <Table.Thead bg="gray.0">
           <Table.Tr>
             <SortableTh
@@ -55,7 +60,9 @@ export function ProfessorsTable({
               onSort={onSort}
               width={140}
             >
-              <Text size="xs" fw={600} tt="uppercase" c="dimmed">Cod</Text>
+              <Text size="xs" fw={600} tt="uppercase" c="dimmed">
+                Cod
+              </Text>
             </SortableTh>
             <SortableTh
               sortKey="FullName"
@@ -63,7 +70,9 @@ export function ProfessorsTable({
               sortOrder={sortOrder}
               onSort={onSort}
             >
-              <Text size="xs" fw={600} tt="uppercase" c="dimmed">Nume Complet</Text>
+              <Text size="xs" fw={600} tt="uppercase" c="dimmed">
+                Nume Complet
+              </Text>
             </SortableTh>
             <SortableTh
               sortKey="Email"
@@ -71,7 +80,9 @@ export function ProfessorsTable({
               sortOrder={sortOrder}
               onSort={onSort}
             >
-              <Text size="xs" fw={600} tt="uppercase" c="dimmed">Email</Text>
+              <Text size="xs" fw={600} tt="uppercase" c="dimmed">
+                Email
+              </Text>
             </SortableTh>
             <SortableTh
               sortKey="PhoneNumber"
@@ -79,7 +90,9 @@ export function ProfessorsTable({
               sortOrder={sortOrder}
               onSort={onSort}
             >
-              <Text size="xs" fw={600} tt="uppercase" c="dimmed">Telefon</Text>
+              <Text size="xs" fw={600} tt="uppercase" c="dimmed">
+                Telefon
+              </Text>
             </SortableTh>
 
             <SortableTh
@@ -88,10 +101,16 @@ export function ProfessorsTable({
               sortOrder={sortOrder}
               onSort={onSort}
             >
-              <Text size="xs" fw={600} tt="uppercase" c="dimmed">Dată Creare</Text>
+              <Text size="xs" fw={600} tt="uppercase" c="dimmed">
+                Dată Creare
+              </Text>
             </SortableTh>
             <SortableTh width={isAdmin && onAssign ? 160 : 120}>
-              <Center><Text size="xs" fw={600} tt="uppercase" c="dimmed">Acțiuni</Text></Center>
+              <Center>
+                <Text size="xs" fw={600} tt="uppercase" c="dimmed">
+                  Acțiuni
+                </Text>
+              </Center>
             </SortableTh>
           </Table.Tr>
         </Table.Thead>
@@ -113,13 +132,21 @@ export function ProfessorsTable({
                     color="gray"
                     size="md"
                     radius="sm"
-                    styles={{ root: { textTransform: 'none', fontFamily: 'monospace' } }}
+                    styles={{
+                      root: {
+                        textTransform: "none",
+                        fontFamily: "monospace",
+                        overflow: "visible",
+                      },
+                    }}
                   >
                     {professor.professorCode}
                   </Badge>
                 </Table.Td>
                 <Table.Td>
-                  <Text size="sm" fw={500}>{professor.fullName}</Text>
+                  <Text size="sm" fw={500}>
+                    {professor.fullName}
+                  </Text>
                 </Table.Td>
                 <Table.Td>
                   <Anchor
@@ -135,7 +162,9 @@ export function ProfessorsTable({
                   <Text size="sm">{professor.phoneNumber}</Text>
                 </Table.Td>
                 <Table.Td>
-                  <Text size="xs" c="dimmed">{formatDate(professor.createdAt)}</Text>
+                  <Text size="xs" c="dimmed">
+                    {formatDate(professor.createdAt)}
+                  </Text>
                 </Table.Td>
                 <Table.Td>
                   <Group gap={4} justify="center" wrap="nowrap">

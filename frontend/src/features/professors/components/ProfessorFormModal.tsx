@@ -52,7 +52,7 @@ export function ProfessorFormModal({
 
   const { errors, handleError, clearErrors } = useErrorHandler({
     overrides: {
-      409: "Un profesor cu acest email există deja în sistem.",
+      409: "Un profesor cu acest email există deja în sistem sau utilizatorul este deja asociat unui profesor.",
       404: "Profesorul nu a fost găsit.",
     },
   });
@@ -99,8 +99,9 @@ export function ProfessorFormModal({
   useEffect(() => {
     if (professor && opened && isEditMode) {
       const address = professor.address;
-      const firstName = professor.fullName.split(" ")[0];
-      const lastName = professor.fullName.split(" ").slice(1).join(" ");
+      const nameParts = professor.fullName.split(" ");
+      const lastName = nameParts.pop() || "";
+      const firstName = nameParts.join(" ");
 
       form.setValues({
         userId: professor.userId,
@@ -244,6 +245,7 @@ export function ProfessorFormModal({
                     label="Utilizator"
                     placeholder="Caută utilizator după email sau nume..."
                     required
+                    excludeWithProfessor
                   />
                 </Grid.Col>
               </Grid>
