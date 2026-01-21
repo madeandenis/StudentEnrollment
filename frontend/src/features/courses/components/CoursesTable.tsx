@@ -20,8 +20,8 @@ interface CoursesTableProps {
   sortBy?: string;
   sortOrder?: "asc" | "desc";
   onView: (id: number) => void;
-  onEdit: (id: number) => void;
-  onDelete: ({ id, name }: { id: number; name: string }) => void;
+  onEdit?: (id: number) => void;
+  onDelete?: ({ id, name }: { id: number; name: string }) => void;
   onSort?: (column: string) => void;
   isProfessor?: boolean;
   isAdmin?: boolean;
@@ -265,31 +265,30 @@ export function CoursesTable({
                         </ActionIcon>
                       </Tooltip>
 
-                      {isAdmin && (
-                        <>
-                          <Tooltip label="Editare">
-                            <ActionIcon
-                              variant="subtle"
-                              color="yellow"
-                              size="sm"
-                              onClick={() => onEdit(id)}
-                            >
-                              <Pencil size={16} />
-                            </ActionIcon>
-                          </Tooltip>
-                          <Tooltip label="Ștergere">
-                            <ActionIcon
-                              variant="subtle"
-                              color="red"
-                              size="sm"
-                              onClick={() =>
-                                onDelete({ id, name: course.name })
-                              }
-                            >
-                              <Trash2 size={16} />
-                            </ActionIcon>
-                          </Tooltip>
-                        </>
+                      {isAdmin && onEdit && (
+                        <Tooltip label="Editare">
+                          <ActionIcon
+                            variant="subtle"
+                            color="yellow"
+                            size="sm"
+                            onClick={() => onEdit(id)}
+                          >
+                            <Pencil size={16} />
+                          </ActionIcon>
+                        </Tooltip>
+                      )}
+
+                      {isAdmin && onDelete && (
+                        <Tooltip label="Ștergere">
+                          <ActionIcon
+                            variant="subtle"
+                            color="red"
+                            size="sm"
+                            onClick={() => onDelete({ id, name: course.name })}
+                          >
+                            <Trash2 size={16} />
+                          </ActionIcon>
+                        </Tooltip>
                       )}
 
                       {isProfessor &&

@@ -154,7 +154,6 @@ export function MyCoursesPage() {
       <Paper p="md" shadow="sm" withBorder>
         <ErrorAlert
           errors={error?.message || "Nu s-au putut încărca cursurile"}
-          onClose={() => {}}
         />
       </Paper>
     );
@@ -198,8 +197,6 @@ export function MyCoursesPage() {
           <CoursesTable
             courses={assignedCourses}
             onView={(id) => navigate({ to: `/courses/${id}` })}
-            onEdit={() => {}} // No-op for professor
-            onDelete={() => {}} // No-op for professor
             isProfessor={true}
             isAdmin={false}
             userCode={user.professorCode}
@@ -228,8 +225,6 @@ export function MyCoursesPage() {
           <CoursesTable
             courses={availableCourses}
             onView={(id) => navigate({ to: `/courses/${id}` })}
-            onEdit={() => {}} // No-op
-            onDelete={() => {}} // No-op
             isProfessor={true}
             isAdmin={false}
             userCode={user.professorCode}
