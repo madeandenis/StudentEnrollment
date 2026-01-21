@@ -10,4 +10,5 @@ export interface UserListParams {
   SortOrder?: "asc" | "desc";
   Search?: string;
   IsAdmin?: boolean;
+  ExcludeWithProfessor?: boolean;
 }

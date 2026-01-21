@@ -1,4 +1,11 @@
-import { Select, Loader, Text, Group, Avatar, type SelectProps } from "@mantine/core";
+import {
+  Select,
+  Loader,
+  Text,
+  Group,
+  Avatar,
+  type SelectProps,
+} from "@mantine/core";
 import { useDebouncedValue } from "@mantine/hooks";
 import { useState } from "react";
 import { Search } from "lucide-react";
@@ -13,6 +20,7 @@ interface UserSearchSelectProps {
   placeholder?: string;
   required?: boolean;
   disabled?: boolean;
+  excludeWithProfessor?: boolean;
 }
 
 export function UserSearchSelect({
@@ -23,6 +31,7 @@ export function UserSearchSelect({
   placeholder = "Caută utilizator după email...",
   required = false,
   disabled = false,
+  excludeWithProfessor = false,
 }: UserSearchSelectProps) {
   const [searchValue, setSearchValue] = useState("");
   const [debouncedSearch] = useDebouncedValue(searchValue, 300);
@@ -32,6 +41,7 @@ export function UserSearchSelect({
     PageSize: 10,
     IsAdmin: false,
     Search: debouncedSearch || undefined,
+    ExcludeWithProfessor: excludeWithProfessor,
   });
 
   const users = usersData?.items || [];
@@ -41,7 +51,7 @@ export function UserSearchSelect({
     label: user.email || user.userName || "N/A",
   }));
 
-  const renderSelectOption: SelectProps['renderOption'] = ({ option }) => (
+  const renderSelectOption: SelectProps["renderOption"] = ({ option }) => (
     <Group gap="sm" wrap="nowrap">
       <Avatar size="sm" radius="xl" color="blue" variant="light">
         {option.label?.charAt(0).toUpperCase()}
@@ -77,15 +87,17 @@ export function UserSearchSelect({
       rightSection={isLoading ? <Loader size="xs" /> : null}
       renderOption={renderSelectOption}
       nothingFoundMessage={
-        debouncedSearch ? "Nu s-au găsit utilizatori" : "Începe să scrii pentru a căuta"
+        debouncedSearch
+          ? "Nu s-au găsit utilizatori"
+          : "Începe să scrii pentru a căuta"
       }
       comboboxProps={{
         shadow: "md",
         transitionProps: {
-          transition: 'slide-down',
-          duration: 200
+          transition: "slide-down",
+          duration: 200,
         },
-        dropdownPadding: 5
+        dropdownPadding: 5,
       }}
     />
   );
