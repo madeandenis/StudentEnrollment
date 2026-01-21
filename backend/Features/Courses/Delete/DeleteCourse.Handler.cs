@@ -13,26 +13,24 @@ public class DeleteCourseHandler(ApplicationDbContext context) : IHandler
 {
     public async Task<IResult> HandleAsync(int courseId)
     {
-        var course = await context.Courses
-            .Include(c => c.Enrollments)
-            .FirstOrDefaultAsync(c => c.Id == courseId);
+        var courseExists = await context.Courses
+            .AnyAsync(c => c.Id == courseId);
 
-        if (course is null)
-        {
-            return Results.NotFound(Problems.NotFound("Course not found."));     
-        }
+        if (!courseExists)
+            return Results.NotFound(Problems.NotFound("Course not found."));
 
-        if (course.Enrollments.Any())
-        {
+        var hasEnrollments = await context.Enrollments
+            .AnyAsync(e => e.CourseId == courseId);
+
+        if (hasEnrollments)
             return Results.Conflict(Problems.Conflict(
                 "This course cannot be deleted because it has active enrollments.")
             );
-        }
-        
-        context.Courses.Remove(course);
-        
-        await context.SaveChangesAsync();
-        
+
+        await context.Courses
+            .Where(c => c.Id == courseId)
+            .ExecuteDeleteAsync();
+
         return Results.NoContent();
     }
 }
