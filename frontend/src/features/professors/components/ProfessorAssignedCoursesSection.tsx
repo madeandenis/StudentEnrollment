@@ -95,7 +95,7 @@ export function ProfessorAssignedCoursesSection({
             )}
           </Group>
 
-          {/* Courses Table */}
+          {/* CoursesTable */}
           {assignedCourses.length === 0 ? (
             <Text size="sm" c="dimmed" fs="italic" ta="center" py="xl">
               Profesorul nu este alocat la niciun curs.
@@ -104,6 +104,12 @@ export function ProfessorAssignedCoursesSection({
             <CoursesTable
               courses={assignedCourses}
               onView={(id) => handleCourseClick(id)}
+              onDelete={({ id }) => {
+                const course = assignedCourses.find((c) => c.courseId === id);
+                if (course) {
+                  unassignModal.open(course);
+                }
+              }}
               isProfessor={false}
               isAdmin={isAdmin}
             />
