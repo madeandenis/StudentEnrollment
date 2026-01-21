@@ -17,7 +17,7 @@ public class EnrollmentConfiguration : IEntityTypeConfiguration<Enrollment>
 
         builder.HasIndex(e => e.AssignedByProfessorId);
 
-        builder.Property(e => e.Grade).HasPrecision(3, 2);
+        builder.Property(e => e.Grade).HasPrecision(4, 2);
 
         builder
             .HasOne(e => e.Student)
