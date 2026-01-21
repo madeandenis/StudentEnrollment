@@ -112,7 +112,7 @@ export function StudentDetailsPage() {
       <Paper p="md" shadow="sm" withBorder>
         <ErrorAlert
           errors={error?.message || "Nu s-a putut încărca datele studentului"}
-          onClose={() => { }}
+          onReload
         />
         <Button
           mt="md"

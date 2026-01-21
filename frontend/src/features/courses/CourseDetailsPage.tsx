@@ -98,6 +98,7 @@ export function CourseDetailsPage() {
                 <ErrorAlert
                     errors={error?.message || 'Nu s-a putut încărca datele cursului'}
                     onClose={() => { }}
+                    onReload
                 />
                 <Button mt="md" onClick={handleBack} leftSection={<ArrowLeft size={18} />}>
                     Înapoi la listă

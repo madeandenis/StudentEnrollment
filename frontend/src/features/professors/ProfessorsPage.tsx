@@ -106,7 +106,9 @@ export function ProfessorsPage() {
         {/* Page Header */}
         <Group justify="space-between" align="end">
           <div>
-            <Title order={2} c="dark.4">Profesori</Title>
+            <Title order={2} c="dark.4">
+              Profesori
+            </Title>
             <Text c="dimmed" size="sm" mt={4}>
               Gestionează profesorii înregistrați în sistem
             </Text>
@@ -135,9 +137,10 @@ export function ProfessorsPage() {
             {isError && (
               <ErrorAlert
                 errors={
-                  error?.message || "A apărut o eroare la încărcarea profesorilor"
+                  error?.message ||
+                  "A apărut o eroare la încărcarea profesorilor"
                 }
-                onClose={() => { }}
+                onReload
               />
             )}
 

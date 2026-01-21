@@ -22,7 +22,7 @@ export function MyCoursesPage() {
             <Paper p="md" shadow="sm" withBorder>
                 <ErrorAlert
                     errors="Nu ești înregistrat ca student. Contactează administrația pentru mai multe informații."
-                    onClose={() => { }}
+                    onReload
                 />
             </Paper>
         );
@@ -43,7 +43,7 @@ export function MyCoursesPage() {
             <Paper p="md" shadow="sm" withBorder>
                 <ErrorAlert
                     errors={error?.message || 'Nu s-au putut încărca cursurile'}
-                    onClose={() => { }}
+                    onReload
                 />
             </Paper>
         );

@@ -112,7 +112,7 @@ export function ProfessorDetailsPage() {
       <Paper p="md" shadow="sm" withBorder>
         <ErrorAlert
           errors={error?.message || "Nu s-a putut încărca datele profesorului"}
-          onClose={() => { }}
+          onReload
         />
         <Button
           mt="md"

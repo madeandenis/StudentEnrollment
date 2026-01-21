@@ -113,7 +113,7 @@ export function StudentsPage() {
                         {isError && (
                             <ErrorAlert
                                 errors={error?.message || 'A apărut o eroare la încărcarea studenților'}
-                                onClose={() => { }}
+                                onReload
                             />
                         )}
 

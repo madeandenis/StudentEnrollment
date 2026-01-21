@@ -7,26 +7,42 @@ import {
   Stack,
   Box,
   type BoxProps,
+  Button,
 } from "@mantine/core";
-import { AlertCircle } from "lucide-react";
+import { AlertCircle, RefreshCcw } from "lucide-react";
 
 export type ErrorDictionary = Record<string, string[]>;
 
 interface ErrorAlertProps extends BoxProps {
   errors: string | ErrorDictionary | null;
   onClose?: () => void;
+  onReload?: boolean;
 }
 
 const ErrorAlert = forwardRef<HTMLDivElement, ErrorAlertProps>(
-  ({ errors, onClose, ...others }, ref) => {
+  ({ errors, onClose, onReload, ...others }, ref) => {
     if (!errors) return null;
 
     const renderContent = () => {
       if (typeof errors === "string") {
         return (
-          <Text size="sm" c="red.8" fw={600} style={{ flex: 1 }}>
-            {errors}
-          </Text>
+          <Stack gap={8} style={{ flex: 1 }}>
+            <Text size="sm" c="red.8" fw={600}>
+              {errors}
+            </Text>
+            {onReload && (
+              <Button
+                variant="subtle"
+                color="red"
+                size="compact-xs"
+                w="fit-content"
+                leftSection={<RefreshCcw size={14} />}
+                onClick={() => window.location.reload()}
+              >
+                Reîncarcă pagina
+              </Button>
+            )}
+          </Stack>
         );
       }
 
@@ -52,6 +68,18 @@ const ErrorAlert = forwardRef<HTMLDivElement, ErrorAlertProps>(
               </Stack>
             </Box>
           ))}
+          {onReload && (
+            <Button
+              variant="subtle"
+              color="red"
+              size="compact-xs"
+              w="fit-content"
+              leftSection={<RefreshCcw size={14} />}
+              onClick={() => window.location.reload()}
+            >
+              Reîncarcă pagina
+            </Button>
+          )}
         </Stack>
       );
     };

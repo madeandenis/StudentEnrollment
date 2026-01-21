@@ -47,7 +47,7 @@ export function ProfessorAssignedCoursesSection({
             <Paper p="md" shadow="sm" withBorder>
                 <ErrorAlert
                     errors={error?.message || 'Nu s-a putut încărca cursurile profesorului'}
-                    onClose={() => { }}
+                    onReload
                 />
             </Paper>
         );

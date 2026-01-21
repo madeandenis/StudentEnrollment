@@ -115,12 +115,7 @@ export function CoursesTable({
               </Text>
             </SortableTh>
             {showProfessorColumn && (
-              <SortableTh
-                sortKey="ProfessorName"
-                sortBy={sortBy}
-                sortOrder={sortOrder}
-                onSort={onSort}
-              >
+              <SortableTh>
                 <Text size="xs" fw={600} tt="uppercase" c="dimmed">
                   Profesor
                 </Text>
