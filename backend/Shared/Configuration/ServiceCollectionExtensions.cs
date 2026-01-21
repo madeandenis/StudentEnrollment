@@ -137,10 +137,10 @@ public static class ServiceCollectionExtensions
                         RateLimitPartition.GetFixedWindowLimiter(
                             partitionKey: context.Connection.RemoteIpAddress?.ToString()
                                 ?? Guid.NewGuid().ToString(),
-                            factory: partition => new FixedWindowRateLimiterOptions
+                            factory: _ => new FixedWindowRateLimiterOptions
                             {
                                 AutoReplenishment = true,
-                                PermitLimit = 5,
+                                PermitLimit = 10,
                                 QueueLimit = 0,
                                 Window = TimeSpan.FromMinutes(1),
                             }
