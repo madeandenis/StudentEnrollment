@@ -5,12 +5,14 @@ using StudentEnrollment.Features.Common.Pagination;
 using StudentEnrollment.Features.Users.Common;
 using StudentEnrollment.Features.Users.Common.Mappers;
 using StudentEnrollment.Shared.Domain.Entities.Identity;
+using StudentEnrollment.Shared.Persistence;
 
 namespace StudentEnrollment.Features.Users.GetList;
 
 public class GetUserListHandler(
     GetUserListValidator validator,
-    UserManager<ApplicationUser> userManager
+    UserManager<ApplicationUser> userManager,
+    ApplicationDbContext dbContext
 ) : IHandler
 {
     public async Task<IResult> HandleAsync(GetUserListRequest request, PaginationRequest pagination)
@@ -25,6 +27,7 @@ public class GetUserListHandler(
             .AsNoTracking()
             .ApplySearchFilter(request)
             .ApplyRoleFilter(request)
+            .ApplyProfessorFilter(request, dbContext.Professors)
             .ApplySorting(request)
             .Select(UserMapper.ProjectToResponse())
             .ToPaginatedListAsync(pagination);
